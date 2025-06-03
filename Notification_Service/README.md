@@ -90,3 +90,21 @@ This prevents issues like a user accidentally receiving notifications they've op
 
 * **Efficient Querying:** While Redis will be used as a cache for frequent lookups, the relational database will serve as the source of truth and handle cache misses. 
 SQL databases are highly optimized for querying structured data, which is essential for managing and analyzing user preferences and category definitions.
+
+### Notification Log DB
+
+**Rationale for a Using Cassandra Database**
+Designed for extreme scalability and high write throughput across distributed clusters, 
+making them suitable for massive volumes of append-only log data. Provides high availability.
+
+### Notification Template Store 
+
+** Justification for using MongoDB **
+
+*Schema Flexibility and Evolution:
+Notification templates, especially for channels like email (HTML) or push notifications, can have highly varied and evolving structures. 
+NoSQL document databases do not enforce a rigid schema, allowing you to store documents with different fields without requiring schema migrations.
+
+*Performance for Full Document Retrieval:
+When a "Notification Worker Server" needs a template, it typically fetches the entire template document (e.g., the full HTML body, subject, and metadata. 
+Document databases are optimized for retrieving entire documents quickly.
