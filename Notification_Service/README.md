@@ -94,12 +94,13 @@ SQL databases are highly optimized for querying structured data, which is essent
 ### Notification Log DB
 
 **Rationale for a Using Cassandra Database**
+
 Designed for extreme scalability and high write throughput across distributed clusters, 
 making them suitable for massive volumes of append-only log data. Provides high availability.
 
 ### Notification Template Store 
 
-** Justification for using MongoDB **
+**Justification for using MongoDB**
 
 *Schema Flexibility and Evolution:
 Notification templates, especially for channels like email (HTML) or push notifications, can have highly varied and evolving structures. 
