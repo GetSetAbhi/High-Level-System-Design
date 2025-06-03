@@ -102,10 +102,10 @@ making them suitable for massive volumes of append-only log data. Provides high 
 
 **Justification for using MongoDB**
 
-*Schema Flexibility and Evolution:
+* Schema Flexibility and Evolution:
 Notification templates, especially for channels like email (HTML) or push notifications, can have highly varied and evolving structures. 
 NoSQL document databases do not enforce a rigid schema, allowing you to store documents with different fields without requiring schema migrations.
 
-*Performance for Full Document Retrieval:
+* Performance for Full Document Retrieval:
 When a "Notification Worker Server" needs a template, it typically fetches the entire template document (e.g., the full HTML body, subject, and metadata. 
 Document databases are optimized for retrieving entire documents quickly.
