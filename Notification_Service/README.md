@@ -78,7 +78,7 @@ CREATE TABLE NotificationPreferences (
 
 *Rationale for a Relational Database*
 
-Given the refined scope, a relational database (SQL) like PostgreSQL or MySQL is an excellent choice for your Notification Database.
+Given the refined scope, a relational database (SQL) like PostgreSQL or MySQL is an excellent choice for the Notification and User Preferences DB.
 
 * **Structured and Relational Data:** The data for user preferences, opt-outs, and notification categories is inherently structured. 
 Users have multiple preferences, and categories have specific attributes. 
