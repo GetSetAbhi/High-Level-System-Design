@@ -75,3 +75,18 @@ CREATE TABLE NotificationPreferences (
     FOREIGN KEY (category_id) REFERENCES NotificationCategories(category_id) ON DELETE CASCADE
 );
 ```
+
+*Rationale for a Relational Database*
+
+Given the refined scope, a relational database (SQL) like PostgreSQL or MySQL is an excellent choice for your Notification Database.
+
+* **Structured and Relational Data:** The data for user preferences, opt-outs, and notification categories is inherently structured. 
+Users have multiple preferences, and categories have specific attributes. 
+A relational database excels at defining and enforcing these relationships, ensuring data integrity.
+
+* **Data Consistency and Integrity (ACID):** It's crucial that user opt-out statuses and category definitions are always accurate and consistent. 
+Relational databases provide **ACID properties** (Atomicity, Consistency, Isolation, Durability), guaranteeing reliable transaction processing. 
+This prevents issues like a user accidentally receiving notifications they've opted out of.
+
+* **Efficient Querying:** While Redis will be used as a cache for frequent lookups, the relational database will serve as the source of truth and handle cache misses. 
+SQL databases are highly optimized for querying structured data, which is essential for managing and analyzing user preferences and category definitions.
