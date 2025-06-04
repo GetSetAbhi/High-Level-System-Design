@@ -6,6 +6,8 @@
 
 This section outlines the key components and their roles within the Notification Service architecture.
 
+This design is based on *Chapter 10 Design a Notification System* from the Book *System Design Interview Volume 1 by Alex Xu*.
+
 ## Components
 
 
