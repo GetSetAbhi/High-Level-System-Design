@@ -9,5 +9,6 @@ I've used chat gpt extensively for making these notes.
 
 **System Design Notes**
 
-1. [Design Notification Service](Notification_Service/).
+1. [Design Distributed Rate Limiter](Rate_Limiter/).
+2. [Design Notification Service](Notification_Service/).
 
