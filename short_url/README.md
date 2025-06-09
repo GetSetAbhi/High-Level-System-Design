@@ -11,6 +11,29 @@ some liberty to add a modification.
 
 ## Components
 
+There are 2 main components that i'll elaborate upon, rest of the things can be referred directly from the chapter in the book.
+
+### 1. Role of zookeeper
+
+In this design we generate **ID Block with Zookeeper**
+
+The ID Block Allocation pattern with Zookeeper is a common and efficient strategy for generating globally unique, monotonically increasing IDs in a distributed system. It's designed to overcome the performance bottlenecks of a single centralized counter while still guaranteeing uniqueness and order.
+
+**What is ID Block Allocation?**
+
+Imagine you need to generate millions or billions of unique IDs (e.g., for user IDs, order IDs, or, in your case, the numerical backing for short URLs).
+
+	* **Problem with Single Counter** 
+	If every service instance hits a single database or Redis instance for every ID, that single point becomes a massive bottleneck.
+
+	* **Problem with Random IDs** 
+	If each instance generates random IDs, you risk collisions, and ensuring uniqueness becomes complex (e.g., constantly checking a database for existence).
+
+	* **Solution** 
+	ID Block Allocation: Instead of getting one ID at a time, each distributed service instance (e.g., a "worker" or "application server") 
+	requests and holds a block of IDs (a contiguous range of numbers) from a central coordinator. It then uses these IDs locally from its allocated block, only returning to the coordinator when its block is exhausted.
+
+### 2. Choice of database
 
 ### Notification Trigger Services
 These are external or internal services that initiate requests to send notifications. 
