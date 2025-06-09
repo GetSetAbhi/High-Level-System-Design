@@ -41,17 +41,20 @@ They are designed for autoscaling.
 ### 4. Common Shared Storage Options:
 
 **Relational Databases (e.g., Master/Slave DBs):** 
+
 For persistent storage of structured data, often with replication for redundancy and read scaling.
 For high-traffic systems, a relational database is avoided as a shared storage option because it can become a performance bottleneck 
 due to the overhead of complex queries, disk I/O, and the need for joins if session data is spread across multiple tables.
 
 **Distributed Key-Value Stores (e.g., Memcached/Redis):** 
+
 Used to store frequently accessed data in memory for fast retrieval, reducing load on databases.
 These options typically store shared data in a key-value pair.
 Ideal for applications that need lightning-fast session access and updates, such as high-traffic websites 
 and applications with frequent user interactions (e.g., shopping carts in e-commerce).
 
 **NoSQL Databases:** 
+
 Offer flexible schema and high scalability for various types of data, often chosen for ease of scaling.
 We can opt for NoSQL storate When a system is expected to have a very large number of concurrent users 
 and significant volumes of session data that might not fit entirely in memory.
