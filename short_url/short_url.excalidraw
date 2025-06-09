@@ -211,8 +211,8 @@
         "type": 3
       },
       "seed": 1877271206,
-      "version": 220,
-      "versionNonce": 211155706,
+      "version": 221,
+      "versionNonce": 1030043366,
       "isDeleted": false,
       "boundElements": [
         {
@@ -222,9 +222,13 @@
         {
           "id": "X7ZgsI2qlcqL_kH9Fn7vt",
           "type": "arrow"
+        },
+        {
+          "id": "54ZE7xofU7Ul611umE9Vq",
+          "type": "arrow"
         }
       ],
-      "updated": 1749459947846,
+      "updated": 1749468434693,
       "link": null,
       "locked": false
     },
@@ -667,6 +671,136 @@
         "elementId": "xMw31UHgE-NMfgpCkrbQn",
         "focus": 0.11523476646501687,
         "gap": 1.6082721788085337
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": false
+    },
+    {
+      "id": "KlzxngXXaVOG2TiENLr92",
+      "type": "ellipse",
+      "x": 1647.632437345574,
+      "y": 48.947135768286216,
+      "width": 253.04518467485423,
+      "height": 223.02272696502422,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b0Z",
+      "roundness": {
+        "type": 2
+      },
+      "seed": 993911718,
+      "version": 103,
+      "versionNonce": 1736783206,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "GbWxFwp_CpHkWrErdvZCg"
+        },
+        {
+          "id": "54ZE7xofU7Ul611umE9Vq",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1749468434694,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "GbWxFwp_CpHkWrErdvZCg",
+      "type": "text",
+      "x": 1736.8800719974952,
+      "y": 143.10805795295607,
+      "width": 74.61994934082031,
+      "height": 35,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b0a",
+      "roundness": null,
+      "seed": 190007482,
+      "version": 9,
+      "versionNonce": 598754598,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1749468425857,
+      "link": null,
+      "locked": false,
+      "text": "Redis",
+      "fontSize": 28,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "KlzxngXXaVOG2TiENLr92",
+      "originalText": "Redis",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "54ZE7xofU7Ul611umE9Vq",
+      "type": "arrow",
+      "x": 1274.4980762656523,
+      "y": 437.09254164348914,
+      "width": 392.43460887700166,
+      "height": 223.02280876930593,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b0b",
+      "roundness": {
+        "type": 2
+      },
+      "seed": 544567546,
+      "version": 67,
+      "versionNonce": 106501542,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1749468435571,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          392.43460887700166,
+          -223.02280876930593
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "1rgqf55AB0FMoVLgas9oy",
+        "focus": 0.26300534556814437,
+        "gap": 3.7525260115114634
+      },
+      "endBinding": {
+        "elementId": "KlzxngXXaVOG2TiENLr92",
+        "focus": 0.03993041316024036,
+        "gap": 3.1391773398159732
       },
       "startArrowhead": null,
       "endArrowhead": "arrow",
