@@ -9,6 +9,8 @@ This section outlines the key components and their roles within the URL Shortner
 This design is based on **Chapter 8 Design a URL Shortener** from the Book **System Design Interview Volume 1 by Alex Xu**, but i've taken
 some liberty to add a modification.
 
+There is a **.excalidraw** file which can be imported in [Excalidraw](https://excalidraw.com/) for additional customization to the design proposed.
+
 ## Components
 
 There are 2 main components that i'll elaborate upon, rest of the things can be referred directly from the chapter in the book.

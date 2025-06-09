@@ -8,6 +8,8 @@ This section outlines the key components and their roles within the Notification
 
 This design is based on **Chapter 10 Design a Notification System** from the Book **System Design Interview Volume 1 by Alex Xu**.
 
+There is a **.excalidraw** file which can be imported in [Excalidraw](https://excalidraw.com/) for additional customization to the design proposed.
+
 ## Components
 
 
