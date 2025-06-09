@@ -2,24 +2,17 @@
 
 ### 1. Stateful Architecture
 
-* **Definition:** 
+* **Definition:** Web servers **remember** client data (state) from one request to the next.
 
-Web servers **remember** client data (state) from one request to the next.
+* **Data Storage:** Session data and user-specific information are stored **directly on individual web servers**.
 
-* **Data Storage:** 
-
-Session data and user-specific information are stored **directly on individual web servers**.
-
-* **Routing Problem:** 
-
-Subsequent requests from the same user **must** be routed to the **same server** 
+* **Routing Problem:** Subsequent requests from the same user **must** be routed to the **same server** 
 (e.g., User A always goes to Server 1, User B to Server 2). This often relies on "sticky sessions" via load balancers.
 
 * **Challenges/Drawbacks:**
-
-* **Scaling Difficulty:** Hard to add or remove servers dynamically; requires careful management of sticky sessions, which adds overhead.
-* **Failure Handling:** If a server fails, all user sessions on that specific server are lost, leading to poor user experience.
-* **Complexity:** Adds complexity to load balancing, server maintenance, and ensuring high availability.
+    * **Scaling Difficulty:** Hard to add or remove servers dynamically; requires careful management of sticky sessions, which adds overhead.
+    * **Failure Handling:** If a server fails, all user sessions on that specific server are lost, leading to poor user experience.
+    * **Complexity:** Adds complexity to load balancing, server maintenance, and ensuring high availability.
 
 ### 2. Stateless Architecture
 
