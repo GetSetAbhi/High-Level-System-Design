@@ -32,7 +32,10 @@ Load balancers can distribute traffic more efficiently.
 ### 3. Key Components in Stateless Web Tier Design 
 
 * **Load Balancer:** Distributes incoming HTTP requests from users across multiple web servers, ensuring no single server is overloaded and enabling high availability.
-* **Web Servers (Stateless Tier):** The application servers that process user requests. They are stateless, meaning they fetch necessary session or user data from a shared storage layer. They are designed for autoscaling.
+
+* **Web Servers (Stateless Tier):** The application servers that process user requests. They are stateless, meaning they fetch necessary session or user data from a shared storage layer. 
+They are designed for autoscaling.
+
 * **Shared Storage:** The centralized layer where all stateful data is stored, accessible by any web server.
     * **Databases (e.g., Master/Slave DBs):** For persistent storage of structured data, often with replication for redundancy and read scaling.
     * **Cache (e.g., Memcached/Redis):** Used to store frequently accessed data in memory for fast retrieval, reducing load on databases.
