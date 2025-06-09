@@ -29,7 +29,8 @@ Imagine you need to generate millions or billions of unique IDs (e.g., for user 
 
 	* **Problem with Random IDs** 
 	
-	If each instance generates random IDs, you risk collisions, and ensuring uniqueness becomes complex (e.g., constantly checking a database for existence).
+	If each instance generates random IDs, you risk collisions, 
+	and ensuring uniqueness becomes complex (e.g., constantly checking a database for existence).
 
 	* **Solution** 
 	
