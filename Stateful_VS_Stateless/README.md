@@ -37,9 +37,12 @@ Load balancers can distribute traffic more efficiently.
 They are designed for autoscaling.
 
 * **Shared Storage:** The centralized layer where all stateful data is stored, accessible by any web server.
-    * **Databases (e.g., Master/Slave DBs):** For persistent storage of structured data, often with replication for redundancy and read scaling.
-    * **Cache (e.g., Memcached/Redis):** Used to store frequently accessed data in memory for fast retrieval, reducing load on databases.
-    * **NoSQL Databases:** Offer flexible schema and high scalability for various types of data, often chosen for ease of scaling.
+
+### 4. Common Shared Storage Options:
+
+* **Databases (e.g., Master/Slave DBs):** For persistent storage of structured data, often with replication for redundancy and read scaling.
+* **Cache (e.g., Memcached/Redis):** Used to store frequently accessed data in memory for fast retrieval, reducing load on databases.
+* **NoSQL Databases:** Offer flexible schema and high scalability for various types of data, often chosen for ease of scaling.
 
 **In essence, Stateless architecture moves session data out of the web servers into shared storage, making the system highly scalable, robust, 
 and simpler to manage compared to a stateful approach.**
