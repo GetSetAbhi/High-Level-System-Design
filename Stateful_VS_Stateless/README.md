@@ -29,11 +29,8 @@ Load balancers can distribute traffic more efficiently.
     * **Simplicity:** Web servers are simpler, interchangeable, and easier to manage and deploy.
     * **Improved Load Balancing:** Eliminates the need for sticky sessions, allowing for more even distribution of load across servers.
 
-### 3. Key Components in Stateless Web Tier Design (as depicted in Figure 1-14)
+### 3. Key Components in Stateless Web Tier Design 
 
-* **User/Clients:** The end-users interacting with the system via web browsers or mobile applications.
-* **DNS (Domain Name System):** Resolves human-readable domain names (e.g., `www.mysite.com`) to IP addresses.
-* **CDN (Content Delivery Network):** Serves static content (like images, CSS, JavaScript files) to users from geographically closer servers, improving speed and reducing load on the main web servers.
 * **Load Balancer:** Distributes incoming HTTP requests from users across multiple web servers, ensuring no single server is overloaded and enabling high availability.
 * **Web Servers (Stateless Tier):** The application servers that process user requests. They are stateless, meaning they fetch necessary session or user data from a shared storage layer. They are designed for autoscaling.
 * **Shared Storage:** The centralized layer where all stateful data is stored, accessible by any web server.
@@ -41,4 +38,5 @@ Load balancers can distribute traffic more efficiently.
     * **Cache (e.g., Memcached/Redis):** Used to store frequently accessed data in memory for fast retrieval, reducing load on databases.
     * **NoSQL Databases:** Offer flexible schema and high scalability for various types of data, often chosen for ease of scaling.
 
-**In essence, Stateless architecture moves session data out of the web servers into shared storage, making the system highly scalable, robust, and simpler to manage compared to a stateful approach.**
+**In essence, Stateless architecture moves session data out of the web servers into shared storage, making the system highly scalable, robust, 
+and simpler to manage compared to a stateful approach.**
