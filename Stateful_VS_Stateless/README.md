@@ -40,9 +40,31 @@ They are designed for autoscaling.
 
 ### 4. Common Shared Storage Options:
 
-* **Databases (e.g., Master/Slave DBs):** For persistent storage of structured data, often with replication for redundancy and read scaling.
-* **Cache (e.g., Memcached/Redis):** Used to store frequently accessed data in memory for fast retrieval, reducing load on databases.
-* **NoSQL Databases:** Offer flexible schema and high scalability for various types of data, often chosen for ease of scaling.
+* **Relational Databases (e.g., Master/Slave DBs):** 
+For persistent storage of structured data, often with replication for redundancy and read scaling.
+For high-traffic systems, a relational database is avoided as a shared storage option because it can become a performance bottleneck 
+due to the overhead of complex queries, disk I/O, and the need for joins if session data is spread across multiple tables.
+
+* **Distributed Key-Value Stores (e.g., Memcached/Redis):** 
+Used to store frequently accessed data in memory for fast retrieval, reducing load on databases.
+These options typically store shared data in a key-value pair.
+Ideal for applications that need lightning-fast session access and updates, such as high-traffic websites 
+and applications with frequent user interactions (e.g., shopping carts in e-commerce).
+
+* **NoSQL Databases:** 
+Offer flexible schema and high scalability for various types of data, often chosen for ease of scaling.
+We can opt for NoSQL storate When a system is expected to have a very large number of concurrent users 
+and significant volumes of session data that might not fit entirely in memory.
+
+Complex Session Data: If your session data is more complex than simple key-value pairs and benefits from a document-like structure 
+(e.g., nested JSON objects for user preferences, activity logs, etc.).
+
+NoSQL Databases offer stronger durability guarantees than an in-memory store
+
+In a real world scenario NoSQL db and Key-Value stores are used together for enhancing the performance. NoSQL Database acts as a persistence storage
+and Key-Value store acts as a cache to enable fast access to session data.
 
 **In essence, Stateless architecture moves session data out of the web servers into shared storage, making the system highly scalable, robust, 
 and simpler to manage compared to a stateful approach.**
+
+### Real World Example
