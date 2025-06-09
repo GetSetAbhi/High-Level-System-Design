@@ -38,6 +38,11 @@ ID Block Allocation: Instead of getting one ID at a time, each distributed servi
 requests and holds a block of IDs (a contiguous range of numbers) from a central coordinator. 
 It then uses these IDs locally from its allocated block, only returning to the coordinator when its block is exhausted.
 
+**How it works**
+
+ * When an Application Server (Worker) starts up, or when it has used all the IDs from its currently allocated block, it needs a new block.
+ The application
+
 ### 2. Choice of database
 
 ### Notification Trigger Services
