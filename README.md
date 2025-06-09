@@ -10,6 +10,7 @@ I've used chat gpt extensively for making these notes.
 **System Design Notes**
 
 1. [Stateful vs Stateless](Stateful_VS_Stateless/)
+2. [Design TinyURL](short_url/)
 2. [Design Distributed Rate Limiter](Rate_Limiter/).
 3. [Design Notification Service](Notification_Service/).
 
