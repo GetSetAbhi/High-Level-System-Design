@@ -40,9 +40,20 @@ It then uses these IDs locally from its allocated block, only returning to the c
 
 **How it works**
 
- * When an Application Server (Worker) starts up, or when it has used all the IDs from its currently allocated block, it needs a new block.
- The application
-
+ * When a URL Service starts up, or when it has used all the IDs from its currently allocated block, it sends a request
+ to zookeeper for assigning an ID Block.
+ 
+ * Once a worker has its allocated block ID Block, it stores this range in its local memory.
+ 
+ * For every subsequent request sent to the URL Service to generate a short URL, the URL Service 
+ increments its local counter (the value of the counter lies between the ID range assigned by zookeeper)
+ and converts that counter value to a base 62 code which is the short url code.
+ 
+ * If a URL Service instance crashed, then the ID Range assigned to it is lost and cannot be recovered.
+ This is a known trade-off in this case. Given the vast number of IDs available (e.g., trillions for Base62), 
+ losing a small fraction of IDs (e.g., 1 million per crash) is usually acceptable.
+ 
+ 
 ### 2. Choice of database
 
 ### Notification Trigger Services
