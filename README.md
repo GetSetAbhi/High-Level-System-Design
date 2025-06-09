@@ -9,6 +9,7 @@ I've used chat gpt extensively for making these notes.
 
 **System Design Notes**
 
-1. [Design Distributed Rate Limiter](Rate_Limiter/).
-2. [Design Notification Service](Notification_Service/).
+1. [Stateful VS Stateless](Stateful_VS_Stateless/)
+2. [Design Distributed Rate Limiter](Rate_Limiter/).
+3. [Design Notification Service](Notification_Service/).
 
