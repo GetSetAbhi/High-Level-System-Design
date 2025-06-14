@@ -60,10 +60,26 @@ Some Prioritization Strategies which can be implemented in the Prioritizer are
 	over www.techsite.com/images/logo.png or www.techsite.com/forum/threadid=12345.
 
 
-**Problem with Random IDs** 
+**Queue Mapper** 
 
-If each instance generates random IDs, you risk collisions, 
-and ensuring uniqueness becomes complex (e.g., constantly checking a database for existence).
+The Queue mapper takes a URL, figures out the queue for the URL using the Queue Mapper DB, and then pushes the url into its designated queue.
+The Queue mapper db is a key value store which maintains a mapping of Host to Queue.
+
+Every host has a queue assigned to it and every queue has a worker assigned to it.
+Every worker polls a url from its designated queue and downloads the HTML.
+
+**Choice of Database for Queue Mapper DB**
+
+We can either choose Redis or Cassandra Db as the DB to store mapping of host to Queue.
+
+Redis is a good choice for our case as we need lower latency on reads.
+While Cassandra is also a good choice, but its latency is higher that redis for read operation.
+Also Cassandra is more optimized for High Frequency Writes which is an overkill for our case.
+
+Why not a RDBMS ?
+
+While an RDBMS can work for smaller scales, scaling it horizontally for the potentially billions of hosts 
+your crawler might encounter becomes complex and expensive (sharding, replication)
 
 **Solution** 
 
