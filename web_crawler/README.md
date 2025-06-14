@@ -38,26 +38,26 @@ Back Queue solved Politeness.
 
 Some Prioritization Strategies which can be implemented in the Prioritizer are
 
-1. PageRank/Authority-based: Prioritize URLs deemed more "important" by link analysis (e.g., higher PageRank), leading to higher-quality content discovery.
+1. **PageRank/Authority-based**: Prioritize URLs deemed more "important" by link analysis (e.g., higher PageRank), leading to higher-quality content discovery.
 
-Example: When crawling, www.nytimes.com/world would be prioritized over myblog.com/personal-opinion because nytimes.com has 
-significantly more inbound links from other high value sources, indicating higher value.
+	Example: When crawling, www.nytimes.com/world would be prioritized over myblog.com/personal-opinion because nytimes.com has 
+	significantly more inbound links from other high value sources, indicating higher value.
 
-2. Freshness/Update Frequency-based: Prioritize URLs that change often, ensuring the index is up-to-date with dynamic content.
+2. **Freshness/Update Frequency-based**: Prioritize URLs that change often, ensuring the index is up-to-date with dynamic content.
 
-Example: A URL like www.reuters.com/news/article-today would be re-crawled every hour, 
-while www.olduniversity.edu/alumni-list-1980 might only be re-crawled once a month, as news sites update far more frequently.
+	Example: A URL like www.reuters.com/news/article-today would be re-crawled every hour, 
+	while www.olduniversity.edu/alumni-list-1980 might only be re-crawled once a month, as news sites update far more frequently.
 
-3. Breadth-First Search (BFS)/Depth-based: Prioritize URLs closer to initial starting points (lower link depth), quickly covering a broad range of sites.
+3. **Breadth-First Search (BFS)/Depth-based**: Prioritize URLs closer to initial starting points (lower link depth), quickly covering a broad range of sites.
 
-Example: If you start at www.example.com (depth 0), 
-then www.example.com/about (depth 1) and www.example.com/contact (depth 1) would be prioritized over www.example.com/archive/2005/jan/old-post-details (depth 3), 
-ensuring the top-level pages are discovered first.
+	Example: If you start at www.example.com (depth 0), 
+	then www.example.com/about (depth 1) and www.example.com/contact (depth 1) would be prioritized over www.example.com/archive/2005/jan/old-post-details (depth 3), 
+	ensuring the top-level pages are discovered first.
 
-4. URL Pattern/Type-based: Prioritize URLs based on their structure or expected content type (e.g., HTML articles over images), allowing for focused crawls.
+4. **URL Pattern/Type-based**: Prioritize URLs based on their structure or expected content type (e.g., HTML articles over images), allowing for focused crawls.
 
-Example: A crawler primarily interested in articles would prioritize www.techsite.com/articles/latest-gadget-review.html 
-over www.techsite.com/images/logo.png or www.techsite.com/forum/threadid=12345.
+	Example: A crawler primarily interested in articles would prioritize www.techsite.com/articles/latest-gadget-review.html 
+	over www.techsite.com/images/logo.png or www.techsite.com/forum/threadid=12345.
 
 
 **Problem with Random IDs** 
