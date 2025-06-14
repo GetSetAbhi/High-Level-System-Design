@@ -18,13 +18,21 @@ There are some main components that i'll elaborate upon, rest of the things can 
 
 ![URL Frontier](url_frontier.svg)
 
-In this design we generate **ID Block with Zookeeper**
+For URL Frontier, a two tiered Queuing System is created.
 
-The ID Block Allocation pattern with Zookeeper is a common and efficient strategy for generating globally unique, monotonically increasing IDs in a distributed system. It's designed to overcome the performance bottlenecks of a single centralized counter while still guaranteeing uniqueness and order.
+**Why Two Tiered Queuing?**
 
-**What is ID Block Allocation?**
+The URL Frontier Component on a high level is a FIFO queue that holds the URL and we perform a BFS using this queue to parse URLs.
+Now it could be the case that some URLs hold more priority and thus should be parsed before other URLs.
+And if all high priority URLs belong to the same host, then our web crawler can end up launching a DDoS attach on the host servers.
 
-Imagine you need to generate millions or billions of unique IDs (e.g., for user IDs, order IDs, or, in your case, the numerical backing for short URLs).
+Two tiered Queuing system solves 2 Problems:
+
+1) Prioritization: High-priority URLs can be identified and made available for fetching sooner.
+2) Politeness / Host-based Rate Limiting: URLs belonging to the same host can be processed with a controlled delay to avoid overwhelming the server.
+
+Front Queue solved prioritization.
+Back Queue solved Politeness.
 
 **Problem with Single Counter** 
 
