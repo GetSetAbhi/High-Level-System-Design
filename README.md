@@ -11,6 +11,6 @@ I've used chat gpt extensively for making these notes.
 
 1. [Stateful vs Stateless](Stateful_VS_Stateless/)
 2. [Design a URL Shortener](short_url/)
-2. [Design Distributed Rate Limiter](Rate_Limiter/).
-3. [Design Notification Service](Notification_Service/).
-
+3. [Design Distributed Rate Limiter](Rate_Limiter/).
+4. [Design Notification Service](Notification_Service/).
+5. [Design a web crawler](web_crawler/).
