@@ -76,7 +76,7 @@ Redis is a good choice for our case as we need lower latency on reads.
 While Cassandra is also a good choice, but its latency is higher that redis for read operation.
 Also Cassandra is more optimized for High Frequency Writes which is an overkill for our case.
 
-Why not a RDBMS ?
+**Why not a RDBMS ?**
 
 While an RDBMS can work for smaller scales, scaling it horizontally for the potentially billions of hosts 
 your crawler might encounter becomes complex and expensive (sharding, replication)
