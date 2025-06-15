@@ -98,17 +98,21 @@ for long-term durability and full system recovery.
 * It acts as the backing store for the global "URL Seen?" component to ensure complete deduplication.
 
  
- 
-### 2. Choice of database
+## 2. HTML Downloader
 
-We chose a relational database for storing short code and long url combination.
+These are distributed worker servers which store a subset of url. Each Server runs multiple threads for crawling websites.
 
-* By choosing a relational database, we can enforce a Unique constraint on the short_code column 
-making sure that a short_code generated is never used again for any other url.
+To increase their performance, these worker servers are stored closer to host servers.
+Also a cache is used by these worker servers to avoid frequent contact to DNS Servers for obtaining IP Addresses. 
 
-* Databases typically create an index automatically when you add a UNIQUE constraint. 
-This index makes lookups by short_code (which is the most frequent operation during redirection) extremely fast, which is critical for performance.
+## 3. Content Storage
 
-* It also simplifies our logic at the URL Service layer. While inserting a record,
-The URL Service doesn't have to check if short_Code key exists or not, it can rely on the database to prevent duplicates.
-The URL Service can just attempt an insert, and if it fails due to a unique constraint violation, it knows to generate another short_code.
+For Content Storage, we would adopt a hybrid approach leveraging a Distributed File System (DFS) or Object Storage for the bulk of the raw HTML content, 
+complemented by a NoSQL Database for metadata and indexing purposes.
+
+The DFS/Object Storage (e.g., HDFS, S3) is chosen because the total data set is too big to fit in memory. 
+It provides massive, cost-effective, and durable storage for petabytes of raw HTML.
+
+A NoSQL Database like Cassandra would handle the metadata of the processed Content. 
+
+This combination allows for efficient indexing, querying, and storage of specific web pages, which the DFS alone cannot provide.
