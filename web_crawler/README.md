@@ -88,13 +88,13 @@ While an RDBMS can work for smaller scales, scaling it horizontally for the pote
 your crawler might encounter becomes complex and expensive (sharding, replication)
 
 **Underlying Persistent Storage**
+
 While the Front and Back Queues handle active scheduling, the URL Frontier also relies on a separate, 
 dedicated disk storage (e.g., a Cassandra cluster). 
 
 This storage holds:
 * The entire, comprehensive list of all URLs ever encountered, along with their detailed metadata and crawl status, 
 for long-term durability and full system recovery.
-
 * It acts as the backing store for the global "URL Seen?" component to ensure complete deduplication.
 
  
