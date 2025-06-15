@@ -116,3 +116,39 @@ It provides massive, cost-effective, and durable storage for petabytes of raw HT
 A NoSQL Database like Cassandra would handle the metadata of the processed Content. 
 
 This combination allows for efficient indexing, querying, and storage of specific web pages, which the DFS alone cannot provide.
+
+--- 
+
+# News Aggregator
+
+We can use the same design for creating a News Aggregator.
+But in this case there will be some minor changes.
+
+1. The seed URLs will be URLs of global news sources (e.g., major news websites, RSS/Atom feeds)
+
+2. The Prioritizer component within the URL Frontier assigns high priority to new article URLs 
+and frequently updated sources (e.g., news feeds or homepages of news sites are prioritized for freshness).
+
+3. HTML Downloader (Worker Threads) Fetches the content of the URLs received from the URL Frontier. 
+This involves making HTTP requests. For news, it might first try to fetch RSS/Atom feeds.
+
+4. The content parser, in this case extracts the content and creates a deduplication hash for unique content which is then stored in the content storage.
+
+4. For content storage, we can use a combination of cassandra and elastic search. 
+Elastic Search to enable fast searching of content, and cassandra to store metadata.
+
+## How cassandra and elastic search are utilised:
+
+1. When a unique news article is parsed, its core metadata are written to Cassandra.
+
+2. Simultaneously (or shortly after), the searchable parts (title, snippet, extracted text, key metadata) are indexed into Elasticsearch.
+
+3. When a user requests their news feed:
+
+	* The front-end queries Elasticsearch for articles based on recency, categories, keywords, or personalization rules.
+	* Elasticsearch returns a list of article IDs and snippets.
+	* If any additional details or the original URL are needed beyond what's in Elasticsearch, a quick lookup in Cassandra (using the article ID) can retrieve them.
+	* The user is then redirected to the original publisher's site using the URL stored in Cassandra/Elasticsearch.
+
+This combination allows you to combine Cassandra's strengths in high-volume, highly available, and massive-scale data persistence 
+with Elasticsearch's unparalleled capabilities for full-text search and real-time analytics, perfectly fitting your news aggregator's requirements.
