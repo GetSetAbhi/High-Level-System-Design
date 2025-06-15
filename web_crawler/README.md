@@ -34,6 +34,12 @@ Two tiered Queuing system solves 2 Problems:
 Front Queue solved prioritization.
 Back Queue solved Politeness.
 
+These are high-performance, message queues (e.g., Kafka topics) and act as "buffers in memory" 
+for fast enqueue/dequeue operations, minimizing direct disk reads/writes.
+
+The back queue is also high-performance message queues (e.g., Kafka topics/partitions) 
+where each queue is typically dedicated to URLs from a single host or domain.
+
 **Prioritization Strategies** 
 
 Some Prioritization Strategies which can be implemented in the Prioritizer are
@@ -73,7 +79,7 @@ Every worker polls a url from its designated queue and downloads the HTML.
 We can either choose Redis or Cassandra Db as the DB to store mapping of host to Queue.
 
 Redis is a good choice for our case as we need lower latency on reads.
-While Cassandra is also a good choice, but its latency is higher that redis for read operation.
+While Cassandra is also a good choice, but its latency is higher than redis for read operation.
 Also Cassandra is more optimized for High Frequency Writes which is an overkill for our case.
 
 **Why not a RDBMS ?**
@@ -81,26 +87,16 @@ Also Cassandra is more optimized for High Frequency Writes which is an overkill 
 While an RDBMS can work for smaller scales, scaling it horizontally for the potentially billions of hosts 
 your crawler might encounter becomes complex and expensive (sharding, replication)
 
-**Solution** 
+**Underlying Persistent Storage**
+While the Front and Back Queues handle active scheduling, the URL Frontier also relies on a separate, 
+dedicated disk storage (e.g., a Cassandra cluster). 
 
-ID Block Allocation: Instead of getting one ID at a time, each distributed service instance (e.g., a "worker" or "application server") 
-requests and holds a block of IDs (a contiguous range of numbers) from a central coordinator. 
-It then uses these IDs locally from its allocated block, only returning to the coordinator when its block is exhausted.
+This storage holds:
+* The entire, comprehensive list of all URLs ever encountered, along with their detailed metadata and crawl status, 
+for long-term durability and full system recovery.
 
-**How it works**
+* It acts as the backing store for the global "URL Seen?" component to ensure complete deduplication.
 
- * When a URL Service starts up, or when it has used all the IDs from its currently allocated block, it sends a request
- to zookeeper for assigning an ID Block.
- 
- * Once a worker has its allocated block ID Block, it stores this range in its local memory.
- 
- * For every subsequent request sent to the URL Service to generate a short URL, the URL Service 
- increments its local counter (the value of the counter lies between the ID range assigned by zookeeper)
- and converts that counter value to a base 62 code which is the short url code.
- 
- * If a URL Service instance crashed, then the ID Range assigned to it is lost and cannot be recovered.
- This is a known trade-off in this case. Given the vast number of IDs available (e.g., trillions for Base62), 
- losing a small fraction of IDs (e.g., 1 million per crash) is usually acceptable.
  
  
 ### 2. Choice of database
