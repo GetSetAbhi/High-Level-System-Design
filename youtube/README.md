@@ -1,5 +1,4 @@
 # Video Streaming Service
-
 ---
 
 Only Video Post-Processing / Video Transcoding Service is discussed because that is the most important aspect of a Video
@@ -52,3 +51,8 @@ Lambda functions and MediaConvert jobs into a cohesive workflow.
 	manifest file is then stored in the S3.
 
 	* The last step of this process would be to update the metadata db containing the meta data details if the video.
+	
+---
+
+# Audio Streaming Service
+---
