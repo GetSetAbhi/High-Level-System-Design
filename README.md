@@ -14,3 +14,4 @@ I've used chat gpt extensively for making these notes.
 3. [Design Distributed Rate Limiter](Rate_Limiter/).
 4. [Design Notification Service](Notification_Service/).
 5. [Design a web crawler / News Aggregator](web_crawler/).
+6. [Design youtube / Netflix / Any Video Streaming Service](youtube/).
