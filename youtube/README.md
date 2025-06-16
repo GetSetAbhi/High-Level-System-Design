@@ -53,3 +53,8 @@ Lambda functions and MediaConvert jobs into a cohesive workflow.
 	
 ---
 # Audio Streaming Service
+
+![Audio Post-Processing Service](audio_transcoding.svg)
+
+The high level design for an Audio Post-Processing and Transcoding service remains same.
+We just remove video specific parts but rest of the things remain the same.
