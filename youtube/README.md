@@ -50,6 +50,15 @@ Lambda functions and MediaConvert jobs into a cohesive workflow.
 	manifest file is then stored in the S3.
 
 	* The last step of this process would be to update the metadata db containing the meta data details if the video.
+
+**Choice of Database for storing Metadata**
+
+For a system like YouTube or Spotify, you would almost certainly use a combination of these databases (a polyglot persistence approach):
+
+* Relational Database (e.g., PostgreSQL/MySQL): For core, highly structured metadata like video/audio IDs, titles, upload dates, user account information, 
+and critical relationships that require strong consistency (e.g., which user owns which video).
+
+* Document Database (e.g., MongoDB): For more flexible, evolving metadata like tags, specific video properties, or user-generated content details that don't fit neatly into a rigid schema.
 	
 ---
 # Audio Streaming Service
