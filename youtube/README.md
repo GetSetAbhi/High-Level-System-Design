@@ -32,7 +32,8 @@ This ensures the pipeline always progresses towards completion and avoids infini
 **Internal Working of Video Post-Processing Service**
 
 1. Whenever a video is uploaded completely into S3, S3 Event Notification triggers an AWS Lambda function 
-which starts an AWS Step Function Workflow
+which starts an AWS Step Function Workflow. AWS Step Functions is designed precisely to orchestrate and encompass 
+Lambda functions and MediaConvert jobs into a cohesive workflow.
 
 2. The Step Functions workflow performs these steps:
 
