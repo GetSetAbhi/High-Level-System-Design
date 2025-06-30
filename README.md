@@ -15,3 +15,4 @@ I've used chat gpt extensively for making these notes.
 4. [Design Notification Service](Notification_Service/).
 5. [Design a web crawler / News Aggregator](web_crawler/).
 6. [Video or Audio Streaming Service (Youtube, Netflix, Spotify)](youtube/).
+7. [Logging and Monitoring System](logging_and_monitoring/).
