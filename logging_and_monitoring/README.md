@@ -23,3 +23,15 @@ Since servers, are added/removed frequently, we need to make sure that our metri
 and does not miss out on any information. To do that we use zookeeper service discovery.
 Every cluster from which we seek information, registers itself with zookeeper. The metrics collector service queries zookeeper
 to fetch all available services and using */metrics* https endpoint, it fetches metric information from them.  
+
+## Alerting system
+
+![Push Model](alert_system.svg)
+
+**Justification for using MongoDB**
+
+* Flexible Schema: Easily adapts to evolving and varied rule structures.
+
+* Nested Data: Naturally stores complex, hierarchical rule definitions.
+
+* Fast Retrieval: Optimized for fetching entire rule documents quickly.
