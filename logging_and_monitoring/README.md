@@ -10,6 +10,14 @@ We have a cluster of services, which have a metrics collection agent software in
 Which periodically aggregate metrics on their respective clusters and forward that information to metrics collection
 service. The metrics collections service, aggregates this information and stores it into timeseries DB like influx
 
+![Pull Model](pull_model.svg)
+
+In pull model, the metrics collector pulls metric data via pre defined HTTP endpoint */metrics*
+Since servers, are added/removed frequently, we need to make sure that our metrics collector is aware of these developments,
+and does not miss out on any information. To do that we use zookeeper service discovery.
+Every cluster from which we seek information, registers itself with zookeeper. The metrics collector service queries zookeeper
+to fetch all available services and using */metrics* https endpoint, it fetches metric information from them.  
+
 The post-processing/Video Transcoding Service is a "pipeline" which produces the following outputs:
 
 1. Video segment files in different formats (codec and container combinations) stored in S3.
