@@ -31,7 +31,5 @@ to fetch all available services and using */metrics* https endpoint, it fetches 
 **Justification for using MongoDB**
 
 * Flexible Schema: Easily adapts to evolving and varied rule structures.
-
 * Nested Data: Naturally stores complex, hierarchical rule definitions.
-
 * Fast Retrieval: Optimized for fetching entire rule documents quickly.
