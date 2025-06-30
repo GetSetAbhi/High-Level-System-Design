@@ -2,13 +2,19 @@
 
 Only a couple of things will be discussed.
 
-## Video Post-Processing/ Video Transcoding Service
+## Metrics Collections
+
+There are two approaches to metrics collection, push and pull.
+
+### Push Model
 
 ![Push Model](push_model.svg)
 
 We have a cluster of services, which have a metrics collection agent software installed on every cluster.
 Which periodically aggregate metrics on their respective clusters and forward that information to metrics collection
 service. The metrics collections service, aggregates this information and stores it into timeseries DB like influx
+
+### Pull Model
 
 ![Pull Model](pull_model.svg)
 
