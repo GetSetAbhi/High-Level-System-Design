@@ -13,6 +13,6 @@ I've used chat gpt extensively for making these notes.
 2. [Design a URL Shortener](short_url/)
 3. [Design Distributed Rate Limiter](Rate_Limiter/).
 4. [Design Notification Service](Notification_Service/).
-5. [Design a web crawler / News Aggregator](web_crawler/).
-6. [Video or Audio Streaming Service (Youtube, Netflix, Spotify)](youtube/).
-7. [Logging and Monitoring System](logging_and_monitoring/).
+5. [Logging and Monitoring System](logging_and_monitoring/).
+6. [Design a web crawler / News Aggregator](web_crawler/).
+7. [Video or Audio Streaming Service (Youtube, Netflix, Spotify)](youtube/).
