@@ -5,13 +5,18 @@ Took references from **System Design Interview by Alex Xu Volume I**, A talk by 
 ## File Upload Workflow
 
 1. Client-Side File Preparation (User Device):
+
 	* The User selects a file for upload.
 	* The User Device application chunks the file into smaller, fixed-size blocks (e.g., 4MB).
 	* For each block, the User Device computes a cryptographic hash (e.g., SHA-256) of its content.
+	
 2. Initiate Upload Session & Request Block Status (User Device to File Service via REST, then File Service to Block Service via RPC):
+
 	* The User Device sends an initial POST `/files/upload/init` REST request to the File Service, including the file's logical metadata (filename, total size, parent folder ID) and a list of all block hashes and their sizes.
 	* The File Service receives this, then makes an RPC call (e.g., BlockService.GetOrCreateBlockLocations) to the Block Service, passing the list of block hashes and sizes.
+	
 3. Block De-duplication & Presigned URL Generation (Block Service):
+
 	* For each hash in the received list, the Block Service queries its Block MetaData DB (e.g., DynamoDB/Cassandra using the hash as a key).
 	* If the hash exists: The Block Service notes that this block is already stored and retrieves its existing physical_block_id and S3_location.
 	* If the hash does not exist: This is a new, unique block. The Block Service:
