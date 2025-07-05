@@ -113,11 +113,11 @@ compared to text-based formats like JSON or XML used in REST. This results in sm
 
 FileVersions is a join table. The FileVersions table will have multiple rows for a single file_version_id:
 
-	* Each row in the FileVersions table represents one specific block that belongs to a particular file_version_id.
+* Each row in the FileVersions table represents one specific block that belongs to a particular file_version_id.
 
-	* The block_hash in each of these rows is indeed a foreign key referencing the Blocks table, which holds the actual information about that individual block.
+* The block_hash in each of these rows is indeed a foreign key referencing the Blocks table, which holds the actual information about that individual block.
 
-	* The block_sequence_index in FileVersions is crucial, as it defines the order of these blocks for that specific file version.
+* The block_sequence_index in FileVersions is crucial, as it defines the order of these blocks for that specific file version.
 
 +---------------------------------+        +-----------------------------+
 |        File MetaData DB         |        |      Block MetaData DB      |
