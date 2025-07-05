@@ -84,15 +84,15 @@ Took references from **System Design Interview by Alex Xu Volume I** and A talk 
 
 When a device comes online after being offline for a significant period, it needs a way to catch up on all changes that happened while it was disconnected.
 
-*	It immediately establishes a long polling connection with the Notification Service, providing its `lastSyncTime`. This connection is designed to quickly trigger a Cloud-to-Local Sync if any changes have occurred since that `lastSyncTime`. The Notification Service acts as a consumer of event coming from the Message Queue for which FileService is a producer.
+* It immediately establishes a long polling connection with the Notification Service, providing its `lastSyncTime`. This connection is designed to quickly trigger a Cloud-to-Local Sync if any changes have occurred since that `lastSyncTime`. The Notification Service acts as a consumer of event coming from the Message Queue for which FileService is a producer.
 While the long polling connection is active and if the notification service comes across a recent event related to the user id associated with the device, then it will send a signal to the user device to trigger a sync. if a long polling connection times out, the Notification Service will implicitly signal the User Device to proceed with a full sync.
 
-*	The device is now online and has potentially caught up (or is in the process of catching up), 
+* The device is now online and has potentially caught up (or is in the process of catching up), 
 It then establishes a persistent WebSocket connection with the Notification Service.
 
 When a User Device establishes a connection (either a Long Polling request or a WebSocket):
 
-*	The Notification Service associates the incoming connection's socket/connection ID with the User ID (and potentially a Device ID) that authenticated the connection.
+* The Notification Service associates the incoming connection's socket/connection ID with the User ID (and potentially a Device ID) that authenticated the connection.
 It stores this mapping in an efficient, concurrent data structure (e.g., a hash map or dictionary).
 
 `Map<UserId, Map<DeviceId, ConnectionId>>`
