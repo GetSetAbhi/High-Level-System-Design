@@ -59,7 +59,24 @@ Took references from **System Design Interview by Alex Xu Volume I** and A talk 
 
 	* The User Device reassembles the downloaded blocks in the correct order to reconstruct the complete file.
 
+## File Sync Workflow
 
+1. Change Detection: Both the User Device and the cloud system constantly monitor for changes (new, modified, deleted, renamed files).
+
+2. Client-Side Sync: When a user makes a local change:
+
+	* The User Device chunks and hashes the file.
+	* It asks the File Service to initiate an upload with these hashes.
+	* The File Service (using the Block Service) de-duplicates blocks, getting presignedUploadUrls only for new blocks.
+	* The User Device uploads only these new blocks directly to S3.
+	* The File Service updates its metadata, potentially detecting and resolving conflicts (e.g., creating a conflict copy if the cloud version is newer).
+
+3. Cloud-to-Client Sync: When a change occurs in the cloud (e.g., from another device):
+
+	* A Notification Service alerts other User Devices about the change.
+	* The User Device requests the changes from the File Service.
+	* The File Service provides presignedDownloadUrls for any new/modified blocks.
+	* The User Device downloads these blocks directly from S3 and applies the changes to its local file system (e.g., overwriting, deleting, recreating files).
 
 ![Video Post-Processing Service](video-transcoding.svg)
 
