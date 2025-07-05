@@ -11,7 +11,7 @@ Took references from **System Design Interview by Alex Xu Volume I**, A talk by 
 	* For each block, the User Device computes a cryptographic hash (e.g., SHA-256) of its content.
 2. Initiate Upload Session & Request Block Status (User Device to File Service via REST, then File Service to Block Service via RPC):
 
-	* The User Device sends an initial POST */files/upload/init* REST request to the File Service, including the file's logical metadata (filename, total size, parent folder ID) and a list of all block hashes and their sizes.
+	* The User Device sends an initial POST `/files/upload/init` REST request to the File Service, including the file's logical metadata (filename, total size, parent folder ID) and a list of all block hashes and their sizes.
 	* The File Service receives this, then makes an RPC call (e.g., BlockService.GetOrCreateBlockLocations) to the Block Service, passing the list of block hashes and sizes.
 
 ![Video Post-Processing Service](video-transcoding.svg)
