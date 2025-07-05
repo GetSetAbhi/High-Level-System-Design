@@ -88,7 +88,7 @@ When a device comes online after being offline for a significant period, it need
 
 * While the long polling connection is active and if the notification service comes across a recent event related to the user id associated with the device, then it will send a signal to the user device to trigger a sync. if a long polling connection times out, the Notification Service will implicitly signal the User Device to proceed with a full sync.
 
-The device is now online and has potentially caught up (or is in the process of catching up), It then establishes a persistent WebSocket connection with the Notification Service.
+* The device is now online and has potentially caught up (or is in the process of catching up), It then establishes a persistent WebSocket connection with the Notification Service.
 
 When a User Device establishes a connection (either a Long Polling request or a WebSocket):
 
