@@ -2,6 +2,8 @@
 
 Took references from **System Design Interview by Alex Xu Volume I** and A talk by a [dropbox engineer](https://www.youtube.com/watch?v=PE4gwstWhmc)
 
+![Dropbox](dropbox.svg)
+
 ## File Upload Workflow
 
 1. Client-Side File Preparation (User Device):
@@ -82,70 +84,71 @@ Took references from **System Design Interview by Alex Xu Volume I** and A talk 
 
 When a device comes online after being offline for a significant period, it needs a way to catch up on all changes that happened while it was disconnected.
 
-* It immediately establishes a long polling connection with the Notification Service, providing its `lastSyncTime`.  This connection is designed to quickly trigger a Cloud-to-Local Sync if any changes have occurred since that `lastSyncTime`.
+* It immediately establishes a long polling connection with the Notification Service, providing its `lastSyncTime`. This connection is designed to quickly trigger a Cloud-to-Local Sync if any changes have occurred since that `lastSyncTime`. The Notification Service acts as a consumer of event coming from the Message Queue for which FileService is a producer.
+While the long polling connection is active and if the notification service comes across a recent event related to the user id associated with the device, then it will send a signal to the user device to trigger a sync. if a long polling connection times out, the Notification Service will implicitly signal the User Device to proceed with a full sync.
 
 * The device is now online and has potentially caught up (or is in the process of catching up), 
 It then establishes a persistent WebSocket connection with the Notification Service.
 
-![Video Post-Processing Service](video-transcoding.svg)
+When a User Device establishes a connection (either a Long Polling request or a WebSocket):
 
-Whenever we upload a video, it is stored into an Object Storage like S3.
-Once a file is stored in S3, S3 triggers an event and sends video to Video Transcoding Service.
+*	The Notification Service associates the incoming connection's socket/connection ID with the User ID (and potentially a Device ID) that authenticated the connection.
+It stores this mapping in an efficient, concurrent data structure (e.g., a hash map or dictionary).
 
-The post-processing/Video Transcoding Service is a "pipeline" which produces the following outputs:
+`Map<UserId, Map<DeviceId, ConnectionId>>`
 
-1. Video segment files in different formats (codec and container combinations) stored in S3.
-	
-2. Manifest files (a primary manifest file and several media manifest files) stored in S3. 
-The media manifest files will reference segment files in S3.
+`Map<ConnectionId, UserSessionDetails> (which includes UserId, DeviceId, lastSyncTime, and the actual socket object/handle)`.
 
 
-The Video Post Processing Pipeline can be thought of as a DAG, which embodies the properties of a DAG:
+## Why RPC connection between block service and File Service ?
 
-* Directed: Each step in the pipeline has a clear, one-way flow. For example, you must split a video into 
-segments before you can transcode those segments. Data moves forward from one task to the next; it never flows backward.
+The File Service and Block Service are considered internal, core components of the distributed system. 
+They are not exposed directly to external clients (like User Devices). 
+In such tightly integrated microservices, RPC simplifies communication
 
-* Acyclic: There are no "loops" or "cycles" in the workflow. A task will never depend on itself, 
-nor will a series of tasks eventually lead back to a task that has already been completed. 
-This ensures the pipeline always progresses towards completion and avoids infinite processing loops.
+RPC frameworks often use more efficient binary serialization formats (like Protocol Buffers, Apache Thrift, gRPC) 
+compared to text-based formats like JSON or XML used in REST. This results in smaller message sizes and faster parsing.
 
-**Internal Working of Video Post-Processing Service**
+# Databases
 
-1. Whenever a video is uploaded completely into S3, S3 Event Notification triggers an AWS Lambda function 
-which starts an AWS Step Function Workflow. AWS Step Functions is designed precisely to orchestrate and encompass 
-Lambda functions and MediaConvert jobs into a cohesive workflow.
+FileVersions is a join table. The FileVersions table will have multiple rows for a single file_version_id:
 
-2. The Step Functions workflow performs these steps:
+	* Each row in the FileVersions table represents one specific block that belongs to a particular file_version_id.
 
-	* (Segmentation): Invokes another Lambda function (or a Fargate task via AWS Batch) 
-	to video into different audio and video segments etc., storing them in s3.
+	* The block_hash in each of these rows is indeed a foreign key referencing the Blocks table, which holds the actual information about that individual block.
 
-	* Video and Audio Encoding: These are lambdas, that are orchestrated by the AWS Step Function workflow 
-	and these parallely encode audio and video segments into various resolutions and bitrates 
-	to support adaptive bitrate streaming. The results of these processes are stored in S3, so that they can be assembled later.
+	* The block_sequence_index in FileVersions is crucial, as it defines the order of these blocks for that specific file version.
 
-	* Thumbnail Generation: This is another lambda function that generates a thumbnail for the video.
-
-	* Assembly and Manifest Generation: Once Audio Encoding and Video Encoding for various segments are done, 
-	the AWS Step Function workflow then triggers another lambda that assembles the various audio and video encodings 
-	that were generated in previous steps and generates a manifest file which acts as an index of these encodings. 
-	manifest file is then stored in the S3.
-
-	* The last step of this process would be to update the metadata db containing the meta data details if the video.
-
-**Choice of Database for storing Metadata**
-
-For a system like YouTube or Spotify, you would almost certainly use a combination of these databases (a polyglot persistence approach):
-
-* Relational Database (e.g., PostgreSQL/MySQL): For core, highly structured metadata like video/audio IDs, titles, upload dates, user account information, 
-and critical relationships that require strong consistency (e.g., which user owns which video).
-
-* Document Database (e.g., MongoDB): For more flexible, evolving metadata like tags, specific video properties, or user-generated content details that don't fit neatly into a rigid schema.
-	
----
-# Audio Streaming Service
-
-![Audio Post-Processing Service](audio_transcoding.svg)
-
-The high level design for an Audio Post-Processing and Transcoding service remains same.
-We just remove video specific parts but rest of the things remain the same.
++---------------------------------+        +-----------------------------+
+|        File MetaData DB         |        |      Block MetaData DB      |
++---------------------------------+        +-----------------------------+
+|             Folders             |        |           Blocks            |
++---------------------------------+        +-----------------------------+
+| - folder_id (PK)                |<-------|- block_hash (PK)             |
+| - parent_folder_id (FK)         |        | - s3_location               |
+| - name                          |        | - reference_count (INT)     |
++---------------------------------+        | - size_bytes                |
+         |                             ^    +-----------------------------+
+         | contains                  | logical_blocks_mapped_to
+         V                             |
++---------------------------------+      +-----------------------------+
+|             Files               |<-----|         FileVersions      |
++---------------------------------+      | (or FileBlockMapping)       |
+| - file_id (PK)                  |      +-----------------------------+
+| - user_id (FK)                  |      | - file_version_id (PK)      |
+| - parent_folder_id (FK)         |      | - file_id (FK)              |
+| - name                          |      | - block_hash (FK)           |
+| - current_version_id (FK)       |      | - block_sequence_index (INT)|
+| - size_bytes                    |      | - version_timestamp         |
+| - status (e.g., 'uploaded', 'pending')|  +-----------------------------+
++---------------------------------+
+         |
+         | owns
+         V
++---------------------------------+
+|         UserDevices             |
++---------------------------------+
+| - device_id (PK)                |
+| - user_id (FK)                  |
+| - last_sync_time (TIMESTAMP)    |
++---------------------------------+
