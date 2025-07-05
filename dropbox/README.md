@@ -119,6 +119,7 @@ FileVersions is a join table. The FileVersions table will have multiple rows for
 
 * The block_sequence_index in FileVersions is crucial, as it defines the order of these blocks for that specific file version.
 
+```
 +---------------------------------+        +-----------------------------+
 |        File MetaData DB         |        |      Block MetaData DB      |
 +---------------------------------+        +-----------------------------+
@@ -152,3 +153,4 @@ FileVersions is a join table. The FileVersions table will have multiple rows for
 | - user_id (FK)                  |
 | - last_sync_time (TIMESTAMP)    |
 +---------------------------------+
+```
