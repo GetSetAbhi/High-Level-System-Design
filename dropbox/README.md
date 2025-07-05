@@ -67,7 +67,7 @@ Took references from **System Design Interview by Alex Xu Volume I** and A talk 
 
 	* The User Device chunks and hashes the file.
 	* It asks the File Service to initiate an upload with these hashes.
-	* The File Service (using the Block Service) de-duplicates blocks, getting presignedUploadUrls only for new blocks.
+	* The File Service (using the Block Service) de-duplicates blocks, getting `presignedUploadUrls` only for new blocks.
 	* The User Device uploads only these new blocks directly to S3.
 	* The File Service updates its metadata, potentially detecting and resolving conflicts (e.g., creating a conflict copy if the cloud version is newer).
 
@@ -77,6 +77,15 @@ Took references from **System Design Interview by Alex Xu Volume I** and A talk 
 	* The User Device requests the changes from the File Service.
 	* The File Service provides presignedDownloadUrls for any new/modified blocks.
 	* The User Device downloads these blocks directly from S3 and applies the changes to its local file system (e.g., overwriting, deleting, recreating files).
+
+## Notification Service
+
+When a device comes online after being offline for a significant period, it needs a way to catch up on all changes that happened while it was disconnected.
+
+* It immediately establishes a long polling connection with the Notification Service, providing its `lastSyncTime`.  This connection is designed to quickly trigger a Cloud-to-Local Sync if any changes have occurred since that `lastSyncTime`.
+
+* The device is now online and has potentially caught up (or is in the process of catching up), 
+It then establishes a persistent WebSocket connection with the Notification Service.
 
 ![Video Post-Processing Service](video-transcoding.svg)
 
