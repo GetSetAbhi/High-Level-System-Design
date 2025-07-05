@@ -20,10 +20,16 @@ Took references from **System Design Interview by Alex Xu Volume I**, A talk by 
 	* For each hash in the received list, the Block Service queries its Block MetaData DB (e.g., DynamoDB/Cassandra using the hash as a key).
 	* If the hash exists: The Block Service notes that this block is already stored and retrieves its existing `physical_block_id` and `S3_location`.
 	* If the hash does not exist: This is a new, unique block. The Block Service:
-		* Generates a `new physical_block_id` (often derived from the hash).
+		* Generates a new `physical_block_id` (often derived from the hash).
 		* Requests a `presignedUploadUrl` from S3 for this new block.
 		* Stores the new block's metadata (`hash, physical_block_id, S3 location`) in the Block MetaData DB.
 	* The Block Service compiles a response indicating which blocks already exist and which require upload (providing presignedUploadUrl for the new ones).
+	
+4. Once the file service receives a response from the block service, it then compiles all the information received from the Block Service and sends a response to the user device.
+
+5. Once the user device receives response from the file service, it starts to iterate through it's file chunks, identifies those chunks for which it has received a `preSignedUrl` and uploads those chunks directly to S3 storage.
+
+6. Once the chunks have successfully uploaded, the S3 can trigger an event notification which will update the file related information in the `metadata db`.
 
 ![Video Post-Processing Service](video-transcoding.svg)
 
