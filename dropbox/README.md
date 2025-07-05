@@ -18,11 +18,11 @@ Took references from **System Design Interview by Alex Xu Volume I**, A talk by 
 3. Block De-duplication & Presigned URL Generation (Block Service):
 
 	* For each hash in the received list, the Block Service queries its Block MetaData DB (e.g., DynamoDB/Cassandra using the hash as a key).
-	* If the hash exists: The Block Service notes that this block is already stored and retrieves its existing physical_block_id and S3_location.
+	* If the hash exists: The Block Service notes that this block is already stored and retrieves its existing ~physical_block_id` and `S3_location`.
 	* If the hash does not exist: This is a new, unique block. The Block Service:
-		* Generates a new physical_block_id (often derived from the hash).
-		* Requests a presignedUploadUrl from S3 for this new block.
-		* Stores the new block's metadata (hash, physical_block_id, S3 location, reference_count=1) in the Block MetaData DB.
+		* Generates a `new physical_block_id` (often derived from the hash).
+		* Requests a `presignedUploadUrl` from S3 for this new block.
+		* Stores the new block's metadata (`hash, physical_block_id, S3 location`) in the Block MetaData DB.
 	* The Block Service compiles a response indicating which blocks already exist and which require upload (providing presignedUploadUrl for the new ones).
 
 ![Video Post-Processing Service](video-transcoding.svg)
