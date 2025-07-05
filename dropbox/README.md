@@ -1,6 +1,6 @@
 # Dropbox / Google Drive
 
-Took references from **System Design Interview by Alex Xu Volume I**, A talk by a [dropbox engineer](https://www.youtube.com/watch?v=PE4gwstWhmc)
+Took references from **System Design Interview by Alex Xu Volume I** and A talk by a [dropbox engineer](https://www.youtube.com/watch?v=PE4gwstWhmc)
 
 ## File Upload Workflow
 
@@ -30,6 +30,36 @@ Took references from **System Design Interview by Alex Xu Volume I**, A talk by 
 5. Once the user device receives response from the file service, it starts to iterate through it's file chunks, identifies those chunks for which it has received a `preSignedUrl` and uploads those chunks directly to S3 storage.
 
 6. Once the chunks have successfully uploaded, the S3 can trigger an event notification which will update the file related information in the `metadata db`.
+
+## File Download Workflow
+
+1. Initiate Download Request (User Device to File Service via REST):
+	* The User Device sends a `GET /files/download/{fileId}` REST request to the File Service.
+
+2. Retrieve File and Block Metadata (File Service to MetaData DB/Redis, then File Service to Block Service via RPC):
+
+	* The File Service first attempts to retrieve the file's logical metadata (including its ordered list of `physical_block_ids`) from File MetaData DB.
+	* Then, for each `physical_block_id` in the file's list, the File Service makes an RPC call (e.g., BlockService.GetBlockDownloadUrls) to the Block Service.
+
+3. Generate Presigned Download URLs (Block Service):
+
+	* The Block Service queries its Block MetaData DB using the `physical_block_id` to get the block's S3_location.
+	* It then requests a `presignedDownloadUrl` from S3 for that specific block.
+
+4. Download Instructions to Client (Block Service to File Service via RPC, then File Service to User Device via REST):
+
+	* The Block Service returns the list of `presignedDownloadUrls` (via RPC) to the File Service.
+	* The File Service sends this list (via REST response) back to the User Device.
+
+5. Direct Block Download from S3 (User Device to S3):
+
+	* The User Device uses the received `presignedDownloadUrls` to directly download all the raw block data from S3.
+
+6. File Reconstruction (User Device):
+
+	* The User Device reassembles the downloaded blocks in the correct order to reconstruct the complete file.
+
+
 
 ![Video Post-Processing Service](video-transcoding.svg)
 
