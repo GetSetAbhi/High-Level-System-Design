@@ -6,11 +6,11 @@ Took references from **System Design Interview by Alex Xu Volume I**, A talk by 
 
 1. Client-Side File Preparation (User Device):
 
-* The User selects a file for upload.
+	* The User selects a file for upload.
 
-* The User Device application chunks the file into smaller, fixed-size blocks (e.g., 4MB).
+	* The User Device application chunks the file into smaller, fixed-size blocks (e.g., 4MB).
 
-* For each block, the User Device computes a cryptographic hash (e.g., SHA-256) of its content.
+	* For each block, the User Device computes a cryptographic hash (e.g., SHA-256) of its content.
 
 ![Video Post-Processing Service](video-transcoding.svg)
 
