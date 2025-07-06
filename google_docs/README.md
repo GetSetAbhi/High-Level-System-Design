@@ -73,11 +73,8 @@ let's walk through a real-time example of document editing with two users, focus
 2. Client 1 (User A): User A types "big " before "world!" in Paragraph_A.
 
 	* Local Application (Optimistic UI): Client 1 immediately updates its local display: "Hello, big world!"
-
 	* Diff/Operation Generation: Client 1's synchronization logic compares its new local state to its last acknowledged state. It detects a change within Text_Span_2 of Paragraph_A.
-
 	* It generates an Operation (Op): [Op_A_1] = { type: "insert", target_node_id: "Text_Span_2", position: 0, content: "big " }
-
 	* Sending Op: Client 1 sends Op_A_1 to the Collaboration Server.
 
 ## Notification Service
