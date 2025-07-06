@@ -1,7 +1,7 @@
 # Distributed Email Service
 
 <p align="center">
-  <img src="email_service.svg" width="600" alt="Collaborative Document Editing"/>
+  <img src="email_service.svg" width="800" alt="Distributed Email service"/>
 </p>
 
 ## Database Deepdive
