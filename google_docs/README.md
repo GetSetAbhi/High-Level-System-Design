@@ -1,7 +1,5 @@
 # Dropbox / Google Drive
 
-Took references from **System Design Interview by Alex Xu Volume I** and A talk by a [dropbox engineer](https://www.youtube.com/watch?v=PE4gwstWhmc)
-
 ![Dropbox](dropbox.svg)
 
 ## File Upload and download Workflow
@@ -9,24 +7,22 @@ Took references from **System Design Interview by Alex Xu Volume I** and A talk 
 Similar to how [Dropbox](../dropbox/) design was discussed
 
 
-## File Sync Workflow
+## How to Represent Document Content? ?
 
-1. Change Detection: Both the User Device and the cloud system constantly monitor for changes (new, modified, deleted, renamed files).
+**Why we can't use flat sequence of characters to represent document content ?**
 
-2. Client-Side Sync: When a user makes a local change:
+1. No Structure: Fails to represent rich document hierarchy (paragraphs, headings, lists).
+2. Fragile Formatting: Difficult to manage and apply rich text attributes (bold, color) as offsets change with edits.
+3. Inefficient Complex Operations: Operations like moving entire sections or tables are cumbersome, requiring extensive re-calculation of offsets.
+4. Challenging for Collaboration: Leads to complex conflict resolution and operation transformation issues due to constantly shifting character positions, making consistency difficult.
 
-	* The User Device chunks and hashes the file.
-	* It asks the File Service to initiate an upload with these hashes.
-	* The File Service (using the Block Service) de-duplicates blocks, getting `presignedUploadUrls` only for new blocks.
-	* The User Device uploads only these new blocks directly to S3.
-	* The File Service updates its metadata, potentially detecting and resolving conflicts (e.g., creating a conflict copy if the cloud version is newer).
+**Why a tree structure is used to represent document content ?**
 
-3. Cloud-to-Client Sync: When a change occurs in the cloud (e.g., from another device):
-
-	* A Notification Service alerts other User Devices about the change.
-	* The User Device requests the changes from the File Service.
-	* The File Service provides presignedDownloadUrls for any new/modified blocks.
-	* The User Device downloads these blocks directly from S3 and applies the changes to its local file system (e.g., overwriting, deleting, recreating files).
+1. Representing document content as a tree structure in collaborative editing systems like Google Docs is preferred because it:
+2. Models Hierarchy: Naturally reflects the nested structure of documents (paragraphs, headings, lists).
+3. Manages Rich Formatting: Allows attributes (like bold, color, alignment) to be easily attached to specific content nodes.
+4. Enables Efficient Complex Operations: Simplifies operations like moving or deleting entire sections, tables, or paragraphs by manipulating whole nodes.
+5. Enhances Collaboration Robustness: Provides stable reference points (nodes) for changes, which greatly aids conflict resolution in algorithms like Operational Transformation (OT) or CRDTs.
 
 ## Notification Service
 
