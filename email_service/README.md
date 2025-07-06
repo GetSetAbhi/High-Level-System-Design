@@ -20,14 +20,13 @@
 	
 **Why Denormalization is useful for our system ?**
 
-	* **NoSQL Limitations:** NoSQL databases, like those often used for email metadata due to their scalability, don't handle complex joins as efficiently as relational databases. Joins are necessary to combine data from multiple tables to satisfy a query.
+* **NoSQL Limitations:** NoSQL databases, like those often used for email metadata due to their scalability, don't handle complex joins as efficiently as relational databases. Joins are necessary to combine data from multiple tables to satisfy a query.
 
-	* **Performance Requirements:** Email systems require very fast response times, especially for common operations like viewing your inbox.
+* **Performance Requirements:** Email systems require very fast response times, especially for common operations like viewing your inbox.
 
-	* **Specific Query Example:** The query to "Fetch all read or unread emails" would be slow if the email metadata was fully normalized. It would require scanning the emails_by_folder table and then joining it with another table to filter by read status.
+* **Specific Query Example:** The query to "Fetch all read or unread emails" would be slow if the email metadata was fully normalized. It would require scanning the emails_by_folder table and then joining it with another table to filter by read status.
 
-	* **Denormalization Solution:** To avoid the slow join, separate tables (read_emails and unread_emails) are created. These tables duplicate the email metadata, but they are pre-filtered by read status. This means the query can directly access the relevant table and retrieve the results very quickly, without any joins.
-
+* **Denormalization Solution:** To avoid the slow join, separate tables (read_emails and unread_emails) are created. These tables duplicate the email metadata, but they are pre-filtered by read status. This means the query can directly access the relevant table and retrieve the results very quickly, without any joins.
 
 
 ```
