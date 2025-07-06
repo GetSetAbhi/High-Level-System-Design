@@ -6,7 +6,7 @@
 
 Similar to how [Dropbox](../dropbox/) design was discussed
 
-## How to Represent Document Content? ?
+## How to Represent Document Content?
 
 **Why we can't use flat sequence of characters to represent document content ?**
 
@@ -23,7 +23,7 @@ Similar to how [Dropbox](../dropbox/) design was discussed
 4. Enables Efficient Complex Operations: Simplifies operations like moving or deleting entire sections, tables, or paragraphs by manipulating whole nodes.
 5. Enhances Collaboration Robustness: Provides stable reference points (nodes) for changes, which greatly aids conflict resolution in algorithms like Operational Transformation (OT) or CRDTs.
 
-Following is an example of how a document tree is represented.
+Following is an example of how a document content tree is represented.
 
 ```
 [Document] (Root Node)
@@ -51,6 +51,34 @@ Following is an example of how a document tree is represented.
               +-- [Paragraph] (Content: "Second item, with a ")
               +-- [Paragraph] (Content: "new line inside.")
 ```
+
+## How does collaborative editing happen ?
+
+let's walk through a real-time example of document editing with two users, focusing on how differential synchronization works with a tree representation.
+
+1. Let's say our document initially looks like this (simplified tree):
+	```
+	[Document]
+	  |
+	  +-- [Paragraph_A] (id: pA)
+	  |     +-- [Text_Span_1] (content: "Hello, ")
+	  |     +-- [Text_Span_2] (content: "world!")
+	  |
+	  +-- [Paragraph_B] (id: pB)
+			+-- [Text_Span_3] (content: "This is a ")
+			+-- [Text_Span_4] (content: "sample.")
+	```
+	Both Client 1 (User A) and Client 2 (User B) start with this exact version of the document.
+
+2. Client 1 (User A): User A types "big " before "world!" in Paragraph_A.
+
+	* Local Application (Optimistic UI): Client 1 immediately updates its local display: "Hello, big world!"
+
+	* Diff/Operation Generation: Client 1's synchronization logic compares its new local state to its last acknowledged state. It detects a change within Text_Span_2 of Paragraph_A.
+
+	* It generates an Operation (Op): [Op_A_1] = { type: "insert", target_node_id: "Text_Span_2", position: 0, content: "big " }
+
+	* Sending Op: Client 1 sends Op_A_1 to the Collaboration Server.
 
 ## Notification Service
 
