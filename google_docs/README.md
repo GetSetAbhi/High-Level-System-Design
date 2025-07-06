@@ -1,6 +1,8 @@
 # Google Docs
 
-<img src="google_docs.svg" width="600" alt="Collaborative Document Editing"/>
+<p align="center">
+  <img src="google_docs.svg" width="600" alt="Collaborative Document Editing"/>
+</p>
 
 ## File Upload and download Workflow
 
