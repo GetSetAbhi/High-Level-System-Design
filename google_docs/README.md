@@ -131,6 +131,15 @@ However, upon receiving a message, a WS_Frontend will filter it at the applicati
 Only WS_Frontend_2 (in our example) will see a message destined for WS_Frontend_2_ID and then proceed to push it over its active WebSocket connections for Doc_X. 
 Other WS_Frontends will discard it.
 
+## Optimizing Communication between collaboration server and worker service.
+
+An RPC (Remote Procedure Call) connection between the WebSocket Front-End (Collaboration Server) and the Worker Servers is needed for:
+
+* Efficient Handoff: It allows the Front-End to quickly and directly pass individual client operations to a Worker for processing.
+* Performance: RPC frameworks are optimized for low-latency, high-throughput inter-service communication, ensuring rapid processing of user edits.
+* Structured Communication: It provides a clear, defined interface for communication, making the system more organized and easier to maintain.
+* Load Distribution: Enables the Front-End to distribute incoming client operations across multiple Worker Servers efficiently.
+
 ## Notification Service
 
 When a device comes online after being offline for a significant period, it needs a way to catch up on all changes that happened while it was disconnected.
