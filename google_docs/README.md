@@ -87,6 +87,22 @@ let's walk through a real-time example of document editing with two users, focus
 	```
 	* Sending Op: Client 2 sends Op_B_1 to the Collaboration Server.Simultaneously, User B decides to bold "sample" in Paragraph_B.
 
+4. The Collaboration Server Op_A_1 and other Broadcasts
+
+	* The server receives Op_A_1 from Client 1.
+
+	* It applies Op_A_1 to its authoritative document tree. Text_Span_2 in Paragraph_A is updated to "big world!".
+
+	* The server then broadcasts Op_A_1 to all other connected clients (in this case, Client 2).
+	
+5.  Client 2 Receives Op_A_1 (and Potentially Transforms its Own Pending Op)
+
+	* Client 2 receives Op_A_1 from the server.
+
+	* Crucial Step (Transformation for OT): Client 2 has a pending local change (Op_B_1) that it hasn't sent/received acknowledgement for yet. Since Op_A_1 affects Paragraph_A and Op_B_1 affects Paragraph_B, these operations are non-conflicting in terms of their target nodes. 
+	Therefore, no complex transformation of Op_B_1 is strictly needed against Op_A_1 in this specific case, as they operate on different branches of the tree.
+
+	* Application: Client 2 applies Op_A_1 to its local document tree. Its view updates to: "Hello, big world! This is a sample."
 
 ## Notification Service
 
