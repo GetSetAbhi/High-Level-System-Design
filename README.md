@@ -18,3 +18,4 @@ I've used chat gpt extensively for making these notes.
 7. [Video or Audio Streaming Service (Youtube, Netflix, Spotify)](youtube/).
 8. [Design Dropbox / Google Drive](dropbox/).
 9. [Design Google Docs](google_docs/).
+10. [Design Distributed Email Service](email_service/).
