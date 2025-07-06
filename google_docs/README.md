@@ -77,6 +77,17 @@ let's walk through a real-time example of document editing with two users, focus
 	* It generates an Operation (Op): [Op_A_1] = { type: "insert", target_node_id: "Text_Span_2", position: 0, content: "big " }
 	* Sending Op: Client 1 sends Op_A_1 to the Collaboration Server.
 
+3. Simultaneously, Client 2(User B) decides to bold "sample" in Paragraph_B.
+
+* Local Application (Optimistic UI): Client 2 immediately updates its local display: "This is a sample."
+
+* Diff/Operation Generation: Client 2 generates an Op:
+```
+[Op_B_1] = { type: "apply_attribute", target_node_id: "Text_Span_4", attribute: { bold: true } }
+```
+* Sending Op: Client 2 sends Op_B_1 to the Collaboration Server.Simultaneously, User B decides to bold "sample" in Paragraph_B.
+
+
 ## Notification Service
 
 When a device comes online after being offline for a significant period, it needs a way to catch up on all changes that happened while it was disconnected.
