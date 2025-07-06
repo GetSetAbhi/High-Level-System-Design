@@ -124,7 +124,6 @@ let's walk through a real-time example of document editing with two users, focus
 	* When a Worker Node processes an operation for Doc_X and needs to broadcast it:
 		* It first queries Redis to find out which WS_Frontend_ID (e.g., WS_Frontend_2_ID) is currently serving Doc_X.
 		* Then, it constructs the message for Kafka, ensuring the WS_Frontend_ID is included in the message payload.
-
 	* The Worker Node then publishes this message to a Kafka topic.
 
 3. Targeted Consumption by WS_Frontends: All WS_Frontend instances still subscribe to the relevant Kafka topics (e.g., document_operations).
