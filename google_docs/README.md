@@ -133,6 +133,14 @@ However, upon receiving a message, a WS_Frontend will filter it at the applicati
 Only WS_Frontend_2 (in our example) will see a message destined for WS_Frontend_2_ID and then proceed to push it over its active WebSocket connections for Doc_X. 
 Other WS_Frontends will discard it.
 
+** Important point about collaborative editing operation streaming via kafka**
+
+Editing information travels from the WebSocket Front-End to Worker Servers and then to Kafka, the partition within the Kafka topic is calculated based on the hash of the `document_id`.
+
+This strategy is crucial because it ensures that:
+* Ordering is Maintained: All changes for a specific document are routed to the same partition, guaranteeing that operations are processed in their correct, sequential order within that document.
+* Operational Transformation (OT) is Enabled: The strict ordering provided by Kafka within a partition is fundamental for OT algorithms to reliably transform and apply concurrent edits, ultimately ensuring document consistency across all collaborators.
+
 ## Optimizing Communication between collaboration server and worker service.
 
 An RPC (Remote Procedure Call) connection between the WebSocket Front-End (Collaboration Server) and the Worker Servers is needed for:
