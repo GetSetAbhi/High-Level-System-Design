@@ -79,13 +79,13 @@ let's walk through a real-time example of document editing with two users, focus
 
 3. Simultaneously, Client 2(User B) decides to bold "sample" in Paragraph_B.
 
-* Local Application (Optimistic UI): Client 2 immediately updates its local display: "This is a sample."
+	* Local Application (Optimistic UI): Client 2 immediately updates its local display: "This is a sample."
 
-* Diff/Operation Generation: Client 2 generates an Op:
-```
-[Op_B_1] = { type: "apply_attribute", target_node_id: "Text_Span_4", attribute: { bold: true } }
-```
-* Sending Op: Client 2 sends Op_B_1 to the Collaboration Server.Simultaneously, User B decides to bold "sample" in Paragraph_B.
+	* Diff/Operation Generation: Client 2 generates an Op:
+	```
+	[Op_B_1] = { type: "apply_attribute", target_node_id: "Text_Span_4", attribute: { bold: true } }
+	```
+	* Sending Op: Client 2 sends Op_B_1 to the Collaboration Server.Simultaneously, User B decides to bold "sample" in Paragraph_B.
 
 
 ## Notification Service
