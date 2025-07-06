@@ -1,11 +1,10 @@
-# Dropbox / Google Drive
+# Google Docs
 
 ![Dropbox](dropbox.svg)
 
 ## File Upload and download Workflow
 
 Similar to how [Dropbox](../dropbox/) design was discussed
-
 
 ## How to Represent Document Content? ?
 
