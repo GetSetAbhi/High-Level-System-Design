@@ -1,6 +1,6 @@
 # Google Docs
 
-![Dropbox](dropbox.svg)
+![Collaborative Document Editing](google_docs.svg)
 
 ## File Upload and download Workflow
 
@@ -140,77 +140,58 @@ An RPC (Remote Procedure Call) connection between the WebSocket Front-End (Colla
 * Structured Communication: It provides a clear, defined interface for communication, making the system more organized and easier to maintain.
 * Load Distribution: Enables the Front-End to distribute incoming client operations across multiple Worker Servers efficiently.
 
-## Notification Service
 
-When a device comes online after being offline for a significant period, it needs a way to catch up on all changes that happened while it was disconnected.
+## How trees are created and saved.
 
-* It immediately establishes a long polling connection with the Notification Service, providing its `lastSyncTime`. This connection is designed to quickly trigger a Cloud-to-Local Sync if any changes have occurred since that `lastSyncTime`. The Notification Service acts as a consumer of event coming from the Message Queue for which FileService is a producer. 
+1. Document Tree Construction (On Upload):
 
-* While the long polling connection is active and if the notification service comes across a recent event related to the user id associated with the device, then it will send a signal to the user device to trigger a sync. if a long polling connection times out, the Notification Service will implicitly signal the User Device to proceed with a full sync.
+	* Uploaded files (DOCX, PDF, etc.) are processed by an Ingestion Worker.
+	* This worker parses the file's content and structure.
+	* It then builds the internal, hierarchical tree representation of the document.
+	* This initial authoritative tree is saved in the Collaborative Document DB (MongoDB).
 
-* The device is now online and has potentially caught up (or is in the process of catching up), It then establishes a persistent WebSocket connection with the Notification Service.
+2. Document Tree Saving & Persistence (During Collaboration):
 
-When a User Device establishes a connection (either a Long Polling request or a WebSocket):
+	* MongoDB remains the live, authoritative store for the document tree, constantly updated by Worker Nodes.
+	* All individual editing operations are logged in Kafka for history and replay.
+	* S3 is used for static snapshots or archives of the document (e.g., exported DOCX/PDF files), not for the live, constantly changing document tree itself.
 
-The Notification Service associates the incoming connection's socket/connection ID with the User ID (and potentially a Device ID) that authenticated the connection.
-It stores this mapping in an efficient, concurrent data structure (e.g., a hash map or dictionary).
+# Real-time Collaborative Editing: Operational Transformation (OT)
 
-`Map<UserId, Map<DeviceId, ConnectionId>>`
+This section explains how Operational Transformation (OT) helps in handling conflicts in real-time collaborative editing systems.
 
-`Map<ConnectionId, UserSessionDetails> (which includes UserId, DeviceId, lastSyncTime, and the actual socket object/handle)`.
+## 1. How Does Operational Transformation (OT) Help in Handling Conflicts?
 
+In real-time collaborative editing, a "conflict" doesn't usually mean two users trying to modify the exact same character at the exact same millisecond that leads to an unresolvable state. Instead, conflicts arise from **concurrent operations** and the need to apply them in a way that preserves the **intent** of all users, regardless of the order in which the server receives them.
 
-## Why RPC connection between block service and File Service ?
+### The Core Idea of OT:
 
-The File Service and Block Service are considered internal, core components of the distributed system. 
-They are not exposed directly to external clients (like User Devices). 
-In such tightly integrated microservices, RPC simplifies communication
+OT is a set of algorithms that allows you to transform an operation (O_1) based on another operation (O_2) that has already been applied, so that O_1 can still 
+be correctly applied to the document state that resulted from O_2. 
+The goal is to ensure that all clients eventually converge to the same document state, while preserving the user's intended changes.
 
-RPC frameworks often use more efficient binary serialization formats (like Protocol Buffers, Apache Thrift, gRPC) 
-compared to text-based formats like JSON or XML used in REST. This results in smaller message sizes and faster parsing.
+### How it Handles Conflicts (Intent Preservation & Convergence):
 
-# Databases
+1.  **Concurrent Operations:** Imagine two users, Alice and Bob, start with document "ABC".
+    * **Alice:** Inserts "X" at position 1. Her operation is O_A = `{Insert('X', 1)}`. Document becomes "AXBC".
+    * **Bob:** Inserts "Y" at position 1. His operation is O_B = `{Insert('Y', 1)}`. Document becomes "AYBC".
 
-FileVersions is a join table. The FileVersions table will have multiple rows for a single file_version_id:
+2.  **Server's Role:**
+    * The server receives O_A first. It applies O_A to its authoritative "ABC" document. Document is now "AXBC".
+    * The server then receives O_B. If it naively applied O_B (Insert 'Y' at position 1) to "AXBC", the document would become "AYXBC". This isn't correct; Bob intended to insert 'Y' where 'A' originally was, so 'X' should be after 'Y'.
+    * **This is where OT steps in.** The server takes O_B and *transforms* it against O_A.
+        * Since O_A inserted a character *before* Bob's intended insertion point, O_B's position needs to be adjusted. The transformation function realizes that after "X" was inserted at position 1, Bob's original position 1 is now position 2.
+        * So, the transformed operation becomes O_B2 = `{Insert('Y', 2)}`.
+    * The server then applies O_B2 to "AXBC". Document becomes "AXYBC".
 
-* Each row in the FileVersions table represents one specific block that belongs to a particular file_version_id.
+3.  **Client's Role (Reconciliation):**
+    * Now, clients need to catch up. Alice already has "AXBC". Bob already has "AYBC" (his local, unacknowledged change).
+    * The server broadcasts O_A and O_B2 to all clients.
+    * When Alice's client receives O_B2, it applies it. `"AXBC" + O_B2 (Insert 'Y' at 2) = "AXYBC"`.
+    * When Bob's client receives O_A, it *transforms its own pending operation* (O_B) against the incoming O_A. Just like the server, it realizes its `Insert('Y', 1)` needs to be transformed because `Insert('X', 1)` happened. The transformed O_B becomes "Y" at position 2 (after X). Then it applies O_A. `"AYBC" + O_A (Insert 'X' at 1) = "AXYBC"`. (The exact order of transformation and application can vary, but the outcome is convergent).
 
-* The block_hash in each of these rows is indeed a foreign key referencing the Blocks table, which holds the actual information about that individual block.
+### Key Takeaways for Conflict Handling:
 
-* The block_sequence_index in FileVersions is crucial, as it defines the order of these blocks for that specific file version.
-
-```
-+---------------------------------+        +-----------------------------+
-|        File MetaData DB         |        |      Block MetaData DB      |
-+---------------------------------+        +-----------------------------+
-|             Folders             |        |           Blocks            |
-+---------------------------------+        +-----------------------------+
-| - folder_id (PK)                |<-------|- block_hash (PK)             |
-| - parent_folder_id (FK)         |        | - s3_location               |
-| - name                          |        | - reference_count (INT)     |
-+---------------------------------+        | - size_bytes                |
-         |                             ^    +-----------------------------+
-         | contains                  | logical_blocks_mapped_to
-         V                             |
-+---------------------------------+      +-----------------------------+
-|             Files               |<-----|         FileVersions      |
-+---------------------------------+      | (or FileBlockMapping)       |
-| - file_id (PK)                  |      +-----------------------------+
-| - user_id (FK)                  |      | - file_version_id (PK)      |
-| - parent_folder_id (FK)         |      | - file_id (FK)              |
-| - name                          |      | - block_hash (FK)           |
-| - current_version_id (FK)       |      | - block_sequence_index (INT)|
-| - size_bytes                    |      | - version_timestamp         |
-| - status (e.g., 'uploaded', 'pending')|  +-----------------------------+
-+---------------------------------+
-         |
-         | owns
-         V
-+---------------------------------+
-|         UserDevices             |
-+---------------------------------+
-| - device_id (PK)                |
-| - user_id (FK)                  |
-| - last_sync_time (TIMESTAMP)    |
-+---------------------------------+
-```
+* **Intent Preservation:** OT aims to ensure that the *intent* of each user's operation is preserved, even when operations are interleaved.
+* **Convergence:** All replicas of the document (on the server and all clients) eventually converge to the exact same state, guaranteeing consistency.
+* **Atomic Operations:** Conflicts are managed at the level of small, atomic operations (like character insertions/deletions, attribute changes) rather than by locking entire document sections.
