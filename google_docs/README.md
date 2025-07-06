@@ -23,6 +23,35 @@ Similar to how [Dropbox](../dropbox/) design was discussed
 4. Enables Efficient Complex Operations: Simplifies operations like moving or deleting entire sections, tables, or paragraphs by manipulating whole nodes.
 5. Enhances Collaboration Robustness: Provides stable reference points (nodes) for changes, which greatly aids conflict resolution in algorithms like Operational Transformation (OT) or CRDTs.
 
+Following is an example of how a document tree is represented.
+
+```
+[Document] (Root Node)
+  |
+  +-- [Paragraph] (Attributes: align="left", id="p123")
+  |     |
+  |     +-- [Text Span] (Content: "This is some ")
+  |     +-- [Text Span] (Content: "bold text.", Attributes: bold=true)
+  |     +-- [Text Span] (Content: " And ")
+  |     +-- [Text Span] (Content: "italicized!", Attributes: italic=true)
+  |     +-- [Text Span] (Content: ".")
+  |
+  +-- [Heading 1] (Content: "Introduction", Attributes: level=1, id="h456")
+  |
+  +-- [Paragraph] (Content: "Here's a list of items:", id="p789")
+  |
+  +-- [List] (Attributes: type="bullet", id="l101")
+        |
+        +-- [List Item] (Attributes: id="li202")
+        |     |
+        |     +-- [Paragraph] (Content: "First item.")
+        |
+        +-- [List Item] (Attributes: id="li303")
+              |
+              +-- [Paragraph] (Content: "Second item, with a ")
+              +-- [Paragraph] (Content: "new line inside.")
+```
+
 ## Notification Service
 
 When a device comes online after being offline for a significant period, it needs a way to catch up on all changes that happened while it was disconnected.
