@@ -105,6 +105,33 @@ let's walk through a real-time example of document editing with two users, focus
 
 	* Application: Client 2 applies Op_A_1 to its local document tree. Its view updates to: "Hello, big world! This is a sample."
 
+6. The collaborative server now receives Op_B_1 from client 2. It applies Op_B_1 to its authoritative document tree. and broadcasts the changes to all other nodes.
+
+7. Client 1 receives Op_B_1 from the server and It applies Op_B_1 to its local document tree.
+
+
+## Collaborative Editing workflow
+
+1.  When a user makes an edit, their client application generates a small, atomic "operation" (diff). This operation is sent via WebSockets to a WebSocket Front-End (the "Collaboration Server"). This Front-End forwards the operation to a Worker Node.
+
+	* When a user connects to a specific document (e.g., Doc_X), their connection will be routed by your Load Balancer to a particular WS_Frontend instance (e.g., WS_Frontend_2).
+	* WS_Frontend_2 will then register this fact in a fast, distributed key-value store like Redis:
+		* Key: document_id (e.g., Doc_X)
+		* Value: WS_Frontend_ID (e.g., WS_Frontend_2_ID)
+	* This mapping tells the system: "For Doc_X, send updates to WS_Frontend_2."
+
+2. The Worker Node is the intelligence hub: it applies Operational Transformation (OT) or CRDTs to the operation to handle concurrent changes, updates the authoritative document tree in the Collaborative Document DB (e.g., MongoDB), and then publishes the processed operation to a Message Queue (e.g., Kafka).
+	* When a Worker Node processes an operation for Doc_X and needs to broadcast it:
+		* It first queries Redis to find out which WS_Frontend_ID (e.g., WS_Frontend_2_ID) is currently serving Doc_X.
+		* Then, it constructs the message for Kafka, ensuring the WS_Frontend_ID is included in the message payload.
+
+	* The Worker Node then publishes this message to a Kafka topic.
+
+3. Targeted Consumption by WS_Frontends: All WS_Frontend instances still subscribe to the relevant Kafka topics (e.g., document_operations).
+However, upon receiving a message, a WS_Frontend will filter it at the application level based on the WS_Frontend_ID in the message payload.
+Only WS_Frontend_2 (in our example) will see a message destined for WS_Frontend_2_ID and then proceed to push it over its active WebSocket connections for Doc_X. 
+Other WS_Frontends will discard it.
+
 ## Notification Service
 
 When a device comes online after being offline for a significant period, it needs a way to catch up on all changes that happened while it was disconnected.
