@@ -124,14 +124,20 @@ let's walk through a real-time example of document editing with two users, focus
 
 2. The Worker Node is the intelligence hub: it applies Operational Transformation (OT) or CRDTs to the operation to handle concurrent changes, updates the authoritative document tree in the Collaborative Document DB (e.g., MongoDB), and then publishes the processed operation to a Message Queue (e.g., Kafka).
 	* When a Worker Node processes an operation for Doc_X and needs to broadcast it:
-		* It first queries Redis to find out which WS_Frontend_ID (e.g., WS_Frontend_2_ID) is currently serving Doc_X.
+		* It first queries Redis to find out which WS_Frontend_ID (or multiple WS servers) (e.g., WS_Frontend_2_ID) is (are, in case of multiple WS Client) currently serving Doc_X.
 		* Then, it constructs the message for Kafka, ensuring the WS_Frontend_ID is included in the message payload.
 	* The Worker Node then publishes this message to a Kafka topic.
 
-3. Targeted Consumption by WS_Frontends: All WS_Frontend instances still subscribe to the relevant Kafka topics (e.g., document_operations).
-However, upon receiving a message, a WS_Frontend will filter it at the application level based on the WS_Frontend_ID in the message payload.
-Only WS_Frontend_2 (in our example) will see a message destined for WS_Frontend_2_ID and then proceed to push it over its active WebSocket connections for Doc_X. 
-Other WS_Frontends will discard it.
+3. The Broadcast Service then consumes this information from Kafka. Its job is to ensure all concerned websocket servers (which are hosting clients working on Doc_X) receive this update so they can push it to their respective clients. The Redis mapping (document_id -> Set of WS_Frontend_IDs) is precisely how the Broadcast Service knows that both WS_Frontend A and WS_Frontend B need to receive this particular update for Document X.
+
+4. For each identified WS_Frontend_ID, the Broadcast Router queries a Service Registry (like Zookeeper) to find the actual network address (IP address and port) of that specific WS_Frontend instance.
+
+5. The Broadcast Router then makes a direct RPC call or HTTP POST request to that resolved address, sending the processed edit operation in the request body.
+
+6. The Websocket Server, upon receiving a message, a WS_Frontend will figure out all the clients that are editing a particular document and send the updates to all those clients.
+Each WS_Frontend server keeps a data structure (often a hash map or dictionary) that looks something like this: `Map<Document_ID, Set<WebSocket_Connection_Object>`
+using this map, the websocket server will proceed to push it over its active WebSocket connections for Doc_X. 
+
 
 **Important point about collaborative editing operation streaming via kafka**
 
