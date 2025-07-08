@@ -7,6 +7,8 @@ which provide some additional information regarding some design choices which I 
 
 I've used chat gpt extensively for making these notes.
 
+Before starting, checkout the [Database Scaling Guide](database/)
+
 **System Design Notes**
 
 1. [Stateful vs Stateless](Stateful_VS_Stateless/)
