@@ -99,13 +99,13 @@ This table provides approximate **read and write throughput** for popular system
 
 ## 📊 Throughput Summary
 
-| System         | Read Throughput (ops/sec) | Write Throughput (ops/sec) | Notes                                  |
+| System         | Read Throughput (ops/sec)  | Write Throughput (ops/sec)   | Notes                                  |
 |----------------|----------------------------|------------------------------|----------------------------------------|
-| **Redis**      | ~1 Mil                     | ~800,000                    | In-memory store with extremely high throughput |
-| **MySQL**      | ~100k – 300k               | ~50,000 – 150,000           | ACID-compliant; great for OLTP workloads |
-| **MongoDB**    | ~50,000 – 150,000          | ~30,000 – 100,000           | Flexible schema, moderate write speed  |
-| **Cassandra**  | ~50,000 – 100,000          | ~40,000 – 90,000            | Tuned for distributed, write-heavy workloads |
-| **Elasticsearch** | ~10,000 – 100,000       | ~5,000 – 50,000             | Best suited for search and analytics   |
+| **Redis**      | ~1 Mil                     | ~800k                        | In-memory store with extremely high throughput |
+| **MySQL**      | ~100k – 300k               | ~50k – 150k                  | ACID-compliant; great for OLTP workloads |
+| **MongoDB**    | ~50k – 150k                | ~30k – 100k                  | Flexible schema, moderate write speed  |
+| **Cassandra**  | ~50k – 100k                | ~40k – 90k                   | Tuned for distributed, write-heavy workloads |
+| **Elasticsearch** | ~10,000 – 100,000       | ~5,000 – 50,000              | Best suited for search and analytics   |
 
 ---
 
