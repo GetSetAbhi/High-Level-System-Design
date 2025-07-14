@@ -90,3 +90,23 @@ This guide explains how to scale a database from basic techniques like indexing 
 ---
 
 For real-world examples (e.g., scaling an e-commerce DB), feel free to reach out or extend this guide.
+
+# ⚡ Generalized System Performance Metrics (Throughput Only)
+
+This table provides approximate **read and write throughput** for popular systems, useful for quick reference during system design interviews. All values are **ops/sec** (operations per second).
+
+---
+
+## 📊 Throughput Summary
+
+| System         | Read Throughput (ops/sec) | Write Throughput (ops/sec) | Notes                                  |
+|----------------|----------------------------|------------------------------|----------------------------------------|
+| **Redis**      | ~1 Mil                     | ~800,000                    | In-memory store with extremely high throughput |
+| **MySQL**      | ~100k – 300k               | ~50,000 – 150,000           | ACID-compliant; great for OLTP workloads |
+| **MongoDB**    | ~50,000 – 150,000          | ~30,000 – 100,000           | Flexible schema, moderate write speed  |
+| **Cassandra**  | ~50,000 – 100,000          | ~40,000 – 90,000            | Tuned for distributed, write-heavy workloads |
+| **Elasticsearch** | ~10,000 – 100,000       | ~5,000 – 50,000             | Best suited for search and analytics   |
+
+---
+
+> These values are ballpark figures based on typical SSD-backed, modern hardware with good configurations. Use them to reason about scalability and system choice in interviews.
