@@ -4,6 +4,8 @@ This guide explains how to scale a database from basic techniques like indexing 
 
 `“If my system needs under 10–20k QPS, I’d start with a relational DB for strong consistency and rich queries. But if I'm crossing 100k+ QPS, especially with large-scale writes or flexible schema, I’d prefer a NoSQL system with partitioning and replication built in.”`
 
+`“Redis can serve 500k to 1M QPS per instance for simple commands like GET and SET. For write-heavy or sorted set workloads, I'd estimate around 500k QPS, and scale out using Redis Cluster if needed.”`
+
 ---
 
 ## Step 0: Vertical Scaling (Before Anything Else)
