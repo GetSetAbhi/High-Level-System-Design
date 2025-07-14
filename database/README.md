@@ -2,6 +2,8 @@
 
 This guide explains how to scale a database from basic techniques like indexing to advanced methods like sharding.
 
+`“If my system needs under 10–20k QPS, I’d start with a relational DB for strong consistency and rich queries. But if I'm crossing 100k+ QPS, especially with large-scale writes or flexible schema, I’d prefer a NoSQL system with partitioning and replication built in.”`
+
 ---
 
 ## Step 0: Vertical Scaling (Before Anything Else)
