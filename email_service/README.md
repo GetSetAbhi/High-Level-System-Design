@@ -16,7 +16,7 @@ The metadata DB design section explains how to store information about emails, r
 * High reliability: Data loss is unacceptable.
 * Choosing the right database: Given these characteristics, a NoSQL database is often preferred over a traditional relational database (SQL) for email metadata, especially at scale.
 
-###Why NoSQL? 
+### Why NoSQL? 
 
 Relational databases can struggle with large, unstructured data (like email bodies) and with the high input/output operations per second (IOPS) required for a massive email service. NoSQL databases, are designed for high scalability and availability, and can handle varying data sizes efficiently.
 
@@ -44,7 +44,7 @@ Relational databases can struggle with large, unstructured data (like email bodi
 
 ```
 +----------------+       +-------------------+       +-----------------+
-|   users        |       |   folders_by_user |       |   emails_by_folder|
+|     users      |       |  folders_by_user  |       | emails_by_folder|
 +----------------+       +-------------------+       +-----------------+
 | user_id (PK)   |-------| user_id (PK, FK)  |<------| user_id (PK, FK)|
 | user_name      |       | folder_id (PK)    |       | folder_id (PK, FK)|
