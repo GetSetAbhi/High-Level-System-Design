@@ -63,7 +63,7 @@ Response should include a list of suggested terms, ordered by relevance:
 
 ## The choice of Index
 
-** TRIE Datastructue **
+**TRIE Datastructure**
 
 In a Trie (prefix tree), each node represents a character, and a path from the root to a node represents a prefix.
 Every nodes' descendants are top-k most likely prefixes.
@@ -105,6 +105,31 @@ Here is how the Inverted Index would look:
     "dog": ["dog"]
 }
 ```
+
+**So what to choose for indexes ?** 
+
+Using Tries as indexes has some cons:
+
+1. It doesn't support Fuzzy searching.
+2. Handling multi-word phrases or completions like "new york" becomes much more complicated.
+3. Scalability Issue: Modifying or deleting words in a large Trie can be complex, and sharding a Trie across multiple servers is generally challenging.
+
+Advantages of Inverted Indexes for Typeahead:
+
+1. Inverted indexes are the backbone of full-text search engines (like Elasticsearch, Solr) precisely because they are highly scalable.
+2. Inverted indexes excel at handling queries with multiple words and can easily find suggestions that contain specific phrases.
+3. Modern inverted index systems (like Lucene/Elasticsearch) have built-in capabilities for fuzzy searching. This means they can suggest "apple" even if the user types "aple" or "apples".
+4. Ranking and Relevance: This is where inverted indexes truly shine for typeahead. Each "term" in the index (which could be a prefix or a full suggestion) can be associated with rich metadata:
+
+Frequency: How often the term has been searched.
+
+Recency: When it was last popular.
+
+Context: What categories or types of products it belongs to.
+
+Click-through rates: How often users clicked on a suggestion after typing a certain prefix.
+
+This metadata allows for sophisticated ranking algorithms (e.g., TF-IDF, BM25, or custom algorithms combining various signals) to provide the most relevant suggestions, not just alphabetically ordered ones.
 
 ## File Upload Workflow
 
