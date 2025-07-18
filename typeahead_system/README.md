@@ -18,10 +18,11 @@ Assuming the average number of characters of a query is 10, then the number of r
 **Read Estimations**
 
 We have assumed that every search query has on an average 10 Characters and every character is suppose 2 Bytes.
+
 Then daily storage requirement becomes:
 	
-	2 Billion x 10 x 2Bytes = 40 GB per day 
-	`For a year it will be ~13K GB = ~13TB`
+2 Billion x 10 x 2Bytes = 40 GB per day 
+`For a year it will be ~13K GB = ~13TB`
 
 
 ## File Upload Workflow
