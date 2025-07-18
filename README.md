@@ -17,7 +17,8 @@ Before starting, checkout the [Database Scaling Guide](database/)
 4. [Design Notification Service](Notification_Service/).
 5. [Logging and Monitoring System](logging_and_monitoring/).
 6. [Design a web crawler / News Aggregator](web_crawler/).
-7. [Video or Audio Streaming Service (Youtube, Netflix, Spotify)](youtube/).
-8. [Design Dropbox / Google Drive](dropbox/).
-9. [Design Google Docs](google_docs/).
-10. [Design Distributed Email Service](email_service/).
+7. [Design a typeahead System](typeahead_system/).
+8. [Video or Audio Streaming Service (Youtube, Netflix, Spotify)](youtube/).
+9. [Design Dropbox / Google Drive](dropbox/).
+10. [Design Google Docs](google_docs/).
+11. [Design Distributed Email Service](email_service/).
