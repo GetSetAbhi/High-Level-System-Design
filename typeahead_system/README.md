@@ -1,7 +1,5 @@
 # Typeahead System
 
-![Dropbox](dropbox.svg)
-
 ## Capacity estimation
 
 Scale requirements:
