@@ -49,6 +49,25 @@ Response should include a list of suggested terms, ordered by relevance:
 }
 ```
 
+## Work Flow
+
+<p align="center">
+  <img src="initial_design.svg" width="600" alt="Collaborative Document Editing"/>
+</p>
+
+**Read Path**
+
+The client sends an HTTP request to the GET /suggestions interface to start a query;
+The load balancer distributes the request to a specific application server;
+The application server queries the index stored in the cache;
+The application server queries the database if data satisfying the query is not found in the cache;
+
+
+**Write Path**
+
+Access log from the application servers are aggregated.
+Scheduled jobs kick off batch processing pipelines that read the logs and use the aggregated data to update the index in the database and the cache.
+
 
 ## File Upload Workflow
 
