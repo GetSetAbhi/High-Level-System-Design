@@ -6,10 +6,12 @@
 
 Scale requirements:
 
-*	100 million daily active users
-*	Each user makes 20 queries a day. A new request is made every time a user types in a new character.
-so if there are on an average 3 characters in a query, then every user is making 3 x 20 = 60 Queries to our server
+*	`100 million daily active users`.
+*	Each user makes `20 queries a day.` 
 *	Search data should be updated daily
+
+A new request is made every time a user types in a new character. 
+Assuming the average number of characters of a query is 10, then the number of requests per query is 10 * average searches daily per user of 20 = `200 queries/user/day`.
 
 
 ## File Upload Workflow
