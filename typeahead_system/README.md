@@ -53,19 +53,58 @@ Response should include a list of suggested terms, ordered by relevance:
   <img src="initial_design.svg" width="600" alt="Collaborative Document Editing"/>
 </p>
 
-**Read Path**
+* The client sends an HTTP request to the GET `/suggestions` interface to start a query
+* The load balancer distributes the request to a search service;
+* The search service queries the index stored in the cache;
+* The search service queries the database if data satisfying the query is not found in the cache;
+* The search service also sends the search terms to a message queue which is consumed by a Search Aggregator Service.
+* The Search Aggregator service stores the search terms in the Database.
+* The Data Processor Batch pulls the daily data out of the search terms database and updates the index in the database as well as the cache.
 
-The client sends an HTTP request to the GET /suggestions interface to start a query;
-The load balancer distributes the request to a specific application server;
-The application server queries the index stored in the cache;
-The application server queries the database if data satisfying the query is not found in the cache;
+## The choice of Index
 
+** TRIE Datastructue **
 
-**Write Path**
+In a Trie (prefix tree), each node represents a character, and a path from the root to a node represents a prefix.
+Every nodes' descendants are top-k most likely prefixes.
 
-Access log from the application servers are aggregated.
-Scheduled jobs kick off batch processing pipelines that read the logs and use the aggregated data to update the index in the database and the cache.
+In the context of the typeahead system, each node in the Trie could represent a character of a word. So, a path from the root to a node gives us a word in the dictionary. The end of a word is marked by an end of word flag, letting us know that a path from the root to this node corresponds to a complete, valid word. The time complexity to get to a node is O(log(length of prefix)).
 
+The frequency of the words are stored in the node themselves. To find the top results, we can find all the nodes in the subtree and sort them by the frequency.
+
+```
+(root)
+ ├── t
+ │   └── o  (word: "to")
+ │   └── e
+ │       ├── a  (word: "tea")
+ │       └── n  (word: "ten")
+ └── i
+     └── n  (word: "in")
+         └── n  (word: "inn")
+
+```
+Trie that stores the words: "to", "tea", "ten", "in", "inn".
+
+**Inverted Indexes**
+
+An inverted index is a data structure used to create a full-text search. In an inverted index, there is a record for each term or word, which contains a list of documents that this term appears in. This approach is used by most full-text search frameworks such as Elasticsearch.
+
+In the context of the typeahead system, we could store all the prefixes of a word, along with the word itself, in the inverted index. The search operation would then retrieve the list of words corresponding to a given prefix.
+
+Here is how the Inverted Index would look:
+
+```
+{
+    "c": ["car", "cat"],
+    "ca": ["car", "cat"],
+    "car": ["car"],
+    "cat": ["cat"],
+    "d": ["dog"],
+    "do": ["dog"],
+    "dog": ["dog"]
+}
+```
 
 ## File Upload Workflow
 
