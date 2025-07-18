@@ -21,7 +21,8 @@ We have assumed that every search query has on an average 10 Characters and ever
 
 Then daily storage requirement becomes:
 	
-2 Billion x 10 x 2Bytes = 40 GB per day 
+`2 Billion x 10 x 2Bytes = 40 GB per day` 
+
 `For a year it will be ~13K GB = ~13TB`
 
 
