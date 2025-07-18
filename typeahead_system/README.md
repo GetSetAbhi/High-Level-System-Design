@@ -50,7 +50,7 @@ Response should include a list of suggested terms, ordered by relevance:
 ## Work Flow
 
 <p align="center">
-  <img src="initial_design.svg" width="600" alt="Collaborative Document Editing"/>
+  <img src="initial_design.svg" width="600" alt="Initial Typeahead System"/>
 </p>
 
 * The client sends an HTTP request to the GET `/suggestions` interface to start a query
@@ -60,6 +60,10 @@ Response should include a list of suggested terms, ordered by relevance:
 * The search service also sends the search terms to a message queue which is consumed by a Search Aggregator Service.
 * The Search Aggregator service stores the search terms in the Database.
 * The Data Processor Batch pulls the daily data out of the search terms database and updates the index in the database as well as the cache.
+
+In this design, I haven't taken into account how the seeding of my search term storage DB.
+
+There will be improvements in the design that I will cover.
 
 ## The choice of Index
 
@@ -129,7 +133,13 @@ Context: What categories or types of products it belongs to.
 
 Click-through rates: How often users clicked on a suggestion after typing a certain prefix.
 
-This metadata allows for sophisticated ranking algorithms (e.g., TF-IDF, BM25, or custom algorithms combining various signals) to provide the most relevant suggestions, not just alphabetically ordered ones.
+This metadata allows for sophisticated ranking algorithms like TF-IDF (Term Frequency-Inverse Document Frequency), BM25 (Best Matching 25), or custom algorithms combining various signals) to provide the most relevant suggestions, not just alphabetically ordered ones.
+
+## Improved Design
+
+<p align="center">
+  <img src="improved_design.svg" width="600" alt="Improved Typeahead System"/>
+</p>
 
 ## File Upload Workflow
 
