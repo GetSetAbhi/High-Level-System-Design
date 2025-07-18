@@ -62,7 +62,7 @@ Response should include a list of suggested terms, ordered by relevance:
 
 * The Data Processor Batch pulls the daily data out of the search terms database and updates the index in the database as well as the cache.
 
-In this design, I haven't taken into account how the seeding of my search term storage DB.
+In this design, I haven't taken into account how the seeding of my search term storage DB will take place.
 
 There will be improvements in the design that I will cover.
 
