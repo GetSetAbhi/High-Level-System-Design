@@ -13,6 +13,16 @@ Scale requirements:
 A new request is made every time a user types in a new character. 
 Assuming the average number of characters of a query is 10, then the number of requests per query is 10 * average searches daily per user of 20 = `200 queries/user/day`.
 
+`100M DAU X 20 Search Queries per day per user = 2 Billion Search Queries Per Day`
+
+**Read Estimations**
+
+We have assumed that every search query has on an average 10 Characters and every character is suppose 2 Bytes.
+Then daily storage requirement becomes:
+	
+	2 Billion x 10 x 2Bytes = 40 GB per day 
+	`For a year it will be ~13K GB = ~13TB`
+
 
 ## File Upload Workflow
 
