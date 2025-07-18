@@ -13,12 +13,12 @@ Before starting, checkout the [Database Scaling Guide](database/)
 
 1. [Stateful vs Stateless](Stateful_VS_Stateless/)
 2. [Design a URL Shortener](short_url/)
-3. [Design Distributed Rate Limiter](Rate_Limiter/).
-4. [Design Notification Service](Notification_Service/).
-5. [Logging and Monitoring System](logging_and_monitoring/).
-6. [Design a web crawler / News Aggregator](web_crawler/).
-7. [Design a typeahead System](typeahead_system/).
-8. [Video or Audio Streaming Service (Youtube, Netflix, Spotify)](youtube/).
-9. [Design Dropbox / Google Drive](dropbox/).
-10. [Design Google Docs](google_docs/).
-11. [Design Distributed Email Service](email_service/).
+3. [Design Distributed Rate Limiter](Rate_Limiter/)
+4. [Design Notification Service](Notification_Service/)
+5. [Logging and Monitoring System](logging_and_monitoring/)
+6. [Design a web crawler / News Aggregator](web_crawler/)
+7. [Design a typeahead System](typeahead_system/)
+8. [Video or Audio Streaming Service (Youtube, Netflix, Spotify)](youtube/)
+9. [Design Dropbox / Google Drive](dropbox/)
+10. [Design Google Docs](google_docs/)
+11. [Design Distributed Email Service](email_service/)
