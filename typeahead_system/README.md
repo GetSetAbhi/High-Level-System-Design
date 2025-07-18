@@ -7,7 +7,8 @@
 Scale requirements:
 
 *	100 million daily active users
-*	Each user makes 20 queries a day
+*	Each user makes 20 queries a day. A new request is made every time a user types in a new character.
+so if there are on an average 3 characters in a query, then every user is making 3 x 20 = 60 Queries to our server
 *	Search data should be updated daily
 
 
