@@ -59,7 +59,6 @@ Response should include a list of suggested terms, ordered by relevance:
 * The search service queries the database if data satisfying the query is not found in the cache;
 * The search service also sends the search terms to a message queue which is consumed by a Search Aggregator Service.
 * The Search Aggregator service stores the search terms in the Database.
-
 * The Data Processor Batch pulls the daily data out of the search terms database and updates the index in the database as well as the cache.
 
 In this design, I haven't taken into account how the seeding of my search term storage DB will take place.
@@ -147,7 +146,7 @@ This metadata allows for sophisticated ranking algorithms like TF-IDF (Term Freq
 * The search service queries the index stored in the cache.
 * We have implemented read through cache. If the data is not in the cache (a cache miss), the cache itself (or the caching layer/library) is responsible for fetching the data from the primary data store (Elasticsearch), storing it in the cache, and then returning it to the search service.
 * The crawler's job is to systematically visit web pages, follow links, and download their content (HTML, plain text, etc.). It acts as the initial data collector.
-*Data Processing / ETL Pipeline: This is a crucial stage where the raw, often messy, crawled data is transformed (Remove HTML tags etc) and N-Grams are generated for every word identified. This information is then passed on to the Elasticsearch cluster.
+* Data Processing / ETL Pipeline: This is a crucial stage where the raw, often messy, crawled data is transformed (Remove HTML tags etc) and N-Grams are generated for every word identified. This information is then passed on to the Elasticsearch cluster.
 
 For the cache eviction, we use a combination of LRU + TTL. LRU handles capacity limits based on usage, while TTL ensures data freshness and prevents permanently caching stale or old suggestions.
 
