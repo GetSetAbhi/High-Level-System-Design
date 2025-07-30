@@ -36,7 +36,7 @@ Lambda functions and MediaConvert jobs into a cohesive workflow.
 2. The Step Functions workflow performs these steps:
 
 	* (Segmentation): Invokes another Lambda function (or a Fargate task via AWS Batch) 
-	to video into different audio and video segments etc., storing them in s3.
+	to partiyion video into different audio and video segments etc., storing them in s3.
 
 	* Video and Audio Encoding: These are lambdas, that are orchestrated by the AWS Step Function workflow 
 	and these parallely encode audio and video segments into various resolutions and bitrates 
