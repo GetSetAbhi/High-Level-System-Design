@@ -211,3 +211,12 @@ The goal is to ensure that all clients eventually converge to the same document 
 * **Intent Preservation:** OT aims to ensure that the *intent* of each user's operation is preserved, even when operations are interleaved.
 * **Convergence:** All replicas of the document (on the server and all clients) eventually converge to the exact same state, guaranteeing consistency.
 * **Atomic Operations:** Conflicts are managed at the level of small, atomic operations (like character insertions/deletions, attribute changes) rather than by locking entire document sections.
+
+### Tree Creation and Tree export
+
+Whenever a document is uploaded to S3, it will trigger an event which will start a workflow to convert a document into a document tree.
+this document tree can be stored into our mongo db.
+
+Similarly, we can have some worker nodes that will periodically retrieve these trees from mongo db, and send them to be converted and stored as a document in the s3.
+
+s3 acts as a snapshot of current version of document.
