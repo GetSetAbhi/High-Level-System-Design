@@ -55,6 +55,8 @@ Conclusion: RDBMS with TCC solves the immediate atomicity problem, but introduce
 
 ### Event sourcing with SAGA Pattern
 
+**SAGA PATTERN**
+
 **Challenges**
 
 * **Need for Reproducibility**: We need to be able to reproduce the series of events that led to a particular database state at a particular period of time. Basically
@@ -72,6 +74,19 @@ Why it's more flexible:
 * **No Central Coordinator (Choreography)**: In a "choreography" based saga, there is no central orchestrator. Each service participates by reacting to events from other services and emitting its own events. This distributes the responsibility and avoids a single point of failure.
 * **Compensating Transactions**: The core of the Saga pattern lies in "compensating transactions." If a step in the saga fails, preceding successful steps are undone by executing compensating actions. This allows for partial failures without blocking the entire system and provides a clear recovery path.
 
+**Event Sourcing**
+
+Instead of storing the final state, we store a sequence of events that led to that state.
+
+A "balance transfer" is no longer two database updates; it's a command (e.g., `TransferMoneyCommand`) that, when successfully processed, generates an event (e.g., `MoneyDeductedEvent` and `MoneyCreditedEvent`).
+
+These events are stored in an append-only Event Store (a durable, distributed log).
+
+The current account balance (the "state") is then derived by replaying these events from the Event Store. For read performance, snapshots of the state can be periodically taken.
+
+**Pros**
+* **Decoupling**: Services react to events, making them highly independent.
+* **Scalability**: The Event Store can be highly optimized for writes (append-only), and read models can be scaled independently (CQRS).
 
 
 We have assumed that every search query has on an average 10 Characters
