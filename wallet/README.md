@@ -88,6 +88,22 @@ The current account balance (the "state") is then derived by replaying these eve
 * **Decoupling**: Services react to events, making them highly independent.
 * **Scalability**: The Event Store can be highly optimized for writes (append-only), and read models can be scaled independently (CQRS).
 
+**How Event Sourcing is taking place ?**
+
+How it works for a Wallet (Write Path):
+
+1. **Client sends a Command**: A user initiates a transfer, which translates into a TransferMoneyCommand (e.g., (A: -C$, B: +C$)). This command is received by the `Wallet Service`.
+2. **Command Validation and State Transition**:
+   * The Wallet Service (acting as a "state machine") receives the command.
+   * It retrieves the current state of the relevant accounts (e.g., Account A's balance) to perform validation (e.g., "does A have enough money?"). This might involve loading events and reconstructing the state or using a snapshot.
+   * If the command is valid, the state machine generates one or more Events that represent the changes. For a transfer, it might generate a `MoneyDeductedEvent` for Account A and a `MoneyCreditedEvent` for Account B.
+3. **Events Persisted to Event Store**: These newly generated events are appended to an immutable, ordered Event Store (a distributed log). This is the crucial step that ensures reproducibility and durability.
+4. **Acknowledgement**: Once events are successfully written to the Event Store, the command is considered processed, and an acknowledgement is sent back to the client.
+
+
+
+We used event sourcing with SAGA pattern to solve problem of distributed transactions and database final state reproducibility.
+
 
 We have assumed that every search query has on an average 10 Characters
 Then total Queries per year becomes `20Billions searches per year`
