@@ -7,11 +7,8 @@ Problem: We need to store user balances and process transfers.
 Use a highly performant, in-memory key-value store like Redis. It's fast, can handle many reads/writes, and can be sharded (spread across multiple nodes).
 
 **Why it seems good initially (Pros)**:
-
 * High Throughput: In-memory operations are incredibly fast, offering low latency. Sharding allows for horizontal scaling to potentially reach 1M TPS for simple updates.
-
 * Simplicity: Conceptually easy to understand: account_id -> balance.
-
 **Cons** :
 
 * **The "Strict Consistency" Requirement**: This is where the in-memory solution falls apart for a financial system. A balance transfer is not a single operation. It's two distinct operations:
@@ -22,10 +19,37 @@ Add to Account B.
 
 * **Distributed Atomicity Problem**: If Account A and Account B reside on different Redis nodes (which they almost certainly will at 1M TPS scale due to sharding), there's no inherent way to guarantee that both operations succeed or both fail.
 
-
-
-
 ### Using RDBMS
+
+The Realization:
+
+We need ACID properties (Atomicity, Consistency, Isolation, Durability) for financial data. Relational Database Management Systems (RDBMS) are built for this.
+**Challenge**: A single RDBMS node cannot handle 1M TPS. We still need to shard.
+**New Problem**: Now we have a distributed RDBMS. A transfer still involves two updates on potentially different sharded database nodes. How do we ensure atomicity across these separate nodes?
+**Solution Proposed**: Distributed Transactions (e.g., Two-Phase Commit)
+
+How it works (Simplified):
+* Coordinator: A central service (or logic within the Wallet Service) acts as a coordinator for the transaction.
+* Participants: The individual database shards (or services owning those shards).
+
+Try Phase (Prepare): The coordinator tells each participant (e.g., "prepare to deduct $X from Account A", "prepare to add $X to Account B"). Participants perform pre-checks, reserve resources (e.g., lock funds), and log their intent. They respond "yes, I can do it" or "no, I can't."
+
+Confirm Phase (Commit): If all participants respond "yes," the coordinator tells them all to "commit." Each participant then makes its changes permanent.
+
+Cancel Phase (Rollback): If any participant responds "no," or a timeout occurs, the coordinator tells all participants to "cancel." Each participant then undoes any changes made during the "Try" phase.
+
+**Why it's better than In-Memory (Pros):**
+* Atomicity: Guarantees that either both debit and credit operations complete, or neither does. Money is never lost or duplicated due to partial failures.
+* Durability: RDBMS systems ensure data persistence.
+**(Limitations/Cons)**:
+* Performance Bottleneck: The coordinator can become a bottleneck, especially at 1M TPS. It's a synchronous, blocking protocol.
+* Locking and Contention: Resources (like account balances) are locked during the "Try" phase, reducing concurrency and potentially leading to deadlocks.
+* Coordinator Failure: If the coordinator fails during the commit phase, participants might be left in an uncertain state ("in doubt"). Recovery mechanisms are complex.
+* Lacks Reproducibility: While the RDBMS itself records transactions, the process of reaching the final state isn't explicitly an event log that can be easily replayed to reconstruct historical states across the entire system. You still only have the result of the transaction.
+
+Conclusion: RDBMS with TCC solves the immediate atomicity problem, but introduces performance and operational complexities at extreme scale, and doesn't fully address the "reproducibility" requirement in an elegant way.
+
+
 
 We have assumed that every search query has on an average 10 Characters
 Then total Queries per year becomes `20Billions searches per year`
