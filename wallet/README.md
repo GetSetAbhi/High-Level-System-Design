@@ -63,6 +63,15 @@ a way to audit the trail of transactions that led to a particular account balanc
 * **Synchronous Nature**: 2PC is inherently synchronous. All participants must respond before the transaction can proceed. This can introduce significant latency in geographically distributed systems or systems with many participating services.
 * **Need for High Concurrency & Decoupling**: We still need to handle 1M TPS and avoid the blocking nature of 2PC/TCC. We want a more asynchronous, decoupled approach. This is where Sagas come in.
 
+SAGA Pattern Offers a More Flexible Way to Manage Multi-Step Distributed Processes
+
+Why it's more flexible:
+
+* **Eventual Consistency**: Unlike 2PC, which aims for strong (immediate) consistency, the Saga pattern embraces eventual consistency. This means that at any given moment during a saga's execution, the system might be temporarily inconsistent, but it will eventually reach a consistent state. This trade-off allows for greater availability and performance.
+* **Loosely Coupled Services**: Sagas are well-suited for microservices architectures, where services are independently deployed and managed, each with its own database. Services communicate asynchronously, typically via messages or events, without holding locks across service boundaries.
+* **No Central Coordinator (Choreography)**: In a "choreography" based saga, there is no central orchestrator. Each service participates by reacting to events from other services and emitting its own events. This distributes the responsibility and avoids a single point of failure.
+* **Compensating Transactions**: The core of the Saga pattern lies in "compensating transactions." If a step in the saga fails, preceding successful steps are undone by executing compensating actions. This allows for partial failures without blocking the entire system and provides a clear recovery path.
+
 
 
 We have assumed that every search query has on an average 10 Characters
