@@ -59,9 +59,9 @@ Conclusion: RDBMS with TCC solves the immediate atomicity problem, but introduce
 
 * **Need for Reproducibility**: We need to be able to reproduce the series of events that led to a particular database state at a particular period of time. Basically
 a way to audit the trail of transactions that led to a particular account balance.
-* **Need for High Concurrency & Decoupling**: We still need to handle 1M TPS and avoid the blocking nature of 2PC/TCC. We want a more asynchronous, decoupled approach. This is where Sagas come in.
 * **Complexity of Distributed Transactions**: 2 Phase Commit is complex to implement and recover from. Sagas offer a more flexible way to manage multi-step distributed processes.
 * **Synchronous Nature**: 2PC is inherently synchronous. All participants must respond before the transaction can proceed. This can introduce significant latency in geographically distributed systems or systems with many participating services.
+* **Need for High Concurrency & Decoupling**: We still need to handle 1M TPS and avoid the blocking nature of 2PC/TCC. We want a more asynchronous, decoupled approach. This is where Sagas come in.
 
 
 
