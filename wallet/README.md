@@ -105,3 +105,10 @@ With this we were able to optimize our write path but we haven't provided any wa
 but it's not readily viewable or queryable in an efficient manner directly from the event store for end-users. And that's why `CQRS (Command Query Responsibility Segregation) pattern' is introduced.
 
 In CQRS pattern, we maintain an optimized data store (the "Read Model") that is populated by consuming and processing the events from the Event Store.
+
+
+**Snapshots**
+
+Snapshots in Event Sourcing are periodic saved copies of an aggregate's (e.g., a wallet account's) current state.
+
+Why they are used: To significantly improve performance. Instead of reconstructing an account's balance by replaying all its past transactions (events) from the very beginning, the system can load the latest snapshot and then only apply the few events that occurred after that snapshot to get the most up-to-date state.
