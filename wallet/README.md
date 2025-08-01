@@ -25,7 +25,7 @@ Add to Account B.
 
 
 
-### Read Estimations
+### Using RDBMS
 
 We have assumed that every search query has on an average 10 Characters
 Then total Queries per year becomes `20Billions searches per year`
