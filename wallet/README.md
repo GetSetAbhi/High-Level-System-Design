@@ -6,21 +6,21 @@ Problem: We need to store user balances and process transfers.
 
 Use a highly performant, in-memory key-value store like Redis. It's fast, can handle many reads/writes, and can be sharded (spread across multiple nodes).
 
-*Why it seems good initially (Pros)*:
+**Why it seems good initially (Pros)**:
 
-High Throughput: In-memory operations are incredibly fast, offering low latency. Sharding allows for horizontal scaling to potentially reach 1M TPS for simple updates.
+	* High Throughput: In-memory operations are incredibly fast, offering low latency. Sharding allows for horizontal scaling to potentially reach 1M TPS for simple updates.
 
-Simplicity: Conceptually easy to understand: account_id -> balance.
+	* Simplicity: Conceptually easy to understand: account_id -> balance.
 
 **Cons** :
 
-The "Correctness" Requirement: This is where the in-memory solution falls apart for a financial system. A balance transfer is not a single operation. It's two distinct operations:
+	* The "Correctness" Requirement: This is where the in-memory solution falls apart for a financial system. A balance transfer is not a single operation. It's two distinct operations:
 
-Deduct from Account A.
+	Deduct from Account A.
 
-Add to Account B.
+	Add to Account B.
 
-Distributed Atomicity Problem: If Account A and Account B reside on different Redis nodes (which they almost certainly will at 1M TPS scale due to sharding), there's no inherent way to guarantee that both operations succeed or both fail.
+	* Distributed Atomicity Problem: If Account A and Account B reside on different Redis nodes (which they almost certainly will at 1M TPS scale due to sharding), there's no inherent way to guarantee that both operations succeed or both fail.
 
 
 
