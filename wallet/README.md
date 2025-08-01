@@ -1,6 +1,6 @@
 # Digital Wallet
 
-## Using in Memory DB
+### Using in Memory DB
 
 Problem: We need to store user balances and process transfers.
 
