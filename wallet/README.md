@@ -100,9 +100,10 @@ How it works for a Wallet (Write Path):
 3. **Events Persisted to Event Store**: These newly generated events are appended to an immutable, ordered Event Store (a distributed log). This is the crucial step that ensures reproducibility and durability.
 4. **Acknowledgement**: Once events are successfully written to the Event Store, the command is considered processed, and an acknowledgement is sent back to the client.
 
-
-
 We used event sourcing with SAGA pattern to solve problem of distributed transactions and database final state reproducibility.
+With this we were able to optimize our write path but we haven't provided any way for end user to view the state. We have made our final state reproducible,
+but it's not readily viewable or queryable in an efficient manner directly from the event store for end-users.
+
 
 
 We have assumed that every search query has on an average 10 Characters
