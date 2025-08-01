@@ -24,8 +24,11 @@ Add to Account B.
 The Realization:
 
 We need ACID properties (Atomicity, Consistency, Isolation, Durability) for financial data. Relational Database Management Systems (RDBMS) are built for this.
+
 **Challenge**: A single RDBMS node cannot handle 1M TPS. We still need to shard.
+
 **New Problem**: Now we have a distributed RDBMS. A transfer still involves two updates on potentially different sharded database nodes. How do we ensure atomicity across these separate nodes?
+
 **Solution Proposed**: Distributed Transactions (e.g., Two-Phase Commit)
 
 How it works (Simplified):
@@ -41,6 +44,7 @@ Cancel Phase (Rollback): If any participant responds "no," or a timeout occurs, 
 **Why it's better than In-Memory (Pros):**
 * Atomicity: Guarantees that either both debit and credit operations complete, or neither does. Money is never lost or duplicated due to partial failures.
 * Durability: RDBMS systems ensure data persistence.
+
 **(Limitations/Cons)**:
 * Performance Bottleneck: The coordinator can become a bottleneck, especially at 1M TPS. It's a synchronous, blocking protocol.
 * Locking and Contention: Resources (like account balances) are locked during the "Try" phase, reducing concurrency and potentially leading to deadlocks.
