@@ -14,13 +14,13 @@ Use a highly performant, in-memory key-value store like Redis. It's fast, can ha
 
 **Cons** :
 
-* The "Correctness" Requirement: This is where the in-memory solution falls apart for a financial system. A balance transfer is not a single operation. It's two distinct operations:
+* **The "Strict Consistency" Requirement**: This is where the in-memory solution falls apart for a financial system. A balance transfer is not a single operation. It's two distinct operations:
 
 Deduct from Account A.
 
 Add to Account B.
 
-* Distributed Atomicity Problem: If Account A and Account B reside on different Redis nodes (which they almost certainly will at 1M TPS scale due to sharding), there's no inherent way to guarantee that both operations succeed or both fail.
+* **Distributed Atomicity Problem**: If Account A and Account B reside on different Redis nodes (which they almost certainly will at 1M TPS scale due to sharding), there's no inherent way to guarantee that both operations succeed or both fail.
 
 
 
