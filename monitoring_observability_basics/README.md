@@ -15,7 +15,7 @@ On a very basic level, 4 metrics can be tracked
 * Errors – Rate of failed requests (e.g., 5xx responses, timeouts, failed database calls).
 * Saturation – How “full” your system is (e.g., CPU, memory, queue length, disk usage).
 
-⚡ 1. Latency
+### Latency ⚡
 Definition: Time taken to process a request or operation.
 
 Example: E-commerce Checkout
@@ -29,7 +29,7 @@ Suddenly it takes 3s.
 
 📌 Latency = How fast are we serving?
 
-📊 2. Traffic
+### Traffic 📊
 Definition: Volume of requests or load on your system.
 
 Example: News App During Breaking News
@@ -51,7 +51,7 @@ DB read/write throughput
 
 CPU/memory usage (as a proxy)
 
-❌ 3. Errors
+### Errors❌
 Definition: Rate of failed or invalid requests.
 
 Example: User Login Service
@@ -73,7 +73,7 @@ Retry/failure rates
 
 Business failures (e.g., "payment declined")
 
-🧯 4. Saturation
+### Saturation🧯
 Definition: How close your system is to its capacity limit.
 
 Example: Kafka Queue
