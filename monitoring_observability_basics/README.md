@@ -119,5 +119,25 @@ This metric often catches performance bottlenecks before they become full outage
 | **Prometheus**      | Time-series metrics & alerts       | ✅ All 4                   | Pull-based metric collection, works great with Grafana        |
 | **Grafana**         | Dashboards/visualization           | All (via Prometheus etc.) | Plots metrics from Prometheus, InfluxDB, CloudWatch etc.      |
 
-
 ---
+
+## Observability
+
+Under Observability, we have access to sufficient data that can help us track down root cause of a particular problem.
+
+The Three Pillars of Observability 🚦 :
+
+* Metrics – Numeric values over time (e.g., CPU usage, request rate).
+* Logs – Textual records of events (e.g., errors, warnings, debug info).
+* Traces – End-to-end request flows across services (e.g., what happened during a user’s login request?).
+
+**Example**
+
+Say an API is responding slowly.
+
+* Metrics show increased latency for one endpoint.
+* Traces show that one downstream service is taking longer than usual.
+* Logs from that service show a spike in timeout exceptions due to a failing database call.
+
+From just your system's output, you were able to pinpoint the root cause (DB issue), without adding new instrumentation—this is observability in action.
+
