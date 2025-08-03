@@ -103,10 +103,21 @@ Some requests start timing out.
 
 Saturation is high! → This tells you that your service is overwhelmed.
 
-### Example
+#### Example
 
 Let’s say latency is rising and users are complaining. Your logs show nothing, error rate is low, CPU is 50%. You're confused.
 Then you check saturation and see the request queue is filling up — a clear sign your app can't keep up with demand.
 This metric often catches performance bottlenecks before they become full outages.
+
+
+
+| Tool                | Primary Use                        | Monitors (Golden Signals) | Explanation                                                   |
+| ------------------- | ---------------------------------- | ------------------------- | ------------------------------------------------------------- |
+| **CloudWatch**      | Logs, metrics, alarms on AWS       | ✅ All 4                   | Native AWS monitoring tool for infrastructure and app metrics |
+| **Kibana**          | Log visualization (ELK stack)      | Mainly Errors & Traffic   | Used with Elasticsearch to search/analyze application logs    |
+| **Dynatrace**       | Full-stack observability + APM     | ✅ All 4                   | Monitors metrics, traces, logs, infra, apps, RUM & synthetics |
+| **Prometheus**      | Time-series metrics & alerts       | ✅ All 4                   | Pull-based metric collection, works great with Grafana        |
+| **Grafana**         | Dashboards/visualization           | All (via Prometheus etc.) | Plots metrics from Prometheus, InfluxDB, CloudWatch etc.      |
+
 
 ---
