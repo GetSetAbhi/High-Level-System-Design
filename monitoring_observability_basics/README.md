@@ -21,20 +21,17 @@ Definition: Time taken to process a request or operation.
 Example: E-commerce Checkout
 A user clicks “Place Order”.
 
-Normally takes 200ms.
-
-Suddenly it takes 3s.
+Normally takes 200ms.Suddenly it takes 3s.
 
 ✅ What this tells you: Something is slowing down — maybe a downstream payment service is lagging.
-
 📌 Latency = How fast are we serving?
 
 ### Traffic 📊
 Definition: Volume of requests or load on your system.
 
 Example: News App During Breaking News
-Normal: 5k requests/minute.
 
+Normal: 5k requests/minute.
 Breaking news: 200k requests/minute.
 
 ✅ What this tells you: Demand is surging. You might need to autoscale.
@@ -43,20 +40,17 @@ Breaking news: 200k requests/minute.
 
 Could be measured in:
 
-HTTP requests/sec
-
-Kafka messages/sec
-
-DB read/write throughput
-
-CPU/memory usage (as a proxy)
+* HTTP requests/sec
+* Kafka messages/sec
+* DB read/write throughput
+* CPU/memory usage (as a proxy)
 
 ### Errors❌
 Definition: Rate of failed or invalid requests.
 
 Example: User Login Service
-Normally 0.1% error rate.
 
+Normally 0.1% error rate.
 Suddenly jumps to 5% — due to expired OAuth token or DB failure.
 
 ✅ What this tells you: Something’s broken. Even if latency is okay, bad responses are going out.
@@ -65,13 +59,10 @@ Suddenly jumps to 5% — due to expired OAuth token or DB failure.
 
 Measured by:
 
-HTTP 5xx or 4xx
-
-Exception counts
-
-Retry/failure rates
-
-Business failures (e.g., "payment declined")
+* HTTP 5xx or 4xx
+* Exception counts
+* Retry/failure rates
+* Business failures (e.g., "payment declined")
 
 ### Saturation🧯
 Definition: How close your system is to its capacity limit.
@@ -80,15 +71,11 @@ Example: Kafka Queue
 Each topic partition can buffer 1,000 messages.
 
 Producer is writing faster than consumer can read.
-
 Lag increases → saturation is rising.
 
 ✅ What this tells you: You're about to hit a ceiling; scale up or tune performance.
 
 📌 Saturation = Can we keep serving?
-
-
-
 
 **How Tracking saturation helps**
 
