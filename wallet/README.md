@@ -83,6 +83,8 @@ Here are the minimalistic data models for `payment_event` and `payment_order` re
 5. Asynchronously, the PSP calls the payment service via a `callbackUrl` so that payment service can update the status of the order linked with the `psp_code`.
 the `callbackUrl` is registered with the PSP during the initial setup while integrating the PSP withour payment service.
 
+6. Once the payment service receives a payment successful event, it sends a payment successful event into Kafka queue. The wallet service and the ledger service will be the listeners of these events and once received will perform their respective tasks.
+
 Following is the example of a sample payment intent POST api.
 
 ```
@@ -90,7 +92,6 @@ Following is the example of a sample payment intent POST api.
   "amount": 10000,
   "currency": "usd",
   "payment_method_types": ["card"],
-  "setup_future_usage": "off_session",
   "description": "Payment for order ORD-123-A",
   "metadata": {
     "payment_order_id": "ORD-123-A",
