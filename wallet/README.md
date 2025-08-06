@@ -1,5 +1,9 @@
 # Payment System
 
+<p align="center">
+  <img src="payment_service.svg" width="600" alt="Improved Typeahead System"/>
+</p>
+
 There are two flows to discuss in a payment system, one is the payin flow and one is the payout flow.
 
 The payment service receives a payment event to initiate a payment and it stores this event in the payment event db.
@@ -57,12 +61,45 @@ Here are the minimalistic data models for `payment_event` and `payment_order` re
 | FK checkout_id     : VARCHAR      |
 | seller_id          : VARCHAR      |
 | amount             : DECIMAL      |
+| psp_token          : VARCHAR      |
 | currency           : VARCHAR      |
 | payment_order_status : ENUM       |
 | created_at         : TIMESTAMP    |
 | updated_at         : TIMESTAMP    |
 | failure_reason     : TEXT         |
 +-----------------------------------+
+```
+
+## The checkout flow
+
+1. A customer clicks "checkout" on the merchant's website. The merchant's frontend sends a high-level payment event to the Payment Service. This event includes order details like the total amount and a unique `checkout_id.
+
+2. The Payment Service takes the payment event and internally creates one or more payment orders and then makes a `POST /payment_intent` API call to the chosen PSP (e.g., Stripe, Adyen). This request contains the amount, currency, and the merchant's payment_order_id (for idempotency) and the redirectUrl. The PSP, in response, returns a unique psp_token which represents the specific payment intent. The Payment Service then stores this psp_token and updates the payment_order status to EXECUTING. 
+
+3. Once the PSP token is stored, the client displays a PSP Hosted webpage where the user fills a form containing the payment details.
+
+4. Once the payment is done, the PSP returns the payment status and redirects the client to the `redirectUrl` it had received via payment intent.
+
+5. Asynchronously, the PSP calls the payment service via a `callbackUrl` so that payment service can update the status of the order linked with the `psp_code`.
+the `callbackUrl` is registered with the PSP during the initial setup while integrating the PSP withour payment service.
+
+Following is the example of a sample payment intent POST api.
+
+```
+{
+  "amount": 10000,
+  "currency": "usd",
+  "payment_method_types": ["card"],
+  "setup_future_usage": "off_session",
+  "description": "Payment for order ORD-123-A",
+  "metadata": {
+    "payment_order_id": "ORD-123-A",
+    "checkout_id": "CHCKT-20250721-ABCD-1234",
+    "seller_id": "SELL-XYZ-1"
+  },
+  "return_url": "https://yourdomain.com/payment/return",
+  "statement_descriptor": "Your Shop Name"
+}
 ```
 
 
