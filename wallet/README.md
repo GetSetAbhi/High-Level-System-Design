@@ -2,6 +2,59 @@
 
 
 
+## How to send money to an external client, someone who is not registered with the PSP
+
+When your generic payment service determines it needs to pay an external, unregistered individual or business, it makes an API call to the PSP's Payout API or Transfer API.
+
+The information that's needed to make the payment includes 
+
+1. Recepient's bank account details.
+
+   * Bank Account Number, Bank Name, Account Holder Name, Bank Identifier (e.g., IFSC Code in India, Routing Number/ABA in US, Sort Code in UK, BSB in Australia)
+   
+2. Amount and Currency: The exact amount to be paid and the currency.
+
+3. Purpose of Payment/Description: A clear description of why the payment is being made (e.g., "Freelance work payment," "Refund for service," "Affiliate commission"). This is often required for compliance.
+
+4. Your Internal Reference ID: A unique ID from your system to track this payout.
+
+5. Webhook/Callback URL: For the PSP to notify your system of the payout's success or failure (as payouts are inherently asynchronous).
+
+```
+Example PSP Payout API Call (Conceptual):
+
+// From Your Generic Payment Service to PSP's Payout API
+
+POST https://payouts.psp.com/v1/payouts
+
+X-API-Key: sk_payout_your_secret_key // Often a different API key for payouts
+
+{
+  "amount": {
+    "value": 750,
+    "currency": "USD"
+  },
+  "recipient_details": {
+    "type": "bank_account",
+    "account_holder_name": "Jane Doe",
+    "account_number": "1234567890",
+    "bank_name": "Anytown National Bank",
+    "routing_number": "123456789",
+    "address": {/* recipient's address for compliance */}
+  },
+  "purpose": "Freelance project payment for Order #456",
+  "your_reference_id": "PAYOUT-ABC-789",
+  "callback_url": "https://your_service.com/webhooks/payout_status"
+}
+```
+
+Once the PSP has received this request, it validates the request at its end. 
+It performs its own AML, fraud, and sanctions checks against the recipient's details.
+Once the validation is successful, initiates a bank transfer (e.g., ACH, SEPA, Faster Payments, IMPS, SWIFT wire) from its own bank account to the recipient's bank account.
+
+Once the payment is completed, the PSP sends an asynchronous webhook to your `callback_url` when the payout status changes (e.g., initiated, processing, completed, failed).
+
+Your service receives the webhook, updates the internal status of the payout (e.g., "Pending Payout" to "Payout Completed" or "Payout Failed").
 
 ---
 
