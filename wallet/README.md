@@ -1,5 +1,69 @@
 # Payment System
 
+There are two flows to discuss in a payment system, one is the payin flow and one is the payout flow.
+
+The payment service receives a payment event to initiate a payment and it stores this event in the payment event db.
+
+The payment event may look like this:
+
+```
+{
+  "checkout_id": "CHCKT-20250721-ABCD-1234",
+  "buyer_info": {
+    "buyer_id": "BUYER-1A2B-3C4D-5E6F",
+    "name": "Jane Doe",
+    "email": "jane.doe@example.com"
+  },
+  "payment_orders": [
+    {
+      "seller_account": "SELL-XYZ-1",
+      "amount": 75.00,
+      "currency": "USD",
+      "payment_order_id": "ORD-123-A"
+    },
+    {
+      "seller_account": "SELL-ABC-2",
+      "amount": 25.00,
+      "currency": "USD",
+      "payment_order_id": "ORD-123-B"
+    }
+  ]
+}
+```
+
+**`payment_event` and `payment_order` Data Model in ASCII**
+
+Here are the minimalistic data models for `payment_event` and `payment_order` represented in a simple ASCII diagram
+
+```
++-----------------------------------+
+|          payment_event            |
++-----------------------------------+
+| PK checkout_id : VARCHAR          |
+|-----------------------------------|
+| buyer_id       : VARCHAR          |
+| is_payment_done: BOOLEAN          |
+| created_at     : TIMESTAMP        |
+| updated_at     : TIMESTAMP        |
++-----------------------------------+
+                  |
+                  | one-to-many
+                  v
++-----------------------------------+
+|          payment_order            |
++-----------------------------------+
+| PK payment_order_id: VARCHAR      |
+|-----------------------------------|
+| FK checkout_id     : VARCHAR      |
+| seller_id          : VARCHAR      |
+| amount             : DECIMAL      |
+| currency           : VARCHAR      |
+| payment_order_status : ENUM       |
+| created_at         : TIMESTAMP    |
+| updated_at         : TIMESTAMP    |
+| failure_reason     : TEXT         |
++-----------------------------------+
+```
 
 
 ## How to send money to an external client, someone who is not registered with the PSP
