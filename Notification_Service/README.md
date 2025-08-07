@@ -119,6 +119,8 @@ SQL databases are highly optimized for querying structured data, which is essent
 
 ### Notification Log DB
 
+We do not want to lose any notification, so we will maintain a log of notifications that were sent
+
 **Rationale for a Using Cassandra Database**
 
 Designed for extreme scalability and high write throughput across distributed clusters, 
