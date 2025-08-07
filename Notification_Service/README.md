@@ -137,8 +137,8 @@ CREATE TABLE notification_logs (
 );
 ```
 
-* notification_id as Partition Key: Ensures even distribution of data across the cluster. Each notification attempt gets its own unique ID.
-* timestamp as Clustering Key (with DESC order): Orders records within a partition by time, allowing efficient retrieval of recent logs for a specific notification.
+* `notification_id` as Partition Key: Ensures even distribution of data across the cluster. Each notification attempt gets its own unique ID.
+* `timestamp` as Clustering Key (with DESC order): Orders records within a partition by time, allowing efficient retrieval of recent logs for a specific notification.
 * Denormalization: All relevant information (user ID, recipient, message content, status) is stored directly in the log entry. This avoids joins, which Cassandra doesn't support, and optimizes for fast reads of complete log records.
 
 ### Notification Template Store 
