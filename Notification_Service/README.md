@@ -14,6 +14,7 @@ There is a **.excalidraw** file which can be imported in [Excalidraw](https://ex
 
 
 ### Notification Trigger Services
+
 These are external or internal services that initiate requests to send notifications. 
 When offering services to other clients, these trigger services expose APIs that clients can call to request notifications.
 	
@@ -27,6 +28,27 @@ before allowing the request to proceed.
 
 * **Rate Limiting:** Controlling the number of API calls a specific "Notification Trigger Service" (or client) 
 can make within a defined timeframe. This prevents abuse, protects the notification system from being overloaded by excessive requests, and helps manage costs.
+
+### The notification Service
+
+```
+POST /api/v1/notifications
+
+Payload
+
+{
+  "user_id": "usr_12345",              // Required: The ID of the user to notify
+  "template_id": "email_welcome_v1",   // Required: The ID of the notification template to use
+  "channel_type": "email",             // Optional: Preferred channel (e.g., "email", "sms", "push"). If not provided, Notification Service uses user's default preferences.
+  "template_data": {                   // Required: Dynamic data to populate the template
+    "name": "Alice",
+    "account_status": "active"
+  },
+  "priority": "normal",                // Optional: e.g., "low", "normal", "high", "critical" (defaults to "normal")
+  "correlation_id": "req_abc_789",     // Optional: Unique ID for tracing the notification request end-to-end
+  "send_at": "2025-08-07T16:30:00Z"    // Optional: ISO 8601 timestamp for scheduled sending (if supported)
+}
+```
 	
 ### Notification and User Preferences DB
 
@@ -102,6 +124,23 @@ SQL databases are highly optimized for querying structured data, which is essent
 Designed for extreme scalability and high write throughput across distributed clusters, 
 making them suitable for massive volumes of append-only log data. Provides high availability.
 
+```
+CREATE TABLE notification_logs (
+    notification_id UUID,
+    timestamp TIMESTAMP, -- When the notification attempt was made (Clustering Key)
+    channel_type TEXT,
+    recipient TEXT,  -- e.g., email address, phone number, device token, Slack channel
+    status TEXT,
+    message_body TEXT,
+	error_message TEXT, 
+    PRIMARY KEY ((notification_id), timestamp)
+);
+```
+
+* notification_id as Partition Key: Ensures even distribution of data across the cluster. Each notification attempt gets its own unique ID.
+* timestamp as Clustering Key (with DESC order): Orders records within a partition by time, allowing efficient retrieval of recent logs for a specific notification.
+* Denormalization: All relevant information (user ID, recipient, message content, status) is stored directly in the log entry. This avoids joins, which Cassandra doesn't support, and optimizes for fast reads of complete log records.
+
 ### Notification Template Store 
 
 **Justification for using MongoDB**
@@ -113,3 +152,38 @@ NoSQL document databases do not enforce a rigid schema, allowing you to store do
 * Performance for Full Document Retrieval:
 When a "Notification Worker Server" needs a template, it typically fetches the entire template document (e.g., the full HTML body, subject, and metadata. 
 Document databases are optimized for retrieving entire documents quickly.
+
+```
+[
+  {
+    "_id": "email_welcome_template_v1",  // Unique ID for the template
+    "template_name": "Welcome Email",
+    "template_type": "EMAIL",           // e.g., "EMAIL", "SMS", "PUSH", "SLACK"
+    "version": 1,
+    "status": "ACTIVE",                 // e.g., "ACTIVE", "INACTIVE", "DEPRECATED"
+    "language": "en-US",                // Language of the template
+    "channels": ["email"],              // Array of channels this template is intended for
+    "content": {
+      "subject": "Welcome to Our Service, {{user.name}}!",
+      "html_body": "<html><body><h1>Welcome!</h1><p>Hi {{user.name}}, thanks for joining! Your account is {{account.status}}.</p></body></html>",
+      "text_body": "Hi {{user.name}}, thanks for joining! Your account is {{account.status}}."
+    },
+    "created_at": ISODate("2025-08-07T10:00:00Z"),
+    "updated_at": ISODate("2025-08-07T10:00:00Z")
+  },
+  {
+    "_id": "sms_otp_template_v2",
+    "template_name": "OTP SMS",
+    "template_type": "SMS",
+    "version": 2,
+    "status": "ACTIVE",
+    "language": "en-US",
+    "channels": ["sms"],
+    "content": {
+      "text_body": "Your OTP is {{otp_code}}. It expires in {{expiry_minutes}} minutes. Do not share this code."
+    },
+    "created_at": ISODate("2025-02-15T08:30:00Z"),
+    "updated_at": ISODate("2025-08-01T14:15:00Z")
+  }
+]
+```
