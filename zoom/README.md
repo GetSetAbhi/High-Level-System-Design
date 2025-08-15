@@ -100,3 +100,4 @@ Here's a breakdown of why RTMP (a TCP-based protocol) is used for reliable strea
 * Guaranteed Delivery: RTMP is built on TCP, which ensures that every data packet sent is received by the server. UDP, being connectionless, doesn't guarantee delivery, meaning packets can be lost, leading to glitches or freezes in the stream.
 * Packet Ordering: RTMP ensures that packets are received in the correct order. UDP has no built-in ordering, so packets can arrive out of sequence, which would require extra processing to reassemble the video.
 
+https://ishan-aggarwal.medium.com/how-does-live-streaming-works-9840dff67f8a
