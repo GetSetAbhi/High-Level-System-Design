@@ -22,20 +22,26 @@ UDP is a connectionless protocol and doesn't guarantee ordering of data. Also so
   <img src="p2p.svg" width="500" alt="Video Calling"/>
 </p>
 
-For a one-to-one video call between User 1 (U1) and User 2 (U2), both devices need to establish a direct connection over *UDP (User Datagram Protocol)* for efficient media transfer. To achieve this, U1 and U2 first connect to a *STUN (Session Traversal Utilities for NAT)* server. The *STUN* server's role is to help each device discover its public IP address and port, a process known as "NAT traversal."
+For a one-to-one video call between User 1 (U1) and User 2 (U2), both devices need to establish a direct connection over **UDP (User Datagram Protocol)** for efficient media transfer. To achieve this, U1 and U2 first connect to a **STUN (Session Traversal Utilities for NAT)** server. The **STUN** server's role is to help each device discover its public IP address and port, a process known as "NAT traversal."
 
-This public address information is then exchanged between U1 and U2 through a signaling channel, typically a WebSocket. This channel is also used to negotiate technical details, such as supported video codecs, resolutions, and available bandwidth. This negotiation process, using the *Session Description Protocol (SDP)*, ensures that the call quality is optimized for the lowest-capability device or network. For example, if U2 is on a low-bandwidth connection, both devices will agree to transmit a lower-resolution video stream.
+This public address information is then exchanged between U1 and U2 through a signaling channel, typically a WebSocket. This channel is also used to negotiate technical details, such as supported video codecs, resolutions, and available bandwidth. This negotiation process, using the **Session Description Protocol (SDP)**, ensures that the call quality is optimized for the lowest-capability device or network. For example, if U2 is on a low-bandwidth connection, both devices will agree to transmit a lower-resolution video stream.
 
 After the exchange and negotiation are complete, the devices attempt to establish a direct, peer-to-peer UDP connection using the public IP addresses they discovered. The actual video call is then a continuous stream of data packets flowing directly between the two devices, with each acting as both a sender and a receiver.
 
-In scenarios where a direct peer-to-peer connection is blocked by a restrictive firewall or network configuration (such as a symmetric NAT), the connection attempt will fail. In such cases, the system falls back to a *TURN (Traversal Using Relays around NAT)* server. The *TURN* server does not just help with finding IP addresses; its primary function is to relay all the UDP media traffic between U1 and U2. This ensures the call can still proceed, though with slightly more latency due to the data being routed through an intermediary server.
+In scenarios where a direct peer-to-peer connection is blocked by a restrictive firewall or network configuration (such as a symmetric NAT), the connection attempt will fail. In such cases, the system falls back to a **TURN (Traversal Using Relays around NAT)** server. The **TURN** server does not just help with finding IP addresses; its primary function is to relay all the UDP media traffic between U1 and U2. This ensures the call can still proceed, though with slightly more latency due to the data being routed through an intermediary server.
 
 A firewall interruption occurs at the edge of the local network, such as a home router's NAT firewall or a corporate network's gateway. These firewalls are designed to block incoming connections that aren't a direct response to an outgoing request. If this interruption prevents a direct UDP connection, the system falls back to a TURN (Traversal Using Relays around NAT) server. The TURN server's role is to relay all the UDP media traffic between U1 and U2, ensuring the call can still proceed, though with slightly more latency due to the data being routed through a middleman server.
 
 All of this is part of the overall WebRTC framework.
 
 
-## Video Post-Processing/ Video Transcoding Service
+## Group Calling Scenario
+
+While in a 1:1 calling scenario, it is efficient for devices to communicate directly using a peer-to-peer connection, in a group calling scenario this quickly increases device load.
+
+Suppose there are n participants in a group call. In a pure peer-to-peer mesh, each device must send n − 1 outbound streams (one to each other participant) and receive n − 1 inbound streams. This results in bandwidth and CPU usage growing linearly with the number of participants.
+
+For larger groups, this model becomes inefficient. In such a case we will follow the Call server approach so each user will be sending to receiving from only the call server. This might put some load on the call server but that is easily manageable by scaling the hardware as per requirement. User’s bandwidth is something we can not control so our priority will be to optimize the use of users’ bandwidth utilization.
 
 ![Video Post-Processing Service](video-transcoding.svg)
 
