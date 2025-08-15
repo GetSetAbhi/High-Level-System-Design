@@ -37,71 +37,39 @@ All of this is part of the overall WebRTC framework.
 
 ## Group Calling Scenario
 
+<p align="center">
+  <img src="zoom_teams.svg" width="800" alt="Group Calling"/>
+</p>
+
 While in a 1:1 calling scenario, it is efficient for devices to communicate directly using a peer-to-peer connection, in a group calling scenario this quickly increases device load.
 
 Suppose there are n participants in a group call. In a pure peer-to-peer mesh, each device must send n − 1 outbound streams (one to each other participant) and receive n − 1 inbound streams. This results in bandwidth and CPU usage growing linearly with the number of participants.
 
 For larger groups, this model becomes inefficient. In such a case we will follow the Call server approach so each user will be sending to receiving from only the call server. This might put some load on the call server but that is easily manageable by scaling the hardware as per requirement. User’s bandwidth is something we can not control so our priority will be to optimize the use of users’ bandwidth utilization.
 
-![Video Post-Processing Service](video-transcoding.svg)
+**Selective Forwarding**
 
-Whenever we upload a video, it is stored into an Object Storage like S3.
-Once a file is stored in S3, S3 triggers an event and sends video to Video Transcoding Service.
+In a teams and zoom web conference, sometimes a particular might be interested in a high resolution stream for one partcular user while for other streams it might need lower resolution.
+This represents the functionality in zoom or teams where video from 1 user in a conference call is enlarged while all other users appear minimised.
 
-The post-processing/Video Transcoding Service is a "pipeline" which produces the following outputs:
+In selective forwarding, the call server takes in streams from all users and then the call server only sends clients the streams they care about and in appropriate resolutions. 
+The client sends its requriement to call server via signaling server.
 
-1. Video segment files in different formats (codec and container combinations) stored in S3.
-	
-2. Manifest files (a primary manifest file and several media manifest files) stored in S3. 
-The media manifest files will reference segment files in S3.
+The encoding of videos happens at client side only because if the Call server itself handles encoding of all other streams then not only the latency will increase, but the call server will also come under a lot of load.
+Instead The encoding for different resolutions takes place on the sender's device.
 
+When you join a group call, your device's WebRTC engine takes your video feed and encodes it into multiple versions simultaneously. For example, it might create a high-quality 1080p stream, a medium-quality 720p stream, and a low-quality 360p stream all at the same time. All of these streams are then sent to the Call Server.
 
-The Video Post Processing Pipeline can be thought of as a DAG, which embodies the properties of a DAG:
+Call Server's Role: The Call Server's job is to receive all these streams from all participants. It then evaluates each recipient's network conditions and device capabilities and the user preferences. Based on that information, it simply selects and forwards the most appropriate, pre-encoded stream. If a user has a strong connection and a large screen, they'll receive the 1080p stream. If a user is on a mobile device with a weaker connection, the SFU will send them the 360p stream. 
 
-* Directed: Each step in the pipeline has a clear, one-way flow. For example, you must split a video into 
-segments before you can transcode those segments. Data moves forward from one task to the next; it never flows backward.
+The call server stores the user preferences in its in-memory state for the duration of the conference call.
+These preferences are temporary, so there's no need to store them in a persistent database. When a client sends a request to the SFU via the signaling channel, the SFU updates an internal, in-memory forwarding table. This table maps each client to the specific video streams and resolutions it has requested. When the call ends or a client disconnects, this temporary state is simply discarded.
 
-* Acyclic: There are no "loops" or "cycles" in the workflow. A task will never depend on itself, 
-nor will a series of tasks eventually lead back to a task that has already been completed. 
-This ensures the pipeline always progresses towards completion and avoids infinite processing loops.
+**Call Recording**
 
-**Internal Working of Video Post-Processing Service**
+Recording service aggregates these data chunks and sends them to an object storage like S3 to be stored against a meeting id. The distributed system will only hold this data for as long as the call is on. Once the call is disconnected signaling service will know through the web socket handler and fire an event to Kafka. The Recording Archival Service
+will receive this event and then it will :
 
-1. Whenever a video is uploaded completely into S3, S3 Event Notification triggers an AWS Lambda function 
-which starts an AWS Step Function Workflow. AWS Step Functions is designed precisely to orchestrate and encompass 
-Lambda functions and MediaConvert jobs into a cohesive workflow.
+1. Fetch the chunks against a meeting id
+2. Assemble these chunks into a single recording and store it into s3 again.
 
-2. The Step Functions workflow performs these steps:
-
-	* (Segmentation): Invokes another Lambda function (or a Fargate task via AWS Batch) 
-	to partiyion video into different audio and video segments etc., storing them in s3.
-
-	* Video and Audio Encoding: These are lambdas, that are orchestrated by the AWS Step Function workflow 
-	and these parallely encode audio and video segments into various resolutions and bitrates 
-	to support adaptive bitrate streaming. The results of these processes are stored in S3, so that they can be assembled later.
-
-	* Thumbnail Generation: This is another lambda function that generates a thumbnail for the video.
-
-	* Assembly and Manifest Generation: Once Audio Encoding and Video Encoding for various segments are done, 
-	the AWS Step Function workflow then triggers another lambda that assembles the various audio and video encodings 
-	that were generated in previous steps and generates a manifest file which acts as an index of these encodings. 
-	manifest file is then stored in the S3.
-
-	* The last step of this process would be to update the metadata db containing the meta data details if the video.
-
-**Choice of Database for storing Metadata**
-
-For a system like YouTube or Spotify, you would almost certainly use a combination of these databases (a polyglot persistence approach):
-
-* Relational Database (e.g., PostgreSQL/MySQL): For core, highly structured metadata like video/audio IDs, titles, upload dates, user account information, 
-and critical relationships that require strong consistency (e.g., which user owns which video).
-
-* Document Database (e.g., MongoDB): For more flexible, evolving metadata like tags, specific video properties, or user-generated content details that don't fit neatly into a rigid schema.
-	
----
-# Audio Streaming Service
-
-![Audio Post-Processing Service](audio_transcoding.svg)
-
-The high level design for an Audio Post-Processing and Transcoding service remains same.
-We just remove video specific parts but rest of the things remain the same.
