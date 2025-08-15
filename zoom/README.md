@@ -73,3 +73,27 @@ will receive this event and then it will :
 1. Fetch the chunks against a meeting id
 2. Assemble these chunks into a single recording and store it into s3 again.
 
+## Live Streaming
+
+<p align="center">
+  <img src="hotstar.svg" width="500" alt="Live Streaming"/>
+</p>
+
+In a modern streaming workflow, RTMP is often used for the "first mile" (ingest), which is the stream from the broadcaster's encoder to the streaming server. 
+After that, the server transcodes the stream into more modern, HTTP-based protocols like HLS or MPEG-DASH for delivery to a wide range of devices and browsers.
+
+On the broadcasting side, there is an encoder software that performs the following functions:
+
+* Compression: Raw video is extremely large and impractical to stream in its original state. The encoder uses a codec (coder-decoder) to compress this data by removing redundant visual and audio information. Popular codecs for live streaming include H.264, H.265 (HEVC), and AV1.
+
+* Packaging: After compressing the data, the encoder packages it into a streaming protocol, such as RTMP or WebRTC, so it can be sent to a streaming server for distribution.
+
+Essentially, the encoder acts as a translator, taking a high-quality video and audio signal and converting it into a much smaller, universally understood format that can be delivered efficiently to a global audience.
+
+The transcoding in the streaming servers is similar to what is discussed in the Youtube Design.
+
+Here's a breakdown of why RTMP (a TCP-based protocol) is used for reliable streaming instead of raw UDP:
+
+* Guaranteed Delivery: RTMP is built on TCP, which ensures that every data packet sent is received by the server. UDP, being connectionless, doesn't guarantee delivery, meaning packets can be lost, leading to glitches or freezes in the stream.
+* Packet Ordering: RTMP ensures that packets are received in the correct order. UDP has no built-in ordering, so packets can arrive out of sequence, which would require extra processing to reassemble the video.
+
