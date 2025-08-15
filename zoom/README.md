@@ -19,7 +19,7 @@ UDP is a connectionless protocol and doesn't guarantee ordering of data. Also so
 ## 1 - 1 Video calling Scenario
 
 <p align="center">
-  <img src="p2p.svg" width="300" alt="Video Calling"/>
+  <img src="p2p.svg" width="500" alt="Video Calling"/>
 </p>
 
 For a one-to-one video call between User 1 (U1) and User 2 (U2), both devices need to establish a direct connection over *UDP (User Datagram Protocol)* for efficient media transfer. To achieve this, U1 and U2 first connect to a *STUN (Session Traversal Utilities for NAT)* server. The *STUN* server's role is to help each device discover its public IP address and port, a process known as "NAT traversal."
