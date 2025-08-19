@@ -9,6 +9,8 @@ I've used chat gpt extensively for making these notes.
 
 Before starting, checkout the [Database Scaling Guide](database/)
 
+Some Common Themes : [Common Talking Points](common_points/)
+
 **System Design Notes**
 * [Monitoring and Observability Basics](monitoring_observability_basics/)
 * [Stateful vs Stateless](Stateful_VS_Stateless/)
