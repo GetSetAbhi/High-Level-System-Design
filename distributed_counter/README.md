@@ -47,7 +47,7 @@ We can use a no-sql database like a dynamodb which is designed for horizontal sc
 
 Now if we move to dynamodb and use the same schema as shown before, it will result into a hot partition problem.
 
-To solve that we can split the data into n partitions and append to partition number to the partition key such that our partition key now looks like this `post_id#k` where k is the partition number.
+To solve that we can split the data into n partitions and append to partition number to the partition key such that our partition key now looks like this `post_id#k` where k is the partition number. Generate a random shard index from a predefined, small range (e.g., 0 to N−1, where N might be 10 to 100).
 
 The only problem here is that now we have to query each partition for the likes and aggregate the count. 
 This is not acceptable as we need low latency and near real time count.
