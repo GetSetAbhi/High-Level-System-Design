@@ -78,6 +78,16 @@ For last 1 hour → just return the heap from the current hour bucket.
 For last 1 day → merge heaps from the last 24 buckets into a new heap, then take top K.
 For last 1 week → same merging logic but with 7 days of buckets.
 
+Note that the heap will not be bounded to K elements, whenever a new event comes up it will be added as a new object into the heap.
+Now when we need the top k video ids, we will retrieve elements from the priority queue and discard video ids whose count in priority queue does not
+match the accurate count in map. This is how we are doing deduplication.
+
+```
+Event e = new Event(videoId, viewCount);
+PriorityQueue<Event> pq;
+pq.push(e)
+```
+
 ```
             Incoming Video Watch Events
                      |
