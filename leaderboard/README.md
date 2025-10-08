@@ -8,6 +8,8 @@ Suppose I'm creating a service which will show me top videos watched in last K m
 
 Following example elaborates upon how this can be done.
 
+https://www.hellointerview.com/learn/system-design/problem-breakdowns/top-k
+
 ## Creating time based buckets
 
 Every time someone watches a video, we get a view event like the following and we get **millions of these events**.
