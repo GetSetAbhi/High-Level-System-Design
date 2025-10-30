@@ -119,6 +119,44 @@ FileVersions is a join table. The FileVersions table will have multiple rows for
 
 * The block_sequence_index in FileVersions is crucial, as it defines the order of these blocks for that specific file version.
 
+* To fetch a specific block we do this :
+
+```
+SELECT
+    fv.block_hash,
+    fv.block_sequence_index,
+    b.s3_location
+FROM
+    FileVersions fvb
+JOIN
+    Blocks b ON fv.block_hash = b.block_hash
+WHERE
+    fv.file_version_id = [The specific version_id you want]
+ORDER BY
+    fv.block_sequence_index ASC;
+```
+The crucial step is in the FileVersionBlocks table:
+
+When you create a new version of a file, say Version 2, that contains a block (Block A) carried over from Version 1.
+
+The system simply inserts a new row into FileVersionBlocks for Version 2 that points to the same block_hash for Block A that Version 1 used.
+
+Version 1 Mapping: (V1_ID, BlockA_Hash, 5)
+
+Version 2 Mapping: (V2_ID, BlockA_Hash, 5) (Assuming it's still at index 5)
+
+
+This way, we are creating multiple entries for unchanged blocks in FileVersions table.
+
+# ⚖️ The Trade-off: Metadata vs. Content
+You are making a classic trade-off common in highly scalable systems:
+
+You save on Content Storage (Physical Storage): By avoiding duplicating the large block content in S3. This is the most significant saving.
+
+You increase Metadata Storage (Database Rows): You accept that the database must store extra small metadata rows in FileVersionBlocks every time a block is reused.
+
+Since a metadata row (a few IDs and an integer) is tiny compared to a content block (e.g., 4MB), this is an extremely worthwhile trade-off for efficiency and scalability.
+
 ```
 +---------------------------------+        +-----------------------------+
 |        File MetaData DB         |        |      Block MetaData DB      |
