@@ -110,6 +110,9 @@ The Payment Service receives the payment event and stores it in the DB. One paym
 The Payment Executor's service logic is designed to take a single payment order and execute it fully (e.g., register the intent, update the status). 
 This process is executed for each distinct payment order.
 
+A single payment event may contain multiple payment orders, 
+Therefore, when the Payment Executor sends the registration request for each individual payment order to the PSP, it will include the same redirectUrl in every request.
+
 * Concurrent Processing (In Parallel)
   While the logic is sequential per order, the execution of multiple orders from a single payment event is usually parallelized for performance:
 
@@ -128,7 +131,23 @@ This process is executed for each distinct payment order.
 	* Receives the specific payment order.
 	* Performs the PSP integration task: It translates the internal payment order into the exact external API format required by the PSP.
 	* Sends the payment registration request to the PSP.
+	
+When the payment executor sends a payment request to the PSP, the PSP responds with a token which is a unique identifier (UUID) for the specific transaction they are about to process. The Payment Executor stores this psp_token in the payment_order record in its database. It then sends this token back to the Payment Service so the Payment Service knows which PSP token corresponds to its internal payment_order_id.
 
+the Payment Service must store the PSP token (payment intent ID) for each payment order in the event.
+
+While the Payment Executor receives the token directly from the PSP, the Payment Service needs this token for reconciliation.
+
+* Payment Executor's Action: After the Payment Executor receives the psp_token from the PSP, it must communicate this token back to the Payment Service, often through an internal API call or a dedicated database update.
+
+* Payment Service's Database: The Payment Service stores this psp_token against the corresponding payment_order record in its database.
+
+* Purpose: When the webhook arrives at the Payment Service's callbackUrl, the payload will contain the psp_token. The Payment Service uses this token to quickly look up the correct payment_order and update its final status.
+
+The callbackUrl (webhook) is called for each individual payment order.
+Since each payment order is treated as a separate financial transaction by the PSP:
+* Separate Events: The PSP generates a separate, unique status event for the conclusion of ORD-A (successful) and a separate event for ORD-B (failed).
+* Orchestration: The Payment Service waits for both webhooks (or waits until a timeout is reached) to determine the final, overall status of the entire checkout_id based on its business rules (All-or-Nothing or Partial Fulfillment).
 
 ## How to send money to an external client, someone who is not registered with the PSP
 
