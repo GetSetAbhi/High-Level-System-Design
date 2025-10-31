@@ -103,6 +103,23 @@ Following is the example of a sample payment intent POST api.
 }
 ```
 
+## Payment Service and Payment Executor
+
+The Payment Service receives the payment event and stores it in the DB. One payment event may contain multiple payment orders so each payment order is sent to Payment Executor.
+
+The Payment Executor's service logic is designed to take a single payment order and execute it fully (e.g., register the intent, update the status). 
+This process is executed for each distinct payment order.
+
+* Concurrent Processing (In Parallel)
+
+While the logic is sequential per order, the execution of multiple orders from a single payment event is usually parallelized for performance:
+
+* Asynchronous Tasks: The Payment Service, after creating the payment orders, would submit them as separate tasks to the Payment Executor's queue or service layer.
+* Worker Pool: The Payment Executor service would maintain a pool of worker threads or use a message queue (like Kafka or RabbitMQ). Each worker would pick up a single payment order and process it independently of the others.
+* PSP Communication: For a single checkout_id (with two payment orders, say ORD-A and ORD-B), the Payment Executor can simultaneously:
+	* Send the registration request for ORD-A to PSP 1.
+	* Send the registration request for ORD-B to PSP 2.
+
 
 ## How to send money to an external client, someone who is not registered with the PSP
 
@@ -157,23 +174,6 @@ Once the validation is successful, initiates a bank transfer (e.g., ACH, SEPA, F
 Once the payment is completed, the PSP sends an asynchronous webhook to your `callback_url` when the payout status changes (e.g., initiated, processing, completed, failed).
 
 Your service receives the webhook, updates the internal status of the payout (e.g., "Pending Payout" to "Payout Completed" or "Payout Failed").
-
-## Payment Service and Payment Executor
-
-The Payment Service receives the payment event and stores it in the DB. One payment event may contain multiple payment orders so each payment order is sent to Payment Executor.
-
-The Payment Executor's service logic is designed to take a single payment order and execute it fully (e.g., register the intent, update the status). 
-This process is executed for each distinct payment order.
-
-* Concurrent Processing (In Parallel)
-
-While the logic is sequential per order, the execution of multiple orders from a single payment event is usually parallelized for performance:
-
-* Asynchronous Tasks: The Payment Service, after creating the payment orders, would submit them as separate tasks to the Payment Executor's queue or service layer.
-* Worker Pool: The Payment Executor service would maintain a pool of worker threads or use a message queue (like Kafka or RabbitMQ). Each worker would pick up a single payment order and process it independently of the others.
-* PSP Communication: For a single checkout_id (with two payment orders, say ORD-A and ORD-B), the Payment Executor can simultaneously:
-	* Send the registration request for ORD-A to PSP 1.
-	* Send the registration request for ORD-B to PSP 2.
 
 ---
 
