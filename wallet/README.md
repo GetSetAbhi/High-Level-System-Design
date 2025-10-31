@@ -175,7 +175,7 @@ When your system redirects the customer to the PSP-hosted page, the PSP is manag
 2. The Final Redirect Fires Once
 The redirectUrl is triggered only when the PSP's hosted page finishes its work, regardless of how many internal transactions it processed.
 	* The Final Decision: The PSP determines the immediate user-facing result for the entire session. Since one order (ORD-B) failed, the PSP will typically conclude the session with a status of "Failure" or "Issue" before triggering the redirect.
-	* The Redirect: The customer's browser is sent to the single, pre-configured redirectUrl: https://yourdomain.com/payment_return?checkout_id=CHCKT-1234&status=failure (or similar generic error).
+	* The Redirect: The customer's browser is sent to the single, pre-configured redirectUrl: http://yourdomain.com/payment_return?checkout_id=CHCKT-1234&status=failure (or similar generic error).
 
 ## How to send money to an external client, someone who is not registered with the PSP
 
