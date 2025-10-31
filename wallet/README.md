@@ -169,14 +169,13 @@ The reason the customer only sees one final action (the redirect) is because the
 
 1. The Single User Session
 When your system redirects the customer to the PSP-hosted page, the PSP is managing a single session tied to the checkout_id (via the psp_token).
- * Behind the Scenes: The PSP knows it needs to perform two separate internal transactions (for ORD-A and ORD-B) using the single set of card details the user enters.
- * Sequential or Batched Execution: The PSP will process the two orders either sequentially or in a tight batch immediately after the user clicks "Pay" on the hosted form.
+	* Behind the Scenes: The PSP knows it needs to perform two separate internal transactions (for ORD-A and ORD-B) using the single set of card details the user enters.
+	* Sequential or Batched Execution: The PSP will process the two orders either sequentially or in a tight batch immediately after the user clicks "Pay" on the hosted form.
 
 2. The Final Redirect Fires Once
 The redirectUrl is triggered only when the PSP's hosted page finishes its work, regardless of how many internal transactions it processed.
- * The Final Decision: The PSP determines the immediate user-facing result for the entire session. Since one order (ORD-B) failed, the PSP will typically conclude the session with a status of "Failure" or "Issue" before triggering the redirect.
-
- * The Redirect: The customer's browser is sent to the single, pre-configured redirectUrl: https://yourdomain.com/payment_return?checkout_id=CHCKT-1234&status=failure (or similar generic error).
+	* The Final Decision: The PSP determines the immediate user-facing result for the entire session. Since one order (ORD-B) failed, the PSP will typically conclude the session with a status of "Failure" or "Issue" before triggering the redirect.
+	* The Redirect: The customer's browser is sent to the single, pre-configured redirectUrl: https://yourdomain.com/payment_return?checkout_id=CHCKT-1234&status=failure (or similar generic error).
 
 ## How to send money to an external client, someone who is not registered with the PSP
 
