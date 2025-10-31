@@ -169,15 +169,15 @@ This process is executed for each distinct payment order.
 
 While the logic is sequential per order, the execution of multiple orders from a single payment event is usually parallelized for performance:
 
-	* Asynchronous Tasks: The Payment Service, after creating the payment orders, would submit them as separate tasks to the Payment Executor's queue or service layer.
+* Asynchronous Tasks: The Payment Service, after creating the payment orders, would submit them as separate tasks to the Payment Executor's queue or service layer.
 
-	* Worker Pool: The Payment Executor service would maintain a pool of worker threads or use a message queue (like Kafka or RabbitMQ). Each worker would pick up a single payment order and process it independently of the others.
+* Worker Pool: The Payment Executor service would maintain a pool of worker threads or use a message queue (like Kafka or RabbitMQ). Each worker would pick up a single payment order and process it independently of the others.
 
-	* PSP Communication: For a single checkout_id (with two payment orders, say ORD-A and ORD-B), the Payment Executor can simultaneously:
+* PSP Communication: For a single checkout_id (with two payment orders, say ORD-A and ORD-B), the Payment Executor can simultaneously:
 
-		* Send the registration request for ORD-A to PSP 1.
+	* Send the registration request for ORD-A to PSP 1.
 
-		* Send the registration request for ORD-B to PSP 2.
+	* Send the registration request for ORD-B to PSP 2.
 
 ---
 
