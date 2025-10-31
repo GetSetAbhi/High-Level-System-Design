@@ -68,6 +68,21 @@ Here are the minimalistic data models for `payment_event` and `payment_order` re
 | updated_at         : TIMESTAMP    |
 | failure_reason     : TEXT         |
 +-----------------------------------+
+
+
++-----------------------------------+
+|     payment_execution_tasks       |
++-----------------------------------+
+| PK payment_order_id: VARCHAR      |
+|-----------------------------------|
+| psp_id             : VARCHAR      |
+| psp_token          : VARCHAR      |
+| execution_status   : ENUM        |
+| last_attempt_at    : TIMESTAMP    |
+| retry_count        : INT          |
+| psp_error_msg      : TEXT         |
++-----------------------------------+
+
 ```
 
 ## The checkout flow
@@ -148,6 +163,20 @@ The callbackUrl (webhook) is called for each individual payment order.
 Since each payment order is treated as a separate financial transaction by the PSP:
 * Separate Events: The PSP generates a separate, unique status event for the conclusion of ORD-A (successful) and a separate event for ORD-B (failed).
 * Orchestration: The Payment Service waits for both webhooks (or waits until a timeout is reached) to determine the final, overall status of the entire checkout_id based on its business rules (All-or-Nothing or Partial Fulfillment).
+
+## 🧭 How the Redirect Works with Multiple Orders
+The reason the customer only sees one final action (the redirect) is because the platform forces all individual financial steps to occur within one unified user experience controlled by the PSP's hosted page.
+
+1. The Single User Session
+When your system redirects the customer to the PSP-hosted page, the PSP is managing a single session tied to the checkout_id (via the psp_token).
+ * Behind the Scenes: The PSP knows it needs to perform two separate internal transactions (for ORD-A and ORD-B) using the single set of card details the user enters.
+ * Sequential or Batched Execution: The PSP will process the two orders either sequentially or in a tight batch immediately after the user clicks "Pay" on the hosted form.
+
+2. The Final Redirect Fires Once
+The redirectUrl is triggered only when the PSP's hosted page finishes its work, regardless of how many internal transactions it processed.
+ * The Final Decision: The PSP determines the immediate user-facing result for the entire session. Since one order (ORD-B) failed, the PSP will typically conclude the session with a status of "Failure" or "Issue" before triggering the redirect.
+
+ * The Redirect: The customer's browser is sent to the single, pre-configured redirectUrl: https://yourdomain.com/payment_return?checkout_id=CHCKT-1234&status=failure (or similar generic error).
 
 ## How to send money to an external client, someone who is not registered with the PSP
 
