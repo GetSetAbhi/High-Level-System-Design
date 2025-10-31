@@ -119,6 +119,22 @@ This process is executed for each distinct payment order.
 	* Send the registration request for ORD-A to PSP 1.
 	* Send the registration request for ORD-B to PSP 2.
 
+1) Payment Service (The "Brain"):
+
+	* Receives the high-level payment event (from the client).
+
+	* Creates the detailed payment order (or multiple orders).
+
+	* Initiates the request by sending the payment order to the Payment Executor via an internal API call or a message queue.
+
+2) Payment Executor (The "Hand"):
+
+	* Receives the specific payment order.
+
+	* Performs the PSP integration task: It translates the internal payment order into the exact external API format required by the PSP.
+
+	* Sends the payment registration request to the PSP.
+
 
 ## How to send money to an external client, someone who is not registered with the PSP
 
