@@ -1,7 +1,11 @@
 # Payment System
 
 <p align="center">
-  <img src="payment_service.svg" width="600" alt="Improved Typeahead System"/>
+  <img src="payment_service.svg" width="600" alt="Payment System HLD"/>
+</p>
+
+<p align="center">
+  <img src="payment2.svg" width="600" alt="Payment System Detailed"/>
 </p>
 
 There are two flows to discuss in a payment system, one is the payin flow and one is the payout flow.
