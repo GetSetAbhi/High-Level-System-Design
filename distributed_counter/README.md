@@ -2,6 +2,26 @@
 
 ![Counter](counter.svg)
 
+## Capacity Estimation
+
+| Metric                               | Example Assumption                                      | Notes                                         |
+| ------------------------------------ | ------------------------------------------------------- | --------------------------------------------- |
+| **Daily active users (DAU)**         | 100 million                                             | Roughly 1/3 of total users                    |
+| **Avg tweets per user per day**      | 5                                                       | Many users post or engage several times a day |
+| **Tweets created per day**           | 100M × 5 = **500 million new tweets/day**               | Baseline for writes                           |
+| **Avg likes per tweet**              | 10                                                      | Varies widely, but 10 is fine for reasoning   |
+| **Like events per day**              | 500M tweets × 10 likes = **5 billion likes/day**        | Core counter write traffic                    |
+| **Average like requests per second** | 5,000,000,000 / 86,400 ≈ **≈ 50,000 likes/sec average** | Rounded for reasoning                         |
+| **Peak factor**                      | ×2                                                      | Social apps are very bursty                   |
+| **Peak QPS**                         | 50K × 10 = **≈ 100K likes/sec peak**                    | Approximate upper bound                       |
+
+What peak QPS tells me ?
+
+100K likes per second means I’m designing for high throughput, not for big data.
+The core challenge is write concurrency and hot tweets, so I’d use a distributed in-memory counter system — sharded by tweet ID, with sub-shards for hot keys.
+Reads are 10× heavier, so I’d cache counts in Redis and persist snapshots periodically.
+It’s a throughput and consistency trade-off problem, not a storage one.
+
 ## Using a relational database
 
 ```
