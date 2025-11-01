@@ -4,34 +4,53 @@
 
 Scale requirements:
 
-*	`100 million daily active users`.
-*	Each user makes `20 queries a day.` 
+*	`10 million daily active users`.
+*   `Each user does about 10 searches a day`
+*	`Each search has on an average 4 words and every word has on an average 5 characters, so every search has 20 characters on an average`
 *	Search data should be updated daily
 
 A new request is made every time a user types in a new character. 
-Assuming the average number of characters of a query is 10, then the number of requests per query is 10 * average searches daily per user of 20 = `200 queries/user/day`.
+So `total requests per user per day =  20 characters x average searches per user per day`
+which is `20x10 = 200 requests per user per day` 
 
-`100M DAU X 20 Search Queries per day per user = 2 Billion Search Queries Per Day`
+`10M DAU X 200 requests per user per day = 2 Billion Queries Per Day`
+
+`2 Billion / 24*60*60 seconds = ~23k QPS`
+
+Peak load = `2 x QPS = ~46QPS`
 
 ### Read Estimations
 
-We have assumed that every search query has on an average 10 Characters
-Then total Queries per year becomes `20Billions searches per year`
+A new request is made every time a user types in a new character. 
+So `total requests per user per day =  20 characters x average searches per user per day`
+which is `20x10 = 200 requests per user per day` 
 
-**20 Billion / 100000 seconds = ~200K QPS**
+`10M DAU X 200 requests per user per day = 2 Billion Queries Per Day`
 
-Assuming peak traffic is twice then query per second becomes **400 QPS**
+**2 Billion / 24*60*60 seconds = ~23k QPS**
+
+Assuming peak traffic is twice then query per second becomes **2 x QPS = ~46K QPS**
 
 ### Storage
 
-We have assumed that every search query has on an average 10 Characters and every character is suppose 2 Bytes.
+We have assumed that every search query has on an average 20 Characters and every character is suppose 1 Bytes if we are considering ASCII Chars.
+So for every query we have about `20 Bytes` of data.
 
+If about 20% of search queries are fresh, then storage requirement per day becomes.
 
-Then daily storage requirement becomes:  **2 Billion Search Queries Per Day x 10 x 2Bytes = 40GB**
+**10M DAU x 10 Searches per User X 20 Byte data per search x 20% = 0.4GB Per day**
+
+and this translates to about **~160 GB Per Year**
+
+## Interpretation
+
+I have about ~46K queries per second and about ~160GB storage requirement per year so what this means is that
+I'm dealing with a read heavy system and storage is very modest and not bottlenect. I need low latency and high throughput.
+
+Once I see that scale, potentially hundreds of thousands of lookups per second, each needing to return results within tens of milliseconds, that tells me:
+I cannot rely on a traditional relational database for every keystroke. The query latency and connection overhead would be too high.
+Instead, I should use a high-throughput, low-latency store — like Redis, ElasticSearch, or a custom in-memory trie or prefix index.
 	
-`2 Billion x 10 x 2Bytes = 40 GB per day` 
-
-`For a year it will be ~13K GB = ~13TB`
 
 ## API Design
 
