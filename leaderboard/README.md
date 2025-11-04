@@ -201,16 +201,16 @@ That’s a lot of work for the database — very slow.
 	* To get the daily Top K → read 1 row per day.
 	* To get the monthly Top K → add up 30 days instead of 720 hours.
 
-✅ Much faster queries!
+    ✅ Much faster queries!
 
 * ⚙ How to build those daily/monthly totals
 
-* *Option 1: Use a cron job*
- * Every hour or day, a background task sums up smaller chunks (e.g., hours → day).
- * It saves the result into a new “daily” table.
+	* **Option 1: Use a cron job**
+	 * Every hour or day, a background task sums up smaller chunks (e.g., hours → day).
+	 * It saves the result into a new “daily” table.
 
-* *Option 2: Use Flink*
+	* *Option 2: Use Flink*
 
-Tell Flink to also keep daily and monthly counts, not just hourly ones.
+	Tell Flink to also keep daily and monthly counts, not just hourly ones.
 
-It will write those totals directly, no cron job needed.
+	It will write those totals directly, no cron job needed.
