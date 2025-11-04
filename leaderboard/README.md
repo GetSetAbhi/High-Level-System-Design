@@ -140,3 +140,11 @@ If you tried to calculate “Top-K” by running a SQL GROUP BY over all events 
 <p align="center">
   <img src="topk_real_time.svg" height="1000" alt="Collaborative Document Editing"/>
 </p>
+
+
+Initially we start with a Top K service that reads from database, but that solution does not scale as it will take a lot of time to compute and serve the result.
+SO we introduce a cache to decrease the latency. 
+But now the data is only valid for some time and if we are requesting for a timestamp for which the data isn't calculated yet then again we will have to compute
+and serve the results which is not very efficient and will lead to high latency.
+Now to counter that we introduce a Cron Service whose job is the precompute the results for a timestamp and put them in cache. So now read path is efficient in a way.
+
