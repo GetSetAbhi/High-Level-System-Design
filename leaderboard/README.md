@@ -138,5 +138,5 @@ If you tried to calculate “Top-K” by running a SQL GROUP BY over all events 
 # Using a Cron and Flink Processing for near real time results
 
 <p align="center">
-  <img src="topk_real_time.svg" alt="Collaborative Document Editing"/>
+  <img src="topk_real_time.svg" height="1000" alt="Collaborative Document Editing"/>
 </p>
