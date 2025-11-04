@@ -146,5 +146,59 @@ Initially we start with a Top K service that reads from database, but that solut
 SO we introduce a cache to decrease the latency. 
 But now the data is only valid for some time and if we are requesting for a timestamp for which the data isn't calculated yet then again we will have to compute
 and serve the results which is not very efficient and will lead to high latency.
-Now to counter that we introduce a Cron Service whose job is the precompute the results for a timestamp and put them in cache. So now read path is efficient in a way.
+Now to counter that we can add a cron to our system which, on fixed intervals, will precompute the top K for each time window and warms our cache in the same way. 
+Then, requests that come to our top-K service are only reading from the cache, never querying the database.
 
+## Optimising Writes
+
+When millions of “view” events arrive per second (say every time someone watches a video),
+if you write each event directly to the database, you’ll destroy your DB:
+* Too many writes per second (each event = one row/insert).
+* The DB becomes your bottleneck (high I/O, locking, cost).
+* It doesn’t scale — you’ll quickly hit throughput limits.
+
+**Solution**
+
+Instead of sending every view to the DB:
+* The system first groups events by (video_id, minute) — e.g. in a stream processor like Flink.
+* It keeps a running count for that video within the current minute.
+So, instead of writing 1 million separate rows like:
+
+```
+(video1, view)
+(video1, view)
+(video1, view)
+...
+
+```
+
+It Just writes one row per hour
+
+```
+(video1, 10:05, total_views=1,000,000)
+
+```
+
+Flink handles checkpoint and recovery for us, so we don't have to worry about losing data or struggling with itchy problems like event delays.
+For this Flink application, we'll use `BoundedOutOfOrdernessWatermarkStrategy` to handle late events: 
+basically we'll tell Flink that we're ok waiting up to some time (probably 30 seconds here, < 1 minute) for late events to arrive. 
+We'll also use a tumbling window of 1 hour to aggregate the views for each video.
+
+Now, our Flink job is accepting individual view events and outputting sums of views per video on a 1 hour interval.
+Because we're batching, instead of a steady stream of writes we now have a big lump of writes every hour. As long as these are spread across shards, this is acceptable and it can even be
+
+## Optimising Top K Queries
+
+If we only store hourly view counts, and someone wants to know the Top K videos for a month,
+we’d have to add up 24 hours × 30 days = 720 rows for every video.
+That’s a lot of work for the database — very slow.
+
+💡 The idea
+
+Let’s also keep daily totals (and maybe monthly totals).
+
+That way:
+* To get the daily Top K → read 1 row per day.
+* To get the monthly Top K → add up 30 days instead of 720 hours.
+
+✅ Much faster queries!
