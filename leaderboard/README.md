@@ -132,3 +132,11 @@ K is small (50–500).
 Expiration is done lazily or on a schedule.
 
 If you tried to calculate “Top-K” by running a SQL GROUP BY over all events in a time range each time, it would be thousands of times slower.
+
+---
+
+# Using a Cron and Flink Processing for near real time results
+
+<p align="center">
+  <img src="topk_real_time.svg" alt="Collaborative Document Editing"/>
+</p>
