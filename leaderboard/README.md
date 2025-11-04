@@ -206,11 +206,9 @@ That’s a lot of work for the database — very slow.
 * ⚙ How to build those daily/monthly totals
 
 	* **Option 1: Use a cron job**
-	 * Every hour or day, a background task sums up smaller chunks (e.g., hours → day).
-	 * It saves the result into a new “daily” table.
+		* Every hour or day, a background task sums up smaller chunks (e.g., hours → day).
+		* It saves the result into a new “daily” table.
 
-	* *Option 2: Use Flink*
-
-	Tell Flink to also keep daily and monthly counts, not just hourly ones.
-
-	It will write those totals directly, no cron job needed.
+	* **Option 2: Use Flink**
+		* Tell Flink to also keep daily and monthly counts, not just hourly ones.
+		* It will write those totals directly, no cron job needed.
