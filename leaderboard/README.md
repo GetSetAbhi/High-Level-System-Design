@@ -193,7 +193,7 @@ If we only store hourly view counts, and someone wants to know the Top K videos 
 we’d have to add up 24 hours × 30 days = 720 rows for every video.
 That’s a lot of work for the database — very slow.
 
-💡 The idea
+###💡 The idea
 
 Let’s also keep daily totals (and maybe monthly totals).
 
@@ -202,3 +202,15 @@ That way:
 * To get the monthly Top K → add up 30 days instead of 720 hours.
 
 ✅ Much faster queries!
+
+###⚙ How to build those daily/monthly totals
+
+* *Option 1: Use a cron job*
+ * Every hour or day, a background task sums up smaller chunks (e.g., hours → day).
+ * It saves the result into a new “daily” table.
+
+* *Option 2: Use Flink*
+
+Tell Flink to also keep daily and monthly counts, not just hourly ones.
+
+It will write those totals directly, no cron job needed.
