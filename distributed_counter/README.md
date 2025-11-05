@@ -96,3 +96,45 @@ This service can take advantage of stream processing services such as Apache Fli
 The Tweet Likes Counter Batch Job periodically re-computes the count by simply counting the records in this durable database. Any overcounts or undercounts that may have occurred in the real-time stream due to network issues or retries are corrected when this batch job runs. The real-time stream simply provides a fast estimate of the count since the last batch run.
 
 The CDC link between the Counter DB and the Counter Cache is the reconciliation bridge. When the Tweet Likes Counter Batch Job finishes its periodic re-computation and writes the accurate count to the Counter DB, the CDC system detects this change and pushes the new value directly to the Counter Cache. This overwrites the real-time, approximate count with the new, accurate one. This process ensures that the count displayed to the user is always up-to-date and converges to the correct value. The Like Count Service reading from the cache will simply serve the latest value available, whether it's from the real-time stream or the batch reconciliation.
+
+## Upgrades
+
+![Counter](counter2.svg)
+
+The batch job's requirement to scan the entire DynamoDB table to compute the accurate count is the primary scalability bottleneck of your original Lambda Architecture. As the raw event data (Tweet Likes DB) grows, the batch time will increase linearly, eventually making it impossible to compute a "fresh" definitive count within an acceptable time window.
+
+Also given that we will not be storing an unlike event in the DB, if we make time based checkpoints for the batch job then we will not be able to accurately calculate the exact and accurate count of likes on a post.
+
+Instead what we will do now is that the Tweets event consumer will now add likes to the database and if there is an unlike then the Consumer will delete the record.
+
+Now every time a change is made in the database, the database CDC will send that change event to kafka and then the DB Change streamer will capture that change and maintain count record on counter DB.
+
+Both the Event Consumer and the DB Change streamer will flush there changes in batches to increase the througput 
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│                      TWEET LIKES DB (MAIN TABLE)                 │
+├─────────────────┬─────────────────┬────────────────┬─────────────┤
+│   Attribute     │     Key Role    │    Format      │  Purpose    │
+├─────────────────┼─────────────────┼────────────────┼─────────────┤
+│                 │                 │                │             │
+│ShardedPartition │ PRIMARY KEY (PK)│ [Shard#PostID] │ SCALABILITY │
+│Key              │                 │                │             │
+├─────────────────┼─────────────────┼────────────────┼─────────────┤
+│                 │                 │                │             │
+│UserID           │ SORT KEY (SK)   │ user_abc123    │ UNIQUENESS  │
+│                 │                 │                │ & DELETE    │
+├─────────────────┼─────────────────┼────────────────┼─────────────┤
+│PostID           │ Attribute       │ post_54321     │ (For Query) │
+├─────────────────┼─────────────────┼────────────────┼─────────────┤
+│Timestamp        │ Attribute       │ 1700000000     │ (For Audit) │
+└─────────────────┴─────────────────┴────────────────┴─────────────┘
+```
+
+DynamoDB provides native CDC support through a feature called DynamoDB Streams.
+The DynamoDB Stream itself is highly reliable, providing a time-ordered sequence of changes for up to 24 hours. Each record is tracked by a unique sequence number within a stream shard.
+
+For your Counter DB—which is solely dedicated to storing the final, accurate numerical count `(post_id, count)` and is being updated by a reliable stream processor (the DB Change Streamer) — the best database choice is a high-throughput, horizontally scalable NoSQL system designed for fast, frequent, indexed writes and reads.
+We can create an index on post_id for fast read
+
+The two top contenders are Amazon DynamoDB (if you are on AWS) or Apache Cassandra (or its faster commercial fork, ScyllaDB).
