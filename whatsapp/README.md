@@ -43,8 +43,8 @@ This allows fast:
 
 This tells Cassandra:
 
-	Store messages in descending order of message_ts inside each conversation.
-	So the newest messages appear first in the partition.
+Store messages in descending order of message_ts inside each conversation.
+So the newest messages appear first in the partition.
 
 This makes the most common messaging query extremely fast:
 
