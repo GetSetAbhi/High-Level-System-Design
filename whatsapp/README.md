@@ -1,3 +1,5 @@
+![Web Crawler](whatsapp.svg)
+
 # Whatsapp Schema
 
 ```
