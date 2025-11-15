@@ -51,3 +51,16 @@ This makes the most common messaging query extremely fast:
 `SELECT * FROM messages WHERE conversation_id = ? LIMIT 50;`
 
 Cassandra can return the newest 50 messages directly without scanning.
+
+## How attachment works ?
+
+Attachment are stored separately, only their metadata is store in the database but the media content is stored in an object storage like s3.
+But then the attachment is not served via S3, it is served via CDN.
+
+**How CDN works ?**
+
+* Media (images/videos) is uploaded to S3, not the CDN.
+* The CDN automatically fetches files from S3 on the first request (cache miss).
+* Subsequent requests are served from CDN cache (fast + cheap).
+* Users should always receive a CDN URL, not an S3 URL.
+* Backend sends the media URL as something like: https://cdn.myapp.com/media/abc123.jpg
