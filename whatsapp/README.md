@@ -25,12 +25,12 @@ This creates a table called messages with 4 columns:
 
 Cassandra’s primary key has two parts:
 
-(A) Partition Key : `conversation_id`
+* Partition Key : `conversation_id`
 
 All messages for the same conversation go into the same partition. A partition is stored on one node (or replicas) based on hashing. 
 Queries must specify conversation_id to retrieve messages. So every chat (1:1 or group) is a separate partition.
 
-(B) Clustering Key : `message_ts`
+* Clustering Key : `message_ts`
 
 Within the partition, all rows (messages) are sorted by message_ts.
 
