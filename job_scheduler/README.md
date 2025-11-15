@@ -3,6 +3,43 @@
   <img src="job_scheduler.svg" height="500px" alt="Job Scheduler"/>
 </p>
 
+## Database schema for Cassandra Database
+
+```
+CREATE TABLE scheduled_task (
+    task_id UUID PRIMARY KEY,
+    name text,
+    schedule_cron text,
+    artifact_id text,
+    entrypoint text
+);
+
+
+CREATE TABLE scheduled_task_run (
+    task_id UUID,
+    scheduled_at timestamp,
+    run_id UUID,
+    status text,
+    PRIMARY KEY (task_id, scheduled_at)
+) WITH CLUSTERING ORDER BY (scheduled_at ASC);
+
+Partition key: task_id — ensures all runs of a task are in one partition.
+Clustering key: scheduled_at — allows querying “upcoming runs” efficiently:
+
+
+scheduled_task         -- instead of job_type
+scheduled_task_run     -- instead of job_run
+
+```
+
+Design Justifications for **Cassandra**
+
+* Write-heavy workload: Every scheduled job run is an insert — Cassandra excels at high write throughput.
+* Horizontal scaling: Each scheduler can handle a shard by task_id (partitioning is natural).
+* No joins needed: All queries are by task_id and optionally scheduled_at.
+
+## Series of Steps
+
 **Step 0 — Job Submission**
 
 Job consumer receives a new job request from Queue. Computes the scheduled_at time for a job and
@@ -69,10 +106,14 @@ This ensures a rolling window of scheduled executions.
 
 ## Running Multiple Schedulers
 
-Each scheduler instance is pinned to a shard.
+Each scheduler instance is pinned to a shard/partition.
 
-Scheduler polls only its shard for due job_run rows.
+Scheduler polls only its shard/partition for due job_run rows.
 
 Precomputes job_run rows for new job_type entries in its shard.
 
 Enqueues jobs to the DPQ as usual.
+
+## workers
+
+We run workers as containers, Containers are similar to VMs in that they provide an isolated environment for running jobs, but they are much more lightweight and faster to start up. Let's break down the key differences between VMs and containers. We can reuse the same containers for multiple jobs, reducing resource usage and improving performance.
