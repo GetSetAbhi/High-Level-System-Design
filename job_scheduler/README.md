@@ -85,12 +85,12 @@ Only the scheduler touches the DB; workers are decoupled.
 * Dead-letter jobs after exceeding max retries.
 * If a recurring job finished executing, the Controller sends an event into message queue for the scheduler so that it can create a new row in `job_run` table 
 
-** Step 4- Worker **
+**Step 4- Worker**
 
 Once a worker is assigned a job, it can pull artiface from the object storage and executed the artifact
 and reports the job status to the controller so that controller can update the job run_table accordingly.
 
-** Step 5 - Recurring Job Rescheduling **
+**Step 5 - Recurring Job Rescheduling**
 
 After a recurring job runs successfully, the scheduler received an event from Message queue, and it calculates next execution from `job_type.schedule_cron` and Inserts new job_run row:
 
