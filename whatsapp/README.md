@@ -13,8 +13,7 @@ CREATE TABLE messages (
 
 This creates a table called messages with 4 columns:
 
-* conversation_id (text)
-  Which chat/conversation the message belongs to.
+* **conversation_id (text)** : Which chat/conversation the message belongs to.
 
 * message_ts (timeuuid)
   A timestamp-encoded unique ID that also gives ordering.
