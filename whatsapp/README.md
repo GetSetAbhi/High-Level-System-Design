@@ -18,7 +18,7 @@ This creates a table called messages with 4 columns:
 * **sender_id (text)** : Who sent the message.
 * **body (text)** : The text message content.
 
-** Meaning of the PRIMARY KEY**
+**Meaning of the PRIMARY KEY**
 
 `PRIMARY KEY (conversation_id, message_ts)`
 
@@ -45,7 +45,8 @@ This tells Cassandra:
 
 	Store messages in descending order of message_ts inside each conversation.
 	So the newest messages appear first in the partition.
-	This makes the most common messaging query extremely fast:
+
+This makes the most common messaging query extremely fast:
 
 `SELECT * FROM messages WHERE conversation_id = ? LIMIT 50;`
 
