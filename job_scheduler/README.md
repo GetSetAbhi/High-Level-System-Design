@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="job_scheduler.svg" height="800" alt="Job Scheduler"/>
+  <img src="job_scheduler.svg" height="500px" alt="Job Scheduler"/>
 </p>
 
 **Step 0 — Job Submission**
