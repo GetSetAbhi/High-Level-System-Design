@@ -1,5 +1,7 @@
 
-![Counter](job_scheduler.svg)
+<p align="center">
+  <img src="job_scheduler.svg" height="800" alt="Job Scheduler"/>
+</p>
 
 **Step 0 — Job Submission**
 

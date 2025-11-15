@@ -214,3 +214,17 @@ That’s a lot of work for the database — very slow.
 		* Tell Flink to also keep daily and monthly counts, not just hourly ones.
 		* It will write those totals directly, no cron job needed.
 		* It will write results into tables like `video_views_hourly`, `video_views_daily`, `video_views_monthly`
+		
+Pre-compute the aggregated counts for each window (hour/day/month) and store them in dedicated tables.
+
+Instead of aggregating at query time, the system (Flink) aggregates every hour and writes updates to the window tables.
+Top-K queries then simply perform:
+
+```
+SELECT videoId, views FROM VideoViewsLastHour ORDER BY views DESC LIMIT K;
+```
+
+This is instant because the table is small and indexed on views.
+
+**Tradeoff**:
+Writes become heavier (you update multiple window tables), but reads become extremely fast.
