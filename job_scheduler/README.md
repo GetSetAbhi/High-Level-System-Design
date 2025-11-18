@@ -7,23 +7,33 @@
 
 ```
 CREATE TABLE scheduled_task (
-    task_id UUID PRIMARY KEY,
+    user_id UUID,
+    task_id UUID,
     name text,
     schedule_cron text,
-    artifact_id text,
-    entrypoint text
+    artifact_id text,    id of the artifact stored in s3
+    entrypoint text,
+    PRIMARY KEY (user_id, task_id)
 );
+
+partition key : user_id 
+All of a user's tasks live in the same partition → fast queries.
+
+Clustering key = task_id
+Uniquely identifies the task within that user.
 
 
 CREATE TABLE scheduled_task_run (
+    user_id UUID,
     task_id UUID,
     scheduled_at timestamp,
     run_id UUID,
     status text,
-    PRIMARY KEY (task_id, scheduled_at)
-) WITH CLUSTERING ORDER BY (scheduled_at ASC);
+    PRIMARY KEY ((user_id, task_id), scheduled_at)
+) WITH CLUSTERING ORDER BY (scheduled_at DESC);
 
-Partition key: task_id — ensures all runs of a task are in one partition.
+
+Partition key = (user_id, task_id) : All runs for a single task are grouped together → great for history queries.
 Clustering key: scheduled_at — allows querying “upcoming runs” efficiently:
 
 
@@ -113,6 +123,45 @@ Scheduler polls only its shard/partition for due job_run rows.
 Precomputes job_run rows for new job_type entries in its shard.
 
 Enqueues jobs to the DPQ as usual.
+
+
+## How does a scheduler know which cassandra key range to check ?
+
+A scheduler instance discovers its shard by reading Cassandra’s token ring using the built-in driver metadata.
+Cassandra already divides the keyspace into token ranges, so we evenly distribute those token ranges across all scheduler instances.
+Each scheduler polls only the rows whose partition keys hash into its assigned token range using token(task_id) queries.
+This gives deterministic, lock-free sharding and horizontal scalability.
+
+The simple deterministic formula :
+
+`range_index % scheduler_count == scheduler_id`
+
+Let us suppose I have following token range and 3 scheduler instances running:
+
+```
+Cassandra Token ring
+
+R0: -9223372036854775808 → -6917529027641081854
+R1: -6917529027641081854 → -4611686018427387909
+R2: -4611686018427387909 → -2305843009213693954
+R3: -2305843009213693954 → 0
+R4: 0 → 2305843009213693954
+R5: 2305843009213693954 → 4611686018427387909
+R6: 4611686018427387909 → 6917529027641081854
+R7: 6917529027641081854 → 9223372036854775807
+
+
+scheduler_count = 3
+scheduler_ids = [0, 1, 2]
+
+Scheduling Service 1 will handle those ranges where range_index % 3 == scheduling service id
+
+```
+
+## How will scheduling service know its id ?
+
+Every scheduling service can register itself with a service registry (Zookeeper) which will assign it a service id.
+
 
 ## workers
 
