@@ -166,3 +166,23 @@ Every scheduling service can register itself with a service registry (Zookeeper)
 ## workers
 
 We run workers as containers, Containers are similar to VMs in that they provide an isolated environment for running jobs, but they are much more lightweight and faster to start up. Let's break down the key differences between VMs and containers. We can reuse the same containers for multiple jobs, reducing resource usage and improving performance.
+
+## Scaling the Controller 
+
+Use a Queue That Supports Parallel Consumers
+Best Option : Kafka (ideal at scale)
+
+Why this matters?
+
+A queue with consumer groups guarantees that:
+
+ * Multiple controllers can read from the same topic/stream
+ * Messages are load-balanced across controllers
+
+You can increase throughput simply by Scaling controllers horizontally
+
+Controllers are stateless. Workers register and heartbeat to a shared Controller Service endpoint. A load balancer spreads these requests across controller instances.
+
+## If controller dies mid job ?
+
+Workers send heartbeats through the Controller Service. If a worker stops heartbeating for a configured timeout, the Controller marks it as dead and looks up the list of active runs assigned to that worker (stored in Redis). Those runs are marked as lost or retry_pending in Cassandra, their tenant license tokens are released, and the jobs are re-enqueued back into the DPQ. This allows another healthy worker to pick them up immediately. If job-level heartbeats are implemented, we can also detect hung or stalled jobs even if the worker is still alive. This mechanism ensures fault tolerance, zero manual intervention, and keeps the system highly available.
