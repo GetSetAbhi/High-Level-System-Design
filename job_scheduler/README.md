@@ -86,6 +86,7 @@ Only the scheduler touches the DB; workers are decoupled.
 **Step 3 — Controller / Dispatcher**
 
 * The controller pulls jobs from Message Queue and assigns job to workers.
+* Created a record in redis job_run_id : worker_id and also maintains a mapping between worker_id : assigned_job[job_id1, 2...]. this is done so that in an event of worker failure, the scheduler can assign jobs to some other worker
 * Updates job_run.status in DB:
 	* running when worker starts
 	* success / failed when worker finishes
