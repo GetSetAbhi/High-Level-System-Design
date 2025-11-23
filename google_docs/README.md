@@ -224,7 +224,7 @@ s3 acts as a snapshot of current version of document.
 # Alternative Design
 
 <p align="center">
-  <img src="google_docs.svg" width="600" alt="Collaborative Document Editing"/>
+  <img src="google_docs2.svg" width="600" alt="Collaborative Document Editing"/>
 </p>
 
 In this case we use a redis pub sub to fan out the changes to all the servers that are working on a particular document.
