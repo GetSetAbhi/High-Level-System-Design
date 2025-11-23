@@ -220,3 +220,16 @@ this document tree can be stored into our mongo db.
 Similarly, we can have some worker nodes that will periodically retrieve these trees from mongo db, and send them to be converted and stored as a document in the s3.
 
 s3 acts as a snapshot of current version of document.
+
+# Alternative Design
+
+<p align="center">
+  <img src="google_docs.svg" width="600" alt="Collaborative Document Editing"/>
+</p>
+
+In this case we use a redis pub sub to fan out the changes to all the servers that are working on a particular document.
+
+Suppose the Collaboration Server 1 is working on a document with id X then the collaboration server will perform hash on document id and go to the corresponding redis node to subscribe to a channel that broadcasts changes related to document with id X. When a worker receives the changes from kafka, it then performs a hash on the document id to
+go to the corresponding redis node and acts as a producer for the channel and publishes all its changes so that they can be received by all the subscribers.
+
+This is possible because In Redis Pub/Sub, subscribing to a channel that does not exist is completely allowed and nothing breaks. If no one is publishing to the channel yet, the subscriber just waits idly until a message arrives. Also anyone can publish to any channel
