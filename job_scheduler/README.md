@@ -98,7 +98,7 @@ Only the scheduler touches the DB; workers are decoupled.
 
 **Step 4- Worker**
 
-Once a worker is assigned a job, it can pull artiface from the object storage and executed the artifact
+Once a worker is assigned a job, it can pull artifact from the object storage and executed the artifact
 and reports the job status to the controller so that controller can update the job run_table accordingly.
 
 **Step 5 - Recurring Job Rescheduling**
