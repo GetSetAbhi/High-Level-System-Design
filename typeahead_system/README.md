@@ -79,6 +79,7 @@ Response should include a list of suggested terms, ordered by relevance:
 * The search service also sends the search terms to a message queue which is consumed by a Search Aggregator Service.
 * The Search Aggregator service stores the search terms in the Database.
 * The Data Processor Batch pulls the daily data out of the search terms database and updates the index in the database as well as the cache.
+* The Aggregator Store can be a K-V store like cassandra or dynamodb
 
 In this design, I haven't taken into account how the seeding of my search term storage DB will take place.
 
