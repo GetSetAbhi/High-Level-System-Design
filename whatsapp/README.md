@@ -67,7 +67,7 @@ But then the attachment is not served via S3, it is served via CDN.
 * Users should always receive a CDN URL, not an S3 URL.
 * Backend sends the media URL as something like: https://cdn.myapp.com/media/abc123.jpg
 
-** Why not Serve directly from S3 ? **
+**Why not Serve directly from S3 ?**
 
 Because there's no built in cache and every request then will directly hit S3. Global downloads become high in latency.
 If there a very popular media being shared then there's a chance that the trafic will spike massively to retrieve data from S3.
