@@ -336,4 +336,25 @@ So following queries will be used
 	  AND score > 1850;
 ```
 
+* Fetch K users above and below
+
+	Repeat across buckets → merge → top K.
+```
+SELECT user_id, score
+FROM leaderboard_by_score_bucket
+WHERE leaderboard_id = 'l1'
+  AND bucket_id = 7
+  AND score > 1850
+LIMIT k;
+
+SELECT user_id, score
+FROM leaderboard_by_score_bucket
+WHERE leaderboard_id = 'l1'
+  AND bucket_id = 7
+  AND score < 1850
+LIMIT 5;
+
+```
+
+
 Here we have partitioned the data to solve Hot-Leaderboard problem at database level.
