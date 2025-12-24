@@ -320,4 +320,19 @@ N = total partitions
 
 ```
 
+Now to calculate rank for a user that does not belong in the TopK cache, we need to retrieve it from Cassandra.
+So following queries will be used
+
+* Count users with higher score (rank computation)
+  Sum counts across all buckets.
+```
+	For each bucket:
+
+	SELECT COUNT(*)
+	FROM leaderboard_by_score_bucket
+	WHERE leaderboard_id = 'l1'
+	  AND bucket_id = 7
+	  AND score > 1850;
+```
+
 Here we have partitioned the data to solve Hot-Leaderboard problem at database level.
