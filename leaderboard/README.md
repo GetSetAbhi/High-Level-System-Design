@@ -277,3 +277,47 @@ lower_limit = max(0, user_rank - k)
 ZREVRANGE leaderboard:{leaderboard1} lower_limit upper_limit WITHSCORES
 
 ```
+
+to scale our system, we can shard the redis using leaderboardID such that all leaderboard related queries go to one redis instance, but then we need to find a way To
+solve the HOT-LEADERBOARD problem.
+
+## HOT LEADERBOARD PROBLEM
+
+To solve hot leaderboard problem, we use a cassandra + redis approach where redis will maintain sorted set for TopK users while everything else remains inside cassandra.
+Also cassandra acts as a source of truth in case Redis goes down. This is a write-thorugh and read-thorugh cache combination.
+
+Write-through = Update db + cache together
+Read thorugh = Cache first and then read from DB
+
+Following will be the schema for cassandra
+
+```
+CREATE TABLE leaderboard_user_score (
+    leaderboard_id text,
+    user_id text,
+    score bigint,
+    updated_at timestamp,
+    PRIMARY KEY ((leaderboard_id), user_id)
+);
+
+Partition id : leaderboard_id
+Sort key : user_id
+
+CREATE TABLE leaderboard_by_score_bucket (
+    leaderboard_id text,
+    bucket_id int,
+    score bigint,
+    user_id text,
+    PRIMARY KEY ((leaderboard_id, bucket_id), score, user_id)
+) WITH CLUSTERING ORDER BY (score DESC, user_id ASC);
+
+Partition id : leaderboard_id, bucket_id
+Sort key : score, user_id
+
+where bucket_id = hash(user_id) % N 
+
+N = total partitions
+
+```
+
+Here we have partitioned the data to solve Hot-Leaderboard problem at database level.
