@@ -356,5 +356,92 @@ LIMIT 5;
 
 ```
 
-
 Here we have partitioned the data to solve Hot-Leaderboard problem at database level.
+
+## how to further optimize performance ?
+
+we know that count() is expensive, so we pre-aggregated counter table
+
+```
+CREATE TABLE leaderboard_score_band_count (
+    leaderboard_id text,
+    score_band int,
+    user_count counter,
+    PRIMARY KEY ((leaderboard_id), score_band)
+);
+
+
+CREATE TABLE leaderboard_by_score_bucket (
+    leaderboard_id text,
+    bucket_id int,
+	score_band int,
+    score bigint,
+    user_id text,
+    PRIMARY KEY ((leaderboard_id, bucket_id), score, user_id)
+) WITH CLUSTERING ORDER BY (score DESC, user_id ASC);
+
+```
+
+### What is a “score band”?
+
+A score band is a coarse bucket of scores.
+
+Example:
+score_band = floor(score / 100)
+
+```
+| Score   | Band |
+| ------- | ---- |
+| 0–99    | 0    |
+| 100–199 | 1    |
+| 200–299 | 2    |
+| …       | …    |
+```
+
+### What does the table store?
+
+For each leaderboard:
+```
+(leaderboard_id, score_band) → number of users in that band
+
+| leaderboard_id | score_band | user_count |
+| -------------- | ---------- | ---------- |
+| l1             | 25         | 1,243      |
+| l1             | 26         | 987        |
+| l1             | 27         | 412        |
+```
+
+### How this table is used (step by step)
+
+* Step 1 : User wants their rank
+  
+  You already know: user's score and score band
+  
+  ```
+  SELECT score, bucket_id FROM leaderboard_user_score WHERE leaderboard_id = 'l1' AND user_id = 'u123';
+  ```
+  
+  we calculate the score and the score band in step 1
+
+* Step 2 : Count users in higher score bands
+
+  Instead of scanning millions of rows:
+```
+SELECT score_band, user_count FROM leaderboard_score_band_count WHERE leaderboard_id = 'l1' AND score_band > 21;
+
+rank_above = SUM(user_count WHERE score_band > my_band)
+```
+
+* Step 3 : Rank inside the user’s band
+```
+users with score > my_score AND score_band = my_band
+
+SELECT user_id FROM leaderboard_by_score_bucket WHERE leaderboard_id = 'l1' AND bucket_id = X AND score_band = my_band AND score > my_score;
+
+total_rows returned = rank of user within band
+```
+
+* Step 4 : Final Rank
+```
+rank = rank_above + rank_inside_band + 1
+```
