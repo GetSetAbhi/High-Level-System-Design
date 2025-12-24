@@ -324,6 +324,7 @@ Now to calculate rank for a user that does not belong in the TopK cache, we need
 So following queries will be used
 
 * Count users with higher score (rank computation)
+
   Sum counts across all buckets.
 ```
 	For each bucket:
