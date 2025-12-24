@@ -228,3 +228,52 @@ This is instant because the table is small and indexed on views.
 
 **Tradeoff**:
 Writes become heavier (you update multiple window tables), but reads become extremely fast.
+
+---
+
+# Gaming Leader board
+
+<p align="center">
+  <img src="gaming_leaderboard.svg" alt="Gaming Leaderboard"/>
+</p>
+
+We partition the leaderboard by leaderboard id, such that all the leaderboards go in in one shard.
+
+1) suppose we need to add the score of user2 then we do :
+
+```
+ZADD leaderboard1 350 user2
+```
+
+this query means that we want to add score 350 to a user2 within leaderboard `leaderboard1`, where `leaderboard1` refers to the sorted set.
+
+2) If we want to update the score then we use `ZINCRBY` in the follwing manner:
+
+```
+ZINCRBY leaderboard1 25 user2
+```
+this query means that we want to add score 25 to a user2 within leaderboard `leaderboard1`, where `leaderboard1` refers to the sorted set.
+
+3) If a user wants to retrieve the score then:
+
+```
+ZSCORE leaderboard:{leaderboard1} user123
+```
+
+4) If a user wants to retrieve its rank then :
+
+```
+ZREVRANK leaderboard:{leaderboard1} user123
+```
+
+5) If a user wants to find k users above and below it then we can utilize `ZREVRANGE`.
+	First we find the rank of user using `ZREVRANK` then we find the upper limit and lower limit to be used in `ZREVRANGE`	
+```
+user_rank = ZREVRANK leaderboard:{leaderboard1} user123
+
+upper_limit = user_rank + k
+lower_limit = max(0, user_rank - k)
+
+ZREVRANGE leaderboard:{leaderboard1} lower_limit upper_limit WITHSCORES
+
+```
