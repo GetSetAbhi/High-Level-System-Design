@@ -438,6 +438,8 @@ users with score > my_score AND score_band = my_band
 
 SELECT user_id FROM leaderboard_by_score_bucket WHERE leaderboard_id = 'l1' AND bucket_id = X AND score_band = my_band AND score > my_score;
 
+we need to execute this query in all buckets
+
 total_rows returned = rank of user within band
 ```
 
