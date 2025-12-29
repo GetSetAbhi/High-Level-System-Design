@@ -77,6 +77,7 @@ We target 99.99% availability, which allows about 50 minutes of downtime per yea
 ---
 
 ## QPS Estimation (2-minute math)
+- For facebook level DAU can be 100M
 - Daily requests = 10M × 10 = **100M**
 - Average QPS = 100M / 100K = **1K QPS**
 - Peak QPS = 1K × 10 = **10K QPS**
