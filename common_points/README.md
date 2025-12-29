@@ -72,7 +72,7 @@ We target 99.99% availability, which allows about 50 minutes of downtime per yea
 - **Peak factor**: ×10
 - **Read : Write ratio**: 80 : 20
 - **Avg request / event size**: 1 KB
-- **Latency (end-to-end)**: ~200 ms (p99 < 500 ms)
+- **Latency (end-to-end)**: ~500 ms or 200ms (p99 < 500 ms) anything less than 500ms looks instant for user
 
 ---
 
