@@ -15,7 +15,7 @@ Assume 10M DAU, 10 actions/day → 100M requests/day → ~1K QPS average, ~5K pe
 
 1kb per event is the safe size for payload one can assume. 1kb per event combined with 1000 QPS translates to 1MB per second which then becomes 100GB per day assuming 100000 seconds per day
 
-Peak QPS = 2-5 x QPS calculated
+Peak QPS = 5-10 x QPS calculated
 
 By pareto principle assume that 20% of the QPS are WRITES and 80% of QPS are reads
 
