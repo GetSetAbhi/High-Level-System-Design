@@ -61,3 +61,85 @@ We target 99.99% availability, which allows about 50 minutes of downtime per yea
 | **99.9999% (6 nines)** | ~30 seconds     | Extremely rare, elite systems |
 ----------------------------------------------------------------------------
 ```
+
+# System Design – Universal Capacity & Latency Cheat Sheet
+
+## Universal Assumptions (Safe Defaults)
+- **DAU**: 10 million
+- **Requests per user per day**: 10
+- **Seconds per day**: 100,000 (rounding for easy math)
+- **Peak factor**: ×10
+- **Read : Write ratio**: 80 : 20
+- **Avg request / event size**: 1 KB
+- **Latency (end-to-end)**: ~200 ms (p99 < 500 ms)
+
+---
+
+## QPS Estimation (2-minute math)
+- Daily requests = 10M × 10 = **100M**
+- Average QPS = 100M / 100K = **1K QPS**
+- Peak QPS = 1K × 10 = **10K QPS**
+
+Breakdown:
+- Reads ≈ **8K QPS**
+- Writes ≈ **2K QPS**
+
+---
+
+## Storage Estimation (Rule of Thumb)
+- Writes per second = 2K
+- Data per write = 1 KB
+- Daily data = 2K × 100K × 1 KB = **200 GB/day**
+- Yearly data ≈ 200 × 400 = **~80 TB/year**
+
+---
+
+## When to Use a Queue
+Use a queue when:
+- QPS ≥ **1K** and traffic is bursty
+- Work takes > **30–50 ms**
+- Retries or durability required
+- Async processing acceptable
+
+Rule:
+> If it doesn’t need to be synchronous → put it behind a queue
+
+---
+
+## Eviction Policy
+- **LRU** → Fast-changing, temporal access (feeds, sessions)
+- **LFU** → Stable hot keys (trending, popular items)
+- Default when unsure: **LRU**
+
+---
+
+## Availability vs Durability
+- **Availability** = uptime (time-based)
+- **Durability** = data safety (probability-based)
+
+Targets:
+** User-facing services: **99.9–99.99%**
+** Payments / storage: **99.99%+ durability**
+
+
+## LRU VS LFU 
+
+```
+--------------------------------------------------------------
+| System              | Why LRU works                        |
+|-------------------- | -------------------------------------|
+| Timeline/feed pages | Users scroll recently viewed content |
+| Session cache       | Recent sessions are likely reused    |
+| Search results      | Recent queries repeat                |
+| API response cache  | Temporal locality                    |
+--------------------------------------------------------------
+
+-------------------------------------------------
+| System                  | Why LFU works       |
+|------------------------ | --------------------|
+| Trending items          | Always popular      |
+| Hot products            | Frequently accessed |
+| Popular videos          | Consistent traffic  |
+| Config / reference data | Reused constantly   |
+-------------------------------------------------
+```
