@@ -51,15 +51,16 @@ We target 99.99% availability, which allows about 50 minutes of downtime per yea
 | Metadata   | ~1 KB         | ~10 KB              |
 ----------------------------------------------------
 
-----------------------------------------------------------------------------
-| Availability           | Downtime / year | What it means practically     |
-| ---------------------- | --------------- | ----------------------------- |
-| **99%**                | ~3.65 days      | Frequent outages              |
-| **99.9% (3 nines)**    | ~8.7 hours      | Acceptable for internal tools |
-| **99.99% (4 nines)**   | ~52 minutes     | Good production service       |
-| **99.999% (5 nines)**  | ~5 minutes      | Very hard, expensive          |
-| **99.9999% (6 nines)** | ~30 seconds     | Extremely rare, elite systems |
-----------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+| Availability           | Downtime / year | Downtime / day       | What it means practically     |
+| ---------------------- | --------------- | ---------------------|--------------------------------
+| **99%**                | ~3.65 days      | ~14.4 minutes/day    | Frequent outages              |
+| **99.9% (3 nines)**    | ~8.7 hours      | ~1.44 minutes/day    | Acceptable for internal tools |
+| **99.99% (4 nines)**   | ~52 minutes     | ~8.6 seconds/day     | Good production service       |
+| **99.999% (5 nines)**  | ~5 minutes      | ~0.86 seconds/day    | Very hard, expensive          |
+| **99.9999% (6 nines)** | ~30 seconds     | ~0.08 seconds/day    | Extremely rare, elite systems |
+---------------------------------------------------------------------------------------------------
+
 ```
 
 # System Design – Universal Capacity & Latency Cheat Sheet
