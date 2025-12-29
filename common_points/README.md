@@ -118,8 +118,8 @@ Rule:
 - **Durability** = data safety (probability-based)
 
 Targets:
-** User-facing services: **99.9–99.99%**
-** Payments / storage: **99.99%+ durability**
+- User-facing services: **99.9–99.99%**
+- Payments / storage: **99.99%+ durability**
 
 
 ## LRU VS LFU 
