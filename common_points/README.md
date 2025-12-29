@@ -42,14 +42,14 @@ We target 99.99% availability, which allows about 50 minutes of downtime per yea
 | 50K+     | TB/day        | Cassandra / DynamoDB / S3 |
 --------------------------------------------------------
 
-------------------------------
-| Media Type | Safe Avg Size |
-| ---------- | ------------- |
-| Image      | **~300 KB**   |
-| Video      | **~20 MB**    |
-| Audio      | **~5 MB**     |
-| Metadata   | **~1 KB**     |
-------------------------------
+----------------------------------------------------
+| Media Type | Safe Avg Size | Max Size (Ballpark) |
+| ---------- | ------------- | --------------------|
+| Image      | ~300 KB       | ~1 MB               |
+| Video      | ~20 MB        | ~100 MB             |
+| Audio      | ~5 MB         | ~20 MB              |
+| Metadata   | ~1 KB         | ~10 KB              |
+----------------------------------------------------
 
 ----------------------------------------------------------------------------
 | Availability           | Downtime / year | What it means practically     |
