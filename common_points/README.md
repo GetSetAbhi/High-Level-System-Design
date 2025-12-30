@@ -49,7 +49,9 @@ We target 99.99% availability, which allows about 50 minutes of downtime per yea
 | Video      | ~20 MB        | ~100 MB             |
 | Audio      | ~5 MB         | ~20 MB              |
 | Metadata   | ~1 KB         | ~10 KB              |
+| Webpage    | ~300 KB       | ~1 MB               |
 ----------------------------------------------------
+In above the webpage size estimate is excluding video and audio
 
 ---------------------------------------------------------------------------------------------------
 | Availability           | Downtime / year | Downtime / day       | What it means practically     |
