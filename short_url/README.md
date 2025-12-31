@@ -13,6 +13,10 @@ I also referred to a video on youtube from channel [Codekarle](https://www.youtu
 
 There is a **.excalidraw** file which can be imported in [Excalidraw](https://excalidraw.com/) for additional customization to the design proposed.
 
+## Capacity estimation
+
+let us assume my url shortening service has a traffic of 10M users assume 1 user is shortening 10 URLs and only 20% of users are shortening URLS then 20M URLs are being shortened in a day which is 200 writes per second and 2000 writes per second as peakwith 10x load factor. Similarly with 80% users on read path and assuming 1 users is accesing 10 URLs per day then read traffic is 80M and 800 redirects/sec with 8K redirects per second as peak. If 1 urls has on an average 100 chars and 1char = 1B then database is growing at 2GB per day.
+
 ## Components
 
 There are 2 main components that i'll elaborate upon, rest of the things can be referred directly from the chapter in the book.
