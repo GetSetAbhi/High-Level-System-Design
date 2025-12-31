@@ -3,6 +3,16 @@
 Only Video Post-Processing / Video Transcoding Service is discussed because that is the most important aspect of a Video
 streaming platform.
 
+## Capacity estimation
+
+For a video streaming service like youtube, if I assume 100M DAU and assume only 20% of users are uploading 1 video of average size 100 MB then daily storage is 2PB and yearly storage is 800 PB
+
+Even if only 20% upload, all 100M users will stream videos, so:
+
+Video read traffic (bandwidth) will far exceed write traffic
+
+This is critical for scaling the CDN, network, and edge caches, more so than the database size
+
 ## Video Post-Processing/ Video Transcoding Service
 
 ![Video Post-Processing Service](video-transcoding.svg)
