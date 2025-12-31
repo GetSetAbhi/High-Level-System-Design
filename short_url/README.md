@@ -15,7 +15,25 @@ There is a **.excalidraw** file which can be imported in [Excalidraw](https://ex
 
 ## Capacity estimation
 
-let us assume my url shortening service has a traffic of 10M users assume 1 user is shortening 10 URLs and only 20% of users are shortening URLS then 20M URLs are being shortened in a day which is 200 writes per second and 2000 writes per second as peakwith 10x load factor. Similarly with 80% users on read path and assuming 1 users is accesing 10 URLs per day then read traffic is 80M and 800 redirects/sec with 8K redirects per second as peak. If 1 urls has on an average 100 chars and 1char = 1B then database is growing at 2GB per day.
+let us assume my url shortening service has a traffic of 10M users assume 1 user is shortening 10 URLs and only 20% of users are shortening URLS then 20M URLs are being shortened in a day which is 200 writes per second and 2000 writes per second as peakwith 10x load factor. Similarly with 80% users on read path and assuming 1 users is accesing 10 URLs per day then read traffic is 80M and 800 redirects/sec with 8K redirects per second as peak. If 1 urls has on an average 100 chars and 1char = 1B then database is growing at 2GB per day. if we include metadata too then storage becomes ~5GB per day and 2TB per year (5*400 days)
+
+Inferences:
+
+- Read Heavy system
+- A single primary database with read replicas is sufficient.
+	
+	Why:
+	
+	* Write QPS (~2K peak) is easily handled by a modern RDBMS
+	* Storage growth (~2GB/day, ~2TB/year) is modest
+	* No immediate need for sharding
+- Availability can be achieved without complex distributed systems.
+
+	Why:
+
+	* Single primary DB + replicas
+	* Cache failure falls back to DB
+	*Stateless application servers
 
 ## Components
 

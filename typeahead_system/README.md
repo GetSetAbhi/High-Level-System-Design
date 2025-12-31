@@ -2,49 +2,11 @@
 
 ## Capacity estimation
 
-Scale requirements:
-
-*	`10 million daily active users`.
-*   `Each user does about 10 searches a day`
-*	`Each search has on an average 4 words and every word has on an average 5 characters, so every search has 20 characters on an average`
-*	Search data should be updated daily
-
-A new request is made every time a user types in a new character. 
-So `total requests per user per day =  20 characters x average searches per user per day`
-which is `20x10 = 200 requests per user per day` 
-
-`10M DAU X 200 requests per user per day = 2 Billion Queries Per Day`
-
-`2 Billion / 24*60*60 seconds = ~23k QPS`
-
-Peak load = `2 x QPS = ~46QPS`
-
-### Read Estimations
-
-A new request is made every time a user types in a new character. 
-So `total requests per user per day =  20 characters x average searches per user per day`
-which is `20x10 = 200 requests per user per day` 
-
-`10M DAU X 200 requests per user per day = 2 Billion Queries Per Day`
-
-**2 Billion / 24*60*60 seconds = ~23k QPS**
-
-Assuming peak traffic is twice then query per second becomes **2 x QPS = ~46K QPS**
-
-### Storage
-
-We have assumed that every search query has on an average 20 Characters and every character is suppose 1 Bytes if we are considering ASCII Chars.
-So for every query we have about `20 Bytes` of data.
-
-If about 20% of search queries are fresh, then storage requirement per day becomes.
-
-**10M DAU x 10 Searches per User X 20 Byte data per search x 20% = 0.4GB Per day**
-
-and this translates to about **~160 GB Per Year**
+For a search system, if I assume 10M DAU and each user does 10 searches per day then there are 100M searches per day. If I assume that there are 2 words in every search and 5 chars in every words then every search has 10 chars. if every char is 1Byte then my databse if growing by 1GB per day which is roughly 400GB per year. for an autocomplete system, if every word has 10 chars and there are 100M searches per day then total requests to get autocomplete data for every word typed is 1000M requests. which is 100K requests/second on peak assuming 10x load factor. This traffic calls for a sharded and partitioned database. But to meet under 500ms latency we will use in-memory indexes. If I use a cache, then by pareto principle let me assume that 80% requests are being served from cache which means 80k searches go to cache and 20k searches go to the database which is quite manageable for a sharded and partitioned database.
 
 ## Interpretation
 
-I have about ~46K queries per second and about ~160GB storage requirement per year so what this means is that
+I have about ~100K queries per second and about ~400GB storage requirement per year so what this means is that
 I'm dealing with a read heavy system and storage is very modest and not bottlenect. I need low latency and high throughput.
 
 Once I see that scale, potentially hundreds of thousands of lookups per second, each needing to return results within tens of milliseconds, that tells me:
