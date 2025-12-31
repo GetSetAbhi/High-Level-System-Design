@@ -10,6 +10,24 @@ This design is based on **Chapter 10 Design a Notification System** from the Boo
 
 There is a **.excalidraw** file which can be imported in [Excalidraw](https://excalidraw.com/) for additional customization to the design proposed.
 
+## Capacity estimation
+
+if the system is handling 100M notifcations per day then it means 1K notifciation per second and on peak 10K notifications per second assuming load factor of 10x
+
+- The system is write-heavy
+
+	Inference
+
+	Optimize for high write throughput and asynchronous processing.
+
+- Asynchronous processing is mandatory
+
+	At 10K notifications/sec:
+
+	Synchronous delivery would block API threads
+
+	External providers introduce unpredictable latency
+
 ## Components
 
 
