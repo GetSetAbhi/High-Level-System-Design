@@ -19,6 +19,7 @@ if the system is handling 100M notifcations per day then it means 1K notifciatio
 	Optimize for high write throughput and asynchronous processing.
 
 - **Asynchronous processing is mandatory**
+	
 	At 10K notifications/sec:
 	Synchronous delivery would block API threads
 
