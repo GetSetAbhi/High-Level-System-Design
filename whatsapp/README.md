@@ -1,5 +1,10 @@
 ![Web Crawler](whatsapp.svg)
 
+# Capacity Estimation
+
+With 10M DAU and 10 messages per user per day, we expect ~100M messages per day, or ~1–1.2K messages per second on average and ~10–12K per second at peak. Assuming ~100 bytes per message, storage grows by ~10GB per day or ~4TB per year, excluding metadata. At this scale, we need horizontal scaling and partitioned storage.
+
+
 # Whatsapp Schema
 
 ```
