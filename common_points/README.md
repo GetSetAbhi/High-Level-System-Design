@@ -10,6 +10,7 @@
 
 # Capacity estimates
 
+```
 ----------------------------------------------
 | System              | Base Assumption      |
 |---------------------|----------------------|
@@ -22,7 +23,7 @@
 | Social Network      | 100M DAU             |
 | Video Streaming     | 100M DAU             |
 ----------------------------------------------
-
+```
 
 Assume 10M DAU, 10 actions/day → 100M requests/day → ~1K QPS average, ~5K peak. At ~100 GB/day append-only data, this fits a sharded relational DB or write-optimized NoSQL with caching. The key challenge is throughput, not storage.
 
