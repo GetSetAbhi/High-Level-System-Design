@@ -14,19 +14,13 @@ There is a **.excalidraw** file which can be imported in [Excalidraw](https://ex
 
 if the system is handling 100M notifcations per day then it means 1K notifciation per second and on peak 10K notifications per second assuming load factor of 10x
 
-- The system is write-heavy
-
-	Inference
+- **The system is write-heavy**
 
 	Optimize for high write throughput and asynchronous processing.
 
-- Asynchronous processing is mandatory
-
+- **Asynchronous processing is mandatory**
 	At 10K notifications/sec:
-
 	Synchronous delivery would block API threads
-
-	External providers introduce unpredictable latency
 
 ## Components
 
