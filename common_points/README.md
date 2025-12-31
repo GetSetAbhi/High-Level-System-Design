@@ -10,6 +10,19 @@
 
 # Capacity estimates
 
+----------------------------------------------
+| System              | Base Assumption      |
+|---------------------|----------------------|
+| URL Shortener       | 10M DAU              |
+| Chat App            | 10M DAU              |
+| Search              | 10M DAU              |
+| Search Autocomplete | Derived from 10M DAU |
+----------------------------------------------
+| Notification System | 100M events/day      |
+| Social Network      | 100M DAU             |
+| Video Streaming     | 100M DAU             |
+----------------------------------------------
+
 
 Assume 10M DAU, 10 actions/day → 100M requests/day → ~1K QPS average, ~5K peak. At ~100 GB/day append-only data, this fits a sharded relational DB or write-optimized NoSQL with caching. The key challenge is throughput, not storage.
 
@@ -22,7 +35,6 @@ By pareto principle assume that 20% of the QPS are WRITES and 80% of QPS are rea
 “If write QPS grows beyond ~10–20K/sec or data becomes multi-TB/day, I’d consider sharding or a NoSQL store.”
 
 We target 99.99% availability, which allows about 50 minutes of downtime per year.
-
 
 ```
 --------------------------------------------------------------------------------------------
