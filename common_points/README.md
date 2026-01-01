@@ -17,11 +17,21 @@
 | URL Shortener       | 10M DAU              |
 | Chat App            | 10M DAU              |
 | Search              | 10M DAU              |
-| Search Autocomplete | Derived from 10M DAU |
 ----------------------------------------------
 | Notification System | 100M events/day      |
 | Social Network      | 100M DAU             |
 | Video Streaming     | 100M DAU             |
+----------------------------------------------
+
+
+Storage estimation were done for following:
+----------------------------------------------
+| System              | Base Assumption      |
+|---------------------|----------------------|
+| URL Shortener       | 10M DAU              |
+| Chat App            | 10M DAU              |
+| Video Streaming     | 10M DAU              |
+| Search Autocomplete | Derived from 10M DAU |
 ----------------------------------------------
 ```
 
