@@ -2,7 +2,7 @@
 
 suppose there are 10M users of the app out of which only 10% are concurrently active.
 If every user has on an average 100 friends and location update is sent every 30 seconds, then the system is handling 33K location writes per second.
-If friends have to be notified about latest location of a user, then we will be having 3.3M location writes
+If friends have to be notified about latest location of a user, then we will be having 3.3M location updates per second
 
 ## Inferences
 
