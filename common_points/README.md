@@ -17,12 +17,12 @@
 | URL Shortener       | 10M DAU              |
 | Chat App            | 10M DAU              |
 | Search              | 10M DAU              |
-| Hotel Reservation   | 10M DAU              |
 | Payment             | 10M DAU              |
 ----------------------------------------------
 | Notification System | 100M events/day      |
 | Social Network      | 100M DAU             |
 | Video Streaming     | 100M DAU             |
+| Hotel Reservation   | 100M DAU             |
 ----------------------------------------------
 
 
