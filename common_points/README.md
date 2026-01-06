@@ -23,6 +23,7 @@
 | Social Network      | 100M DAU             |
 | Video Streaming     | 100M DAU             |
 | Hotel Reservation   | 100M DAU             |
+| Dropbox             | 100M DAU             |
 ----------------------------------------------
 
 

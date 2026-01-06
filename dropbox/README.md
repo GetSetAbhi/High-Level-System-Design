@@ -4,6 +4,18 @@ Took references from **System Design Interview by Alex Xu Volume I** and A talk 
 
 ![Dropbox](dropbox.svg)
 
+## Capacity Estimation
+
+if I am designing a dropbox kind of system then let me assume that there are 100M DAU.
+Let's just say every user is uploading 5 files per day and only 20% of daily active users are uploading files.
+So now we have 100M files being uploaded per day which translates to 10K file uploads per second considering a load factor of 10x.
+Modern day relational databases can handle upto 10K writes these days and we are almost touching that limit, so it is safe to assume that we
+can go with a sharded relational database to store file metadata and store the file object separately in a file storage.
+
+Coming to 80% users, let's just say on an average these 80% users are downloading 5 files per day so by calculation my read traffic becomes 40k downloads per second considering a load factor of 10x.
+
+Clearly we have to make sure that the files are being downloaded with minimum latency, so download path needs to be optimised
+
 ## File Upload Workflow
 
 1. Client-Side File Preparation (User Device):
