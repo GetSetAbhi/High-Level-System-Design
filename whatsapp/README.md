@@ -16,6 +16,41 @@ CREATE TABLE messages (
     PRIMARY KEY (conversation_id, message_ts)
 ) WITH CLUSTERING ORDER BY (message_ts DESC);
 
+CREATE TABLE inbox (
+    user_id     text,
+    message_ts  timeuuid,
+    conversation_id text,
+    sender_id   text,
+    body        text,
+    delivered   boolean,
+    PRIMARY KEY (user_id, message_ts)
+) WITH CLUSTERING ORDER BY (message_ts ASC);
+
+CREATE TABLE user_conversations (
+    user_id         text,
+    conversation_id text,
+    last_message_ts timeuuid,
+    PRIMARY KEY (user_id, conversation_id)
+);
+
+All chats for a user 
+
+SELECT conversation_id, last_message_ts FROM user_conversations WHERE user_id = 'user_B';
+
+
+
+CREATE TABLE conversation_participants (
+    conversation_id text,
+    user_id         text,
+    PRIMARY KEY (conversation_id, user_id)
+);
+
+All participants for a conversation 
+
+SELECT user_id FROM conversation_participants WHERE conversation_id = 'conv_AB';
+
+
+
 ```
 
 This creates a table called messages with 4 columns:
