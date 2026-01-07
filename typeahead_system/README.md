@@ -2,11 +2,32 @@
 
 ## Capacity estimation
 
-For a search system, if I assume 10M DAU and each user does 10 searches per day then there are 100M searches per day. If I assume that there are 2 words in every search and 5 chars in every words then every search has 10 chars. if every char is 1Byte then my databse if growing by 1GB per day which is roughly 400GB per year. for an autocomplete system, if every word has 10 chars and there are 100M searches per day then total requests to get autocomplete data for every word typed is 1000M requests. which is 100K requests/second on peak assuming 10x load factor. This traffic calls for a sharded and partitioned database. But to meet under 500ms latency we will use in-memory indexes. If I use a cache, then by pareto principle let me assume that 80% requests are being served from cache which means 80k searches go to cache and 20k searches go to the database which is quite manageable for a sharded and partitioned database.
+I am designing a typeahead (autocomplete) system with 10 million daily active users (DAU).
+If each user performs 10 searches per day, the system handles approximately 100 million searches per day.
+
+Typeahead suggestions are fetched on every keystroke, which means there is one API call per character typed.
+Assuming that each search contains 2 words on average, each word has 5 characters, and each character is 1 byte, a single search consists of 10 characters.
+
+This results in 10 API calls per search, leading to a total of 1 billion suggestion fetch requests per day.
+That translates to roughly 10K requests per second on average, and 100K requests per second at peak, assuming a 10× peak load factor.
+
+Now, assuming that only 20% of searches result in unique words, about 20 million searches per day contribute new vocabulary.
+Since each search has 2 words on average, the system ingests 40 million unique words per day.
+At 5 characters per word, this corresponds to 200 million characters per day, or approximately 200 MB of storage growth per day, which is about 80 GB per year.
+
+This amount of data can be comfortably stored in a partitioned and replicated persistent database.
+However, given the high read throughput of up to 100K suggestion requests per second and the need for very low latency, serving suggestions directly from disk-backed storage is not sufficient.
+
+To meet latency requirements, the system must rely on in-memory indexes.
+This naturally leads to using Trie-based in-memory data structures, which are well suited for efficient prefix lookups and can serve autocomplete suggestions with minimal latency.
+
+Why this is strong for interviews
+
+Numbers are c
 
 ## Interpretation
 
-I have about ~100K queries per second and about ~400GB storage requirement per year so what this means is that
+I have about ~100K queries per second and about ~80GB storage requirement per year so what this means is that
 I'm dealing with a read heavy system and storage is very modest and not bottlenect. I need low latency and high throughput.
 
 Once I see that scale, potentially hundreds of thousands of lookups per second, each needing to return results within tens of milliseconds, that tells me:
