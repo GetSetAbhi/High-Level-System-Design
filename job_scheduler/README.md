@@ -3,6 +3,14 @@
   <img src="job_scheduler.svg" height="500px" alt="Job Scheduler"/>
 </p>
 
+## Capacity Estimation
+
+Assuming 10 million unique jobs per day, the system handles about 100 job submissions per second on average and roughly 1,000 jobs per second at peak. This write volume can be comfortably handled by a relational database.
+
+However, in a distributed job scheduler, each job generates multiple state transitions during its lifecycle, As a result, each job causes several durable writes, leading to write amplification. When these lifecycle writes are accounted for, the system performs several thousand writes per second at peak, making it a write-heavy system. Reads are comparatively fewer and often predictable.
+
+Because job execution is asynchronous and jobs must not be lost, the system cannot rely on synchronous database polling. A durable queue is required to decouple job submission from job execution, handle bursty traffic, and ensure reliability.
+
 ## Database schema for Cassandra Database
 
 ```
@@ -94,7 +102,7 @@ Only the scheduler touches the DB; workers are decoupled.
 	* Re-enqueue the same job_run
 	* Or create a new job_run with status='queued' and scheduled_at = NOW() + retry_interval
 * Dead-letter jobs after exceeding max retries.
-* If a recurring job finished executing, the Controller sends an event into message queue for the scheduler so that it can create a new row in `job_run` table 
+* If a recurring job finished executing, the Controller sends an api request to the scheduler so that it can create a new row in `job_run` table 
 
 **Step 4- Worker**
 
