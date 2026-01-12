@@ -10,6 +10,12 @@ This design is based on **Chapter 9 Design a Web Crawler** from the Book **Syste
 
 There are some **.excalidraw** file which can be imported in [Excalidraw](https://excalidraw.com/) for additional customization to the design proposed.
 
+## Capacity Estimation
+
+If a web crawler downloads 10 million pages per day, that corresponds to roughly 116 pages per second on average and about 1,100 pages per second at peak, assuming a 10× load factor.
+
+Assuming an average page size of 300 KB, the crawler ingests approximately 3 TB of data per day. At this scale, raw page content must be stored in distributed object storage, while crawl metadata and indexing information can be stored separately in a database.”
+
 ## Components
 
 There are some main components that i'll elaborate upon, rest of the things can be referred directly from the chapter in the book.
