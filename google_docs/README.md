@@ -16,6 +16,12 @@ Peak load factor: 10×
 
 Average edit operation size: 100 bytes
 
+10M edits/day × 100 bytes ≈ 1 GB/day
+≈ 365 GB/year (excluding snapshots & metadata)
+
+
+Reads dominate numerically, but are cacheable.
+
 ## File Upload and download Workflow
 
 Similar to how [Dropbox](../dropbox/) design was discussed
