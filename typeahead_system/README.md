@@ -160,3 +160,9 @@ The ElasticSearch cluster handles the storage, replication, and indexing of this
 
 
 I used a web crawler for seeding my elactic search cluster. On a day to day basis, many events happen all over the world which might potentially generate some new and popular search terms and trends. The web crawler, scrapes the internet and keeps our typeahead system fresh and highly responsive to real-world events and trending topics.
+
+## Problem
+
+There is no existing solution that utilizes Trie based approach for search suggestions. rather what's actually utilized is a prefix based index with fast top k suggestions retrieval.
+
+Which can easily be obtained using redis sorted sets, where each prefix term is a sorted set and for each sorted set we will have search suggestions in sorted order
