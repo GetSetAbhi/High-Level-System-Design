@@ -237,6 +237,19 @@ Writes become heavier (you update multiple window tables), but reads become extr
   <img src="gaming_leaderboard.svg" alt="Gaming Leaderboard"/>
 </p>
 
+## Capacity Estimation
+
+for a leaderboard system, let's say there are 10M DAU and each user plays 10 games per day.
+every time a game is finished a user score is submitted Leaderboard is opened to display top users and users rank.
+
+100M games being played daily so score api is being called 100M times which means 10k QPS, with 10x as peak load factor, for score API
+
+and similarly 10k QPS for leaderboards.
+
+In this case read and writes seem to be balanced, but its actually the read path (get leaderboard and rank) that needs to be optimised so that we can get the leaderboard with minimum latency
+
+---
+
 We partition the leaderboard by leaderboard id, such that all the leaderboards go in in one shard.
 
 1) suppose we need to add the score of user2 then we do :
