@@ -4,6 +4,18 @@
   <img src="google_docs.svg" width="600" alt="Collaborative Document Editing"/>
 </p>
 
+## Capacity Estimation
+
+10M Daily Active Users (DAU)
+
+20% users actively editing per day
+
+Each active user edits 5 documents/day
+
+Peak load factor: 10×
+
+Average edit operation size: 100 bytes
+
 ## File Upload and download Workflow
 
 Similar to how [Dropbox](../dropbox/) design was discussed
