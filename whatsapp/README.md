@@ -4,6 +4,10 @@
 
 With 10M DAU and 10 messages per user per day, we expect ~100M messages per day, or ~1–1.2K messages per second on average and ~10–12K per second at peak. Assuming ~100 bytes per message, storage grows by ~10GB per day or ~4TB per year, excluding metadata. At this scale, we need horizontal scaling and partitioned storage.
 
+Assuming each user is opening the app 10 times a day and on each app open, recent converstaions are loaded then there are 100M load conversations calls which is 1K calls per second or 10k calls per second at peak. And this is only for opening the app, but when the user opens individual chats then there are more requests sent to fetch the conversation history itself, which adds up to the 10k calls we calculated. So the system is a net- read system mostly.
+
+By calculation, the system appears read heavy, but it is write heavy in terms of correctness
+
 
 # Whatsapp Schema
 
