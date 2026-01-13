@@ -21,10 +21,6 @@ However, given the high read throughput of up to 100K suggestion requests per se
 To meet latency requirements, the system must rely on in-memory indexes.
 This naturally leads to using Trie-based in-memory data structures, which are well suited for efficient prefix lookups and can serve autocomplete suggestions with minimal latency.
 
-Why this is strong for interviews
-
-Numbers are c
-
 ## Interpretation
 
 I have about ~100K queries per second and about ~80GB storage requirement per year so what this means is that

@@ -12,6 +12,7 @@ Before starting, checkout the [Database Scaling Guide](database/)
 Some Common Themes : [Common Talking Points](common_points/)
 
 **System Design Notes**
+* [Capacity Estimation Glossary](cap_estimations_glossary/)
 * [Monitoring and Observability Basics](monitoring_observability_basics/)
 * [Stateful vs Stateless](Stateful_VS_Stateless/)
 * [Design a URL Shortener](short_url/)
