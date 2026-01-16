@@ -1,18 +1,19 @@
 # Safest Non Functional Requirements
 
-	* Scalability
+* Scalability
 
-	  The system should handle growth in users, traffic, and data.
+  The system should handle growth in users, traffic, and data.
 
-	* Availability
+* Availability
 
-	  The system should be accessible when users need it.
+  The system should be accessible when users need it.
 
-	* Reliability
+* Reliability
 
-	  The system should behave correctly and consistently.
+  The system should behave correctly and consistently.
 
-	* Performance / Latency
+* Performance / Latency
+
 
 A system can be 
 
