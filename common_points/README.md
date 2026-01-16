@@ -1,3 +1,28 @@
+# Safest Non Functional Requirements
+
+	* Scalability
+
+	  The system should handle growth in users, traffic, and data.
+
+	* Availability
+
+	  The system should be accessible when users need it.
+
+	* Reliability
+
+	  The system should behave correctly and consistently.
+
+	* Performance / Latency
+
+A system can be 
+
+* Highly available but not reliable
+  👉 Frequently crashes but restarts quickly
+
+
+* Reliable but not highly available
+  👉 Rarely fails but takes long to recover
+
 # Common Points for System Design
 ---
 
