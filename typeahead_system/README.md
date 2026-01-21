@@ -157,8 +157,40 @@ The ElasticSearch cluster handles the storage, replication, and indexing of this
 
 I used a web crawler for seeding my elactic search cluster. On a day to day basis, many events happen all over the world which might potentially generate some new and popular search terms and trends. The web crawler, scrapes the internet and keeps our typeahead system fresh and highly responsive to real-world events and trending topics.
 
-## Problem
+## Problem with Tries
 
 There is no existing solution that utilizes Trie based approach for search suggestions. rather what's actually utilized is a prefix based index with fast top k suggestions retrieval.
 
 Which can easily be obtained using redis sorted sets, where each prefix term is a sorted set and for each sorted set we will have search suggestions in sorted order
+
+## Tries inspired approach with redis
+
+Every prefix is mapped to its own Redis key.
+Each prefix key in Redis holds a Sorted Set of completions (words or phrases) with scores representing popularity.
+
+```
+"c"    → SortedSet { "cat": 100, "car": 80, ... }
+"ca"   → SortedSet { "cat": 90, "car": 75, "cab": 60 }
+"cat"  → SortedSet { "cat": 85, "catalog": 40, ... }
+
+```
+
+So now every prefix has its own sorted set, so lookups become fast.
+
+```
+ZRANGE prefixKey 0 K
+
+This will give me k popular terms for a particular search key
+```
+
+To prevent unbounded growth per prefix, each prefix bucket only keeps the top K completions (e.g., top 50).
+
+Redis is used for in-memory speed, but memory limits also exist. So:
+
+- Redis keys store recently used prefix suggestions
+
+- Evicted prefixes are stored long-term in MongoDB
+
+- On a cache miss, prefix completions are loaded from MongoDB back into Redis
+
+This gives a balance between memory usage and fast reads.
