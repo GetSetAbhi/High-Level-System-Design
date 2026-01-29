@@ -1,0 +1,201 @@
+Minimize the Difference Between Target and Chosen Elements
+* Shortest Subarray to be Removed to Make Array Sorted
+* Longest Substring Without Repeating Characters
+* Substring with Concatenation of All Words
+* Frequency of the Most Frequent Element
+* Shortest Unsorted Continuous Subarray
+* Shortest Subarray with Sum at Least K
+* Maximum Number of Visible Points
+* Search in Rotated Sorted Array II
+* Longest Palindromic Substring
+* Median of Two Sorted Arrays
+* Kth Ancestor of a Tree Node
+* Maximum Product Subarray
+* Compare Version Numbers
+* Longest Common Subpath
+* Continuous Subarray Sum
+* Reverse Words in a String
+* Largest Multiple of Three
+* All O\`one Data Structure
+* Sum of Square Numbers
+* Integer to English Words
+* Next Greater Element III
+* Water and Jug Problem
+* Repeated String Match
+* Count The Repetitions
+* Contains Duplicate III
+* Integer Replacement
+* Shortest Palindrome
+* Validate IP Address
+* Nth Highest Salary
+* Interleaving String
+* One Edit Distance
+* Next Permutation
+* Linked List Cycle
+* Remove K Digits
+* Super Egg Drop
+* Decode Ways II
+* Line Reflection
+* Design Twitter
+* Closest Room
+* Reverse Pairs
+* Wiggle Sort II
+* Word Ladder
+* Rotate List
+* Nth Digit
+* 3Sum
+* Pow(x, n)
+* 132 Pattern
+* Self Crossing
+* Valid Number
+* Jump Game II
+* Decode Ways
+* Word Ladder II
+* Dungeon Game
+* Alien Dictionary
+* Largest Number
+* Word Frequency
+* Text Justification
+* Prime Palindrome
+* Design Linked List
+* Count Good Meals
+* Wildcard Matching
+* Divide Two Integers
+* Number of Digit One
+* Max Points on a Line
+* String to Integer (atoi)
+* Non-decreasing Array
+* Valid Tic-Tac-Toe State
+* Valid Parenthesis String
+* Decoded String at Index
+Make Sum Divisible by P
+* Redundant Connection II
+* Palindrome Partitioning II
+* Create Maximum Number
+* Strong Password Checker
+* Longest Valid Parentheses
+* Making File Names Unique
+* Validate Binary Search Tree
+* Longest Duplicate Substring
+* Regular Expression Matching
+* Fraction to Recurring Decimal
+* Split Array With Same Average
+* Best Time to Buy and Sell Stock IV
+* Sell Diminishing-Valued Colored Balls
+* Insert into a Sorted Circular Linked List
+* Ways to Split Array Into Three Subarrays
+* Minimum Space Wasted From Packaging
+* Maximum Non Negative Product in a Matrix
+* Maximum Number of Events That Can Be Attended
+* Maximum Score from Performing Multiplication Operations
+
+
+
+
+
+These 15 DP Patterns and 45 problems will help you master Dynamic Programming for coding interviews and crack 90% of any DP questions that come your way.
+
+1.Fibonacci/Simple Recurrence, 
+ - Climbing Stairs (LC 70) 
+ - Min Cost Climbing Stairs (LC 746) 
+ - Dice Combinations (Similar to LC 1155) 
+ - Fibonacci Number (LC 509) 
+ - Frog Jump (LC 403) 
+
+2.0/1 Knapsack, 
+ - Target Sum (LC 494) 
+ - Partition Equal Subset Sum (LC 416) 
+ - Subset Sum (Similar to LC 416) 
+ - 0/1 Knapsack (Classic, LC has variants) 
+ - Last Stone Weight II (LC 1049) 
+
+3.Unbounded Knapsack, 
+ - Coin Change (LC 322) 
+ - Coin Change II (LC 518) 
+ - Minimum Coins For Change (Same as LC 322) 
+ - Perfect Squares (LC 279) 
+ - Rod Cutting (Classic, LC has variants) 
+
+4.LCS, 
+ - Longest Common Subsequence (LC 1143) 
+ - Uncrossed Lines (LC 1035) 
+ - Edit Distance (LC 72) 
+ - Delete Operation for Two Strings (LC 583) 
+ - Shortest Common Supersequence (LC 1092) 
+
+5.LIS, 
+ - Longest Increasing Subsequence (LC 300) 
+ - Number of LIS (LC 673) 
+ - Russian Doll Envelopes (LC 354) 
+ - Minimum Number of Removals to Make Mountain Array (LC 1671) 
+ - Maximum Length of Pair Chain (LC 646) 
+
+6.Palindromic Substrings/Subsequence, 
+ - Palindromic Substrings (LC 647) 
+ - Longest Palindromic Subsequence (LC 516) 
+ - Palindrome Partitioning II (LC 132) 
+ - Minimum Insertion Steps to Make a String Palindrome (LC 1312) 
+ - Count Different Palindromic Subsequences (LC 730) 
+
+7.Grid-Based DP, 
+ - Unique Paths (LC 62) 
+ - Minimum Path Sum (LC 64) 
+ - Unique Paths II (LC 63) 
+ - Maximum Path Sum in Matrix (LC 64 variant) 
+ - Minimum Falling Path Sum (LC 931) 
+
+8.Interval DP, 
+ - Burst Balloons (LC 312) 
+ - Matrix Chain Multiplication (Classic, LC has variants) 
+ - Minimum Cost to Merge Stones (LC 1000) 
+ - Palindrome Partitioning II (LC 132) 
+ - Stone Game (LC 877) 
+
+9.Tree DP, 
+ - House Robber III (LC 337) 
+ - Binary Tree Cameras (LC 968) 
+ - Path Sum III (LC 437) 
+ - Longest ZigZag Path in Binary Tree (LC 1372) 
+ - Diameter of N-Ary Tree (LC 1522) 
+
+10.Bitmask DP/State Compression, 
+ - Campus Bikes II (LC 1066) 
+ - Partition to K Equal Sum Subsets (LC 698) 
+ - Traveling Salesman Problem (Classic, LC has variants) 
+ - Shortest Path Visiting All Nodes (LC 847) 
+ - Minimum Cost to Connect Two Groups of Points (LC 1595) 
+
+11.Digit DP, 
+ - Numbers With Repeated Digits (LC 1012) 
+ - Count Numbers with Unique Digits (LC 357) 
+ - Sum of Digits in the Range (LC 1067) 
+ - Non-negative Integers without Consecutive Ones (LC 600) 
+ - Rotated Digits (LC 788) 
+
+12.Subset DP, 
+ - Count of Subset Sum (Similar to LC 416) 
+ - Partition Equal Subset Sum (LC 416) 
+ - Can I Win (LC 464) 
+ - Find the Difference of Two Arrays (LC 2215, not DP but set-based) 
+ - Subsets II (LC 90)
+ 
+ 3.Probability/Expectation DP, 
+ - Dice Roll Simulation (LC 1223) 
+ - New 21 Game (LC 837) 
+ - Soup Servings (LC 808) 
+ - Coin Toss Probability (Classic, LC has variants) 
+ - Super Egg Drop (LC 887) 
+
+14.DP on Graphs, 
+ - Cheapest Flights Within K Stops (LC 787) 
+ - Shortest Path Visiting All Nodes (LC 847) 
+ - Number of Ways to Arrive at Destination (LC 1976) 
+ - Minimum Cost to Make at Least One Valid Path (LC 1368) 
+ - Minimum Cost to Reach Destination in Time (LC 1928) 
+
+15.State Machine DP, 
+ - Best Time to Buy and Sell Stock with Cooldown (LC 309) 
+ - Best Time to Buy and Sell Stock IV (LC 188) 
+ - Best Time to Buy and Sell Stock III (LC 123) 
+ - Maximum Profit in Job Scheduling (LC 1235) 
+ - Paint House (LC 256) 
