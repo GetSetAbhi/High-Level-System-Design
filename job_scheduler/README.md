@@ -194,4 +194,38 @@ Controllers are stateless. Workers register and heartbeat to a shared Controller
 
 ## If controller dies mid job ?
 
+Controller can work in an active - passive etup, an active master controller serves works but there is also a passive controller service which takes control when active controller dies
+
 Workers send heartbeats through the Controller Service. If a worker stops heartbeating for a configured timeout, the Controller marks it as dead and looks up the list of active runs assigned to that worker (stored in Redis). Those runs are marked as lost or retry_pending in Cassandra, their tenant license tokens are released, and the jobs are re-enqueued back into the DPQ. This allows another healthy worker to pick them up immediately. If job-level heartbeats are implemented, we can also detect hung or stalled jobs even if the worker is still alive. This mechanism ensures fault tolerance, zero manual intervention, and keeps the system highly available.
+
+## Choice for Queue
+
+For a distributed job scheduler where:
+
+Jobs must execute in order of timestamps
+
+Multiple workers may consume
+
+You care about durability and fault tolerance
+
+🐇 RabbitMQ — Better for Job Queues
+
+RabbitMQ is a true message queue (push-based, work-queue model).
+
+Why it fits job scheduling well:
+
+✅ Strong per-queue FIFO ordering
+✅ Native acknowledgements
+✅ Easy delayed/scheduled jobs (via delayed exchange plugin or TTL + DLX)
+✅ Good for task distribution
+✅ Simple mental model for workers
+
+If you:
+
+Have one queue
+
+Want workers to process jobs in timestamp order
+
+And the scheduler publishes jobs already sorted
+
+→ RabbitMQ is usually the simpler and safer choice.
