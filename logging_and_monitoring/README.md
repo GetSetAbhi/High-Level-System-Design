@@ -2,6 +2,37 @@
 
 Only a couple of things will be discussed.
 
+## Capacity Estimation
+
+Capacity Estimation Summary
+Assumptions
+
+1,000 server pools
+
+100 servers per pool
+
+Total servers = 100,000
+
+Each server emits 100 metrics
+
+Metrics emitted every 10 seconds
+
+Peak factor = 2×
+
+Metric size = 1 KB
+
+10 Million metric emitted by our server pools.
+
+metrics are emitted per 10sec so 1M metric per second and it peak it becomes 2M metric per second
+
+This means that data storage grows by ~200PB per day.
+
+* Key Inferences
+	* This is an extremely write-heavy system
+	* Storage efficiency is critical
+	  
+	  Compression and DOwnsampling is important
+
 ## Metrics Collections
 
 There are two approaches to metrics collection, push and pull.
