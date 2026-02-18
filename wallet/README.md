@@ -235,11 +235,11 @@ For your specific use case, RabbitMQ (or even Amazon SQS if you are on AWS) is l
 ### Strategies to Remove the Database SPOF
 To maintain the high reliability you've designed so far, you can implement the following strategies:
 
-Primary-Replica Setup: Use a primary database for all writes (Payment Service and Executor updates) and multiple read replicas for the status polling.
+* Primary-Replica Setup: Use a primary database for all writes (Payment Service and Executor updates) and multiple read replicas for the status polling.
 
-Failover Mechanisms: Implement automated failover (e.g., using AWS RDS Multi-AZ or a similar service) so that if the primary node fails, a replica is promoted to primary within seconds.
+* Failover Mechanisms: Implement automated failover (e.g., using AWS RDS Multi-AZ or a similar service) so that if the primary node fails, a replica is promoted to primary within seconds.
 
-Database Partitioning/Sharding: As your transaction volume grows, you can shard your database by buyer_id or checkout_id to distribute the load and limit the "blast radius" of a single node failure.
+* Database Partitioning/Sharding: As your transaction volume grows, you can shard your database by buyer_id or checkout_id to distribute the load and limit the "blast radius" of a single node failure.
 
 ## How to send money to an external client, someone who is not registered with the PSP
 
