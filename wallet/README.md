@@ -181,6 +181,57 @@ The redirectUrl is triggered only when the PSP's hosted page finishes its work, 
 	* The Final Decision: The PSP determines the immediate user-facing result for the entire session. Since one order (ORD-B) failed, the PSP will typically conclude the session with a status of "Failure" or "Issue" before triggering the redirect.
 	* The Redirect: The customer's browser is sent to the single, pre-configured redirectUrl: http://yourdomain.com/payment_return?checkout_id=CHCKT-1234&status=failure (or similar generic error).
 
+# Payment System Design Documentation Summary
+
+This design outlines a scalable, marketplace-ready payment architecture designed to handle complex checkout scenarios with high reliability. It draws on your established interests in system design for payment systems and Python-based algorithmic problem-solving.
+
+### Core Architectural Pattern: Asynchronous Decoupling
+The system is split into two primary components to ensure high availability and responsiveness:
+
+Payment Service: The client-facing orchestrator that receives payment events, stores initial states, and provides status updates via polling.
+
+Payment Executor: A dedicated worker pool that consumes tasks from a message queue to interact with external Payment Service Providers (PSPs).
+
+Communication: Decoupled via a Message Queue (e.g., Kafka or RabbitMQ) to manage traffic spikes and ensure that the "heavy lifting" of external API calls doesn't block the user experience.
+
+### Data Model: 1:N Atomic Checkout
+You have implemented a one-to-many relationship to support marketplace transactions where one buyer pays for items from multiple sellers:
+
+payment_event: Tracks the overall checkout session (e.g., checkout_id) and the final completion status.
+
+payment_order: Represents individual transactions per seller, allowing for granular status tracking and independent retries.
+
+payment_execution_tasks: An internal ledger for the Executor to track retry counts, idempotency, and specific PSP error messages.
+
+### Key Design Decisions for Reliability
+```
++------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| Decision               | Implementation Detail                                                                                                          |
++------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| Idempotency            | The payment_order_id is passed as an Idempotency Key in                                                                        |
+|                        | the PSP request header to prevent duplicate charges during retries.                                                            |
++------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| PSP Tokenization       | The system stores a unique psp_token returned by the PSP to                                                                    |
+|                        | reconcile webhooks and handle future actions like refunds.                                                                     |
++------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| Parallel Execution     | Multiple payment orders within a single event are processed                                                                    |
+|                        | concurrently by the worker pool for optimal performance.                                                                       |
++------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+| Webhook Reconciliation | The Payment Service handles asynchronous POST requests from the PSP to update the "ground truth" status in the database.       |
++------------------------+--------------------------------------------------------------------------------------------------------------------------------+
+```
+
+### Queue Choice
+
+Recommendation: RabbitMQ (or similar MQ)
+For your specific use case, RabbitMQ (or even Amazon SQS if you are on AWS) is likely the better fit.
+
+* Simplicity: Your goal is to trigger the Payment Executor to submit an intent to the PSP. You don't necessarily need the complexity of a distributed log if your primary goal is task distribution.
+
+* Acknowledge Mechanism: RabbitMQ’s built-in "ACK" system ensures that if an Executor crashes while talking to the PSP, the message stays in the queue and is picked up by another worker.
+
+* Fits your "Worker Pool" Design: You mentioned maintaining a pool of worker threads; standard message brokers are natively designed for this "competing consumers" pattern.
+
 ## How to send money to an external client, someone who is not registered with the PSP
 
 When your generic payment service determines it needs to pay an external, unregistered individual or business, it makes an API call to the PSP's Payout API or Transfer API.
