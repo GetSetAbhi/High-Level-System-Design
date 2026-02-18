@@ -294,6 +294,19 @@ ZREVRANGE leaderboard:{leaderboard1} lower_limit upper_limit WITHSCORES
 to scale our system, we can shard the redis using leaderboardID such that all leaderboard related queries go to one redis instance, but then we need to find a way To
 solve the HOT-LEADERBOARD problem.
 
+We need to fetch leaderboard as quickly as possible with minimum latency so that is why we use Write-Through Cache pattern.
+Update is first made in Cache and the async/sync propagation to database.
+
+We will enable persistence and replicas of DB.
+
+Database is used for:
+
+* Durability
+
+* Auditing
+
+* Recovery
+
 ## HOT LEADERBOARD PROBLEM
 
 To solve hot leaderboard problem, we use a cassandra + redis approach where redis will maintain sorted set for TopK users while everything else remains inside cassandra.
