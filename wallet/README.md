@@ -205,20 +205,21 @@ payment_execution_tasks: An internal ledger for the Executor to track retry coun
 
 ### Key Design Decisions for Reliability
 ```
-+------------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| Decision               | Implementation Detail                                                                                                          |
-+------------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| Idempotency            | The payment_order_id is passed as an Idempotency Key in                                                                        |
-|                        | the PSP request header to prevent duplicate charges during retries.                                                            |
-+------------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| PSP Tokenization       | The system stores a unique psp_token returned by the PSP to                                                                    |
-|                        | reconcile webhooks and handle future actions like refunds.                                                                     |
-+------------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| Parallel Execution     | Multiple payment orders within a single event are processed                                                                    |
-|                        | concurrently by the worker pool for optimal performance.                                                                       |
-+------------------------+--------------------------------------------------------------------------------------------------------------------------------+
-| Webhook Reconciliation | The Payment Service handles asynchronous POST requests from the PSP to update the "ground truth" status in the database.       |
-+------------------------+--------------------------------------------------------------------------------------------------------------------------------+
++------------------------+-------------------------------------------------------------------------+
+| Decision               | Implementation Detail                                                   |
++------------------------+-------------------------------------------------------------------------+
+| Idempotency            | The payment_order_id is passed as an Idempotency Key in                 |
+|                        | the PSP request header to prevent duplicate charges during retries.     |
++------------------------+-------------------------------------------------------------------------+
+| PSP Tokenization       | The system stores a unique psp_token returned by the PSP to             |
+|                        | reconcile webhooks and handle future actions like refunds.              |
++------------------------+-------------------------------------------------------------------------+
+| Parallel Execution     | Multiple payment orders within a single event are processed             |
+|                        | concurrently by the worker pool for optimal performance.                |
++------------------------+-------------------------------------------------------------------------+
+| Webhook Reconciliation | The Payment Service handles asynchronous POST requests                  |
+|                        | from the PSP to update the "ground truth" status in the database.       |
++------------------------+-------------------------------------------------------------------------+
 ```
 
 ### Queue Choice
