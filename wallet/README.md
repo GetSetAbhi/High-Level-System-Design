@@ -81,7 +81,7 @@ Here are the minimalistic data models for `payment_event` and `payment_order` re
 |-----------------------------------|
 | psp_id             : VARCHAR      |
 | psp_token          : VARCHAR      |
-| execution_status   : ENUM        |
+| execution_status   : ENUM         |
 | last_attempt_at    : TIMESTAMP    |
 | retry_count        : INT          |
 | psp_error_msg      : TEXT         |
