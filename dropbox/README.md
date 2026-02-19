@@ -203,4 +203,17 @@ Since a metadata row (a few IDs and an integer) is tiny compared to a content bl
 | - user_id (FK)                  |
 | - last_sync_time (TIMESTAMP)    |
 +---------------------------------+
+
++---------------------------------+
+|         User_Outbox             |
++---------------------------------+
+| - user_id (PK)                  |
+| - device_id                     |
+| - file_id                       |
+| - file_version_id               |
+| - last_sync_time (TIMESTAMP)    |
++---------------------------------+
 ```
+
+User outbox table is a sort of event for an offline user, so that when the user with a specific device comes online, he can be notified about the latest file changes
+that have taken place while he was offline
