@@ -284,23 +284,22 @@ DB tracks: `Who owns the job and what state is it in?`
 	Now:
 
 	Job is durably assigned
-
 	Lease is valid for 2 minutes
 
 * Step 3: Worker Starts Processing
 
 	Worker_A: Starts performing job and Sends heartbeat every 10 seconds
+	
 	If worker keeps heartbeating → Redis key never expires.
-```
+	```
 	Redis:
 	SET job:101:heartbeat = current_time
 	EXPIRE 30s
-```
+	```
 
 * Step 4: Worker Completes Job
 
 	Worker updates DB:
-
 	```
 	UPDATE jobs
 	SET status = 'COMPLETED'
