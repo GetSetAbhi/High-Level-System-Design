@@ -222,6 +222,20 @@ payment_execution_tasks: An internal ledger for the Executor to track retry coun
 +------------------------+-------------------------------------------------------------------------+
 ```
 
+To bridge the gap between the asynchronous backend and the synchronous browser redirect:
+
+Polling Pattern: The client-side frontend polls a status endpoint on the Payment Service until all required psp_token values are persisted in the database.
+
+Final Redirect: Only once the tokens are confirmed does the client perform the redirect to the PSP’s payment page.
+
+How it works:
+
+* The Payment Service redirects the client immediately to a "Processing Page" hosted on your own frontend (e.g., yoursite.com/payments/wait/{checkout_id}).
+
+* That page is responsible for the polling logic described in Pattern 1.
+
+* Once the token is detected via the status API, the Processing Page performs the final redirect to the PSP's actual URL (e.g., stripe.com/pay/...).
+
 ### Queue Choice
 
 Recommendation: RabbitMQ (or similar MQ)
