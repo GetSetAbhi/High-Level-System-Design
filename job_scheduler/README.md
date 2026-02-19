@@ -257,3 +257,187 @@ job:{job_id}:heartbeat  → TTL 30 seconds
 Redis only tracks: `Is the worker still alive?`
 
 DB tracks: `Who owns the job and what state is it in?`
+
+---
+
+### HAPPY PATH SCENARIO
+
+* Step 1: Job Created
+
+	DB:
+	job_id = 101
+	status = PENDING
+
+* Step 2: Controller Assigns Job
+
+	Atomic DB update:
+	
+	```
+	UPDATE jobs
+	SET status = 'IN_PROGRESS',
+		assigned_worker = 'worker_A',
+		lease_expiry = now + 2 minutes
+	WHERE job_id = 101
+	AND status = 'PENDING';
+	```
+
+	Now:
+
+	Job is durably assigned
+
+	Lease is valid for 2 minutes
+
+* Step 3: Worker Starts Processing
+
+	Worker_A: Starts performing job and Sends heartbeat every 10 seconds
+	If worker keeps heartbeating → Redis key never expires.
+```
+	Redis:
+	SET job:101:heartbeat = current_time
+	EXPIRE 30s
+```
+
+* Step 4: Worker Completes Job
+
+	Worker updates DB:
+
+	```
+	UPDATE jobs
+	SET status = 'COMPLETED'
+	WHERE job_id = 101
+	AND assigned_worker = 'worker_A';
+	```
+
+Redis key expires naturally.
+
+✔ Job done
+✔ No extra DB writes during heartbeats
+✔ Durable state intact
+
+### ❌ ERROR SCENARIO: Worker Crashes
+
+Same steps until Step 3.
+
+Worker_A crashes after 40 seconds.
+
+Redis key:
+
+Stops being refreshed
+
+Expires after 30 seconds
+
+Controller Periodic Reaper Runs
+
+Controller checks:
+
+For jobs in IN_PROGRESS:
+   If Redis heartbeat missing
+   AND lease_expiry < now
+       → mark job PENDING again
+
+
+DB update:
+
+UPDATE jobs
+SET status = 'PENDING',
+    assigned_worker = NULL,
+    retry_count = retry_count + 1
+WHERE job_id = 101
+AND lease_expiry < now;
+
+
+Now job is safely re-queued.
+
+Another worker picks it up.
+
+✔ No job lost
+✔ No DB heartbeats required
+✔ Automatic recovery
+
+⚠ SCENARIO 2: Network Partition (Worker Alive, Controller Can't See Redis)
+
+Worker is still processing,
+but controller temporarily cannot access Redis.
+
+Redis heartbeat check fails.
+
+But lease_expiry in DB still valid.
+
+Controller logic:
+
+If heartbeat missing BUT lease_expiry not expired:
+    do nothing
+
+
+Because durable lease has not expired yet.
+
+This prevents premature reassignment.
+
+After network heals:
+
+Heartbeats resume
+
+No duplication
+
+⚠ SCENARIO 3: Controller Crashes
+
+Controller crashes while jobs are in progress.
+
+What happens?
+
+Nothing bad.
+
+Because:
+
+Durable state is in DB
+
+Heartbeats are in Redis
+
+On restart, controller:
+
+Scans IN_PROGRESS jobs
+
+Reconciles leases + heartbeats
+
+System self-heals.
+
+⚠ SCENARIO 4: Redis Crashes
+
+Redis loses all heartbeat keys.
+
+Now what?
+
+Controller fallback logic:
+
+If Redis unavailable:
+    rely only on lease_expiry
+
+
+Once lease expires → reassign.
+
+Worst case:
+
+Some jobs retried once
+
+Idempotency protects correctness
+
+System still safe.
+
+⚠ SCENARIO 5: Worker Finishes After Lease Expired
+
+Worker_A is slow.
+Lease expired.
+Controller reassigned job to Worker_B.
+
+Now Worker_A finishes and tries:
+
+UPDATE jobs SET status = COMPLETED
+WHERE job_id = 101
+AND assigned_worker = 'worker_A';
+
+
+Rows affected = 0 (because assigned_worker changed).
+
+Worker_A result is rejected.
+
+This prevents stale worker overwriting correct state.
