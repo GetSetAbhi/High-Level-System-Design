@@ -118,3 +118,67 @@ If there a very popular media being shared then there's a chance that the trafic
 
 Instead serving via CDN is a better way as CDN is a network of servers located gloablly and can easily serve content to nearest users with better latency.
 
+## Delete message for me
+
+We add a table to work as a delete marker per user
+```
+CREATE TABLE deleted_messages_for_user (
+    user_id text,
+    conversation_id text,
+    message_ts timeuuid,
+    PRIMARY KEY ((user_id, conversation_id), message_ts)
+);
+```
+When user clicks delete for me then we execute :
+
+```
+INSERT INTO deleted_messages_for_user
+(user_id, conversation_id, message_ts)
+VALUES ('user_A', 'conv_AB', <message_ts>);
+
+```
+
+when fetching messages, we execute following commands and filter at application level
+
+```
+SELECT * FROM messages WHERE conversation_id = 'conv_AB';
+
+SELECT message_ts FROM deleted_messages_for_user
+WHERE user_id = 'user_A'
+AND conversation_id = 'conv_AB';
+
+```
+
+## Delete message for All
+
+We modify our messages table and add 2 columns
+
+```
+is_deleted boolean
+deleted_at timeuuid
+```
+
+When a user deletes a table we execute :
+
+```
+UPDATE messages
+SET is_deleted = true,
+    deleted_at = now()
+WHERE conversation_id = 'conv_AB'
+AND message_ts = <message_ts>;
+
+```
+
+Because you denormalized message in inbox table:
+
+You must also update:
+
+```
+UPDATE inbox
+SET body = 'This message was deleted',
+    delivered = true
+WHERE user_id = 'user_B'
+AND message_ts = <message_ts>;
+```
+
+this is done for all participants
