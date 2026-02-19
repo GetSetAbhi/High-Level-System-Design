@@ -321,19 +321,17 @@ Worker_A crashes after 40 seconds.
 
 Redis key:
 
-Stops being refreshed
-
-Expires after 30 seconds
+Stops being refreshed, Expires after 30 seconds
 
 Controller Periodic Reaper Runs
 
 Controller checks:
 
+```
 For jobs in IN_PROGRESS:
    If Redis heartbeat missing
    AND lease_expiry < now
        → mark job PENDING again
-
 
 DB update:
 
@@ -343,7 +341,7 @@ SET status = 'PENDING',
     retry_count = retry_count + 1
 WHERE job_id = 101
 AND lease_expiry < now;
-
+```
 
 Now job is safely re-queued.
 
@@ -353,7 +351,7 @@ Another worker picks it up.
 ✔ No DB heartbeats required
 ✔ Automatic recovery
 
-⚠ SCENARIO 2: Network Partition (Worker Alive, Controller Can't See Redis)
+### SCENARIO 2: Network Partition (Worker Alive, Controller Can't See Redis)
 
 Worker is still processing,
 but controller temporarily cannot access Redis.
@@ -378,7 +376,7 @@ Heartbeats resume
 
 No duplication
 
-⚠ SCENARIO 3: Controller Crashes
+### SCENARIO 3: Controller Crashes
 
 Controller crashes while jobs are in progress.
 
@@ -400,7 +398,7 @@ Reconciles leases + heartbeats
 
 System self-heals.
 
-⚠ SCENARIO 4: Redis Crashes
+### SCENARIO 4: Redis Crashes
 
 Redis loses all heartbeat keys.
 
@@ -422,7 +420,7 @@ Idempotency protects correctness
 
 System still safe.
 
-⚠ SCENARIO 5: Worker Finishes After Lease Expired
+### SCENARIO 5: Worker Finishes After Lease Expired
 
 Worker_A is slow.
 Lease expired.
@@ -430,10 +428,11 @@ Controller reassigned job to Worker_B.
 
 Now Worker_A finishes and tries:
 
+```
 UPDATE jobs SET status = COMPLETED
 WHERE job_id = 101
 AND assigned_worker = 'worker_A';
-
+```
 
 Rows affected = 0 (because assigned_worker changed).
 
