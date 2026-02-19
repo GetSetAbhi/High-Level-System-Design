@@ -329,9 +329,27 @@ Controller checks:
 
 ```
 For jobs in IN_PROGRESS:
-   If Redis heartbeat missing
-   AND lease_expiry < now
-       → mark job PENDING again
+    if lease_expiry < now:
+
+        if redis heartbeat exists:
+            TRY atomic lease extension:
+
+                UPDATE jobs
+                SET lease_expiry = now + LEASE_DURATION
+                WHERE job_id = ?
+                AND lease_expiry < now
+                AND status = 'IN_PROGRESS';
+
+        else:
+            TRY atomic reassignment:
+
+                UPDATE jobs
+                SET status = 'PENDING',
+                    assigned_worker = NULL
+                WHERE job_id = ?
+                AND lease_expiry < now
+                AND status = 'IN_PROGRESS';
+	
 
 DB update:
 
@@ -350,6 +368,16 @@ Another worker picks it up.
 ✔ No job lost
 ✔ No DB heartbeats required
 ✔ Automatic recovery
+
+But if it's a lengthy job then :
+
+If:
+
+Redis heartbeat exists → job is alive
+
+Redis key missing → check DB lease
+
+If expired → reassign
 
 ### SCENARIO 2: Network Partition (Worker Alive, Controller Can't See Redis)
 
