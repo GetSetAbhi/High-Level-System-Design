@@ -229,3 +229,31 @@ Want workers to process jobs in timestamp order
 And the scheduler publishes jobs already sorted
 
 → RabbitMQ is usually the simpler and safer choice.
+
+## Fault Tolerance in dispatcher pattern
+
+We’ll split responsibilities:
+
+* Database (Durable State) → job state machine
+
+* Redis (Liveness State) → heartbeats / lease refresh
+
+**Durable DB (Source of Truth)**
+```
+jobs
+-----
+job_id
+status (PENDING | IN_PROGRESS | COMPLETED | FAILED)
+assigned_worker
+lease_expiry
+retry_count
+```
+
+**Redis**
+```
+job:{job_id}:heartbeat  → TTL 30 seconds
+```
+
+Redis only tracks: `Is the worker still alive?`
+
+DB tracks: `Who owns the job and what state is it in?`
