@@ -44,6 +44,22 @@ Think of a food delivery app:
 * If one server crashes, another server instantly takes over.
 * The user still places orders without noticing anything broke.
 
+# Durability
+
+Durability is about data not being lost, even if things crash or fail.
+
+If reliability = system keeps working,
+then durability = your data stays safe no matter what.
+
+Super short example (pair it with the previous one):
+
+Same food delivery app:
+* You place an order and it gets confirmed.
+* Suddenly, the server crashes.
+* When the system comes back, your order is still there.
+
+👉 That persistence of data = durability.
+
 # Common Points for System Design
 ---
 
