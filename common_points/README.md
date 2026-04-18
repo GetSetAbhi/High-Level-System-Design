@@ -26,6 +26,24 @@ A system can be
 
   👉 Rarely fails but takes long to recover
 
+# Reliability
+
+Reliability in system design means building a system that keeps working correctly over time—even when parts fail, traffic spikes, or unexpected situations occur. A reliable system delivers consistent, correct results and minimizes downtime.
+
+At its core, reliability is about:
+
+* Fault tolerance (surviving failures)
+* Redundancy (having backups)
+* Graceful degradation (partial functionality instead of total failure)
+* Monitoring & recovery (detecting and fixing issues quickly)
+
+Super short example (easy to remember):
+
+Think of a food delivery app:
+
+* If one server crashes, another server instantly takes over.
+* The user still places orders without noticing anything broke.
+
 # Common Points for System Design
 ---
 
