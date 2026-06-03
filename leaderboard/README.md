@@ -237,6 +237,10 @@ Writes become heavier (you update multiple window tables), but reads become extr
   <img src="gaming_leaderboard.svg" alt="Gaming Leaderboard"/>
 </p>
 
+## Dynamodb Data Model
+
+* [DynamoDB Alternative](dynamodb_leaderboard_model.md)
+
 ## Capacity Estimation
 
 for a leaderboard system, let's say there are 10M DAU and each user plays 10 games per day.
