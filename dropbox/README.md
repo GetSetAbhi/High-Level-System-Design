@@ -92,6 +92,10 @@ Clearly we have to make sure that the files are being downloaded with minimum la
 	* The File Service provides presignedDownloadUrls for any new/modified blocks.
 	* The User Device downloads these blocks directly from S3 and applies the changes to its local file system (e.g., overwriting, deleting, recreating files).
 
+## Resumeable Uploads
+
+[ResumeableUploads](ResumeableUploads.md)
+
 ## Notification Service
 
 When a device comes online after being offline for a significant period, it needs a way to catch up on all changes that happened while it was disconnected.
