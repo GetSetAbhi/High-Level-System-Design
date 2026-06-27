@@ -1,4 +1,6 @@
-# Payment System
+# Payment System 
+
+* [Alternative Read](payment_worker/Payment3.md)
 
 <p align="center">
   <img src="payment_service.svg" width="600" alt="Payment System HLD"/>
