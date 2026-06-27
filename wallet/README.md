@@ -12,6 +12,8 @@
   <img src="payment_system_design.webp" width="1000" alt="Payment System Detailed"/>
 </p>
 
+Write up for payments servive : https://medium.com/@sinha.k/8fcc3682813e
+
 There are two flows to discuss in a payment system, one is the payin flow and one is the payout flow.
 
 The payment service receives a payment event to initiate a payment and it stores this event in the payment event db.
