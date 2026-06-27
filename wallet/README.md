@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <img src="payment_system_design.webp" width="600" alt="Payment System Detailed"/>
+  <img src="payment_system_design.webp" width="1000" alt="Payment System Detailed"/>
 </p>
 
 There are two flows to discuss in a payment system, one is the payin flow and one is the payout flow.
