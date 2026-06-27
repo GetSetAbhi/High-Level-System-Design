@@ -140,6 +140,10 @@ Once the worker updates the payment order with the `payment_token`, the Payment 
 
 to the client.
 
+## Why not WebSockets or SSE? Why long polling ?
+
+While SSE reduces HTTP overhead, it introduces distributed connection management. In a horizontally scaled Payment Status Service, the instance receiving the payment update may not own the client's open connection. Solving this requires additional infrastructure such as a shared pub/sub system or distributed connection routing. Since payment status changes are infrequent and latency requirements are modest, long polling provides a simpler, stateless, and operationally robust solution.
+
 ---
 
 # 7. Redirecting to the PSP
