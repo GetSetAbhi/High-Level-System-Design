@@ -184,3 +184,65 @@ Instead, after the redirect, the frontend displays a **"Verifying Payment..."** 
 Once the webhook has been processed, the Payment Status Service returns the final payment status (SUCCESS, FAILED, or CANCELLED), allowing the frontend to display the correct result.
 
 This approach correctly handles both event orderings, avoids race conditions, and provides a smooth user experience while ensuring that the webhook remains the authoritative source of payment completion.
+
+---
+
+# Key Design Tradeoffs
+
+### 1. Asynchronous Payment Processing (Kafka)
+
+**Decision:** Payment orders are processed asynchronously by Payment Executor Workers.
+
+**Tradeoff:** Increases system scalability and resilience to PSP latency, but clients must wait for the worker to obtain the `payment_token`.
+
+**Justification:** External PSP calls are slow and unreliable. Decoupling them prevents blocking client requests.
+
+---
+
+### 2. Master-Replica Database
+
+**Decision:** All writes go to the Master, while read-heavy operations use Replicas.
+
+**Tradeoff:** Improves read scalability but introduces replication lag.
+
+**Justification:** Strong consistency is required for writes, while eventual consistency is acceptable for most reads.
+
+---
+
+### 3. Redis Cache for Payment Status
+
+**Decision:** Workers update Redis after successfully committing to the Master database. The Payment Status Service first queries Redis, then falls back to a replica.
+
+**Tradeoff:** Introduces cache management but significantly reduces database load and provides low-latency status lookups.
+
+**Justification:** Redis is treated as a cache, while the database remains the source of truth.
+
+---
+
+### 4. Hosted Payment Page
+
+**Decision:** Payment details are collected on a PSP-hosted page.
+
+**Tradeoff:** Less control over the payment UI but greatly reduces PCI-DSS compliance requirements.
+
+**Justification:** Sensitive payment information never passes through the Payment Service.
+
+---
+
+### 5. Webhook as the Source of Truth
+
+**Decision:** Final payment status is determined only after processing the PSP webhook.
+
+**Tradeoff:** Users may briefly see a "Verifying Payment..." screen if the browser redirect arrives before the webhook.
+
+**Justification:** The webhook provides the authoritative server-to-server confirmation of payment completion.
+
+---
+
+### 6. Idempotency
+
+**Decision:** `checkout_id` and `payment_order_id` are used as idempotency keys.
+
+**Tradeoff:** Adds implementation complexity but guarantees safe retries across distributed components.
+
+**Justification:** Prevents duplicate payments caused by network failures, retries, or duplicate Kafka deliveries.
