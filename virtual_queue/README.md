@@ -766,3 +766,62 @@ The entire system exists to enforce this:
 **Don't let the traffic spike reach the Booking Service.**
 
 That is the fundamental purpose of the virtual waiting room.
+
+## Load Shedding and Backpressure
+
+In our waiting-room system
+
+The downstream system has a finite capacity:
+
+```
+Booking Service
+     │
+     │ Can safely support ~5,000
+     │ concurrent booking sessions
+     ▼
+Admission Service
+     │
+     │ Controls admission rate
+     ▼
+Waiting Queue
+     │
+     │ Max 100,000 waiting users
+     ▼
+New incoming users
+```
+
+There are actually two levels of protection:
+
+1. Admission control = backpressure
+
+We deliberately don't let everyone through to Booking Service.
+
+```
+100,000 waiting
+       ↓
+Admission Service
+       ↓
+Only admit when capacity becomes available
+       ↓
+Booking Service
+```
+
+This protects Booking Service from the massive burst.
+
+2. Queue limit = request dropping/load shedding
+
+When the waiting queue itself reaches 100,000:
+
+```
+User 100,001
+     ↓
+Waiting Room
+     ↓
+Queue full
+     ↓
+DROP / REJECT
+```
+
+The request doesn't consume a permanent queue slot.
+
+The client can retry later.
