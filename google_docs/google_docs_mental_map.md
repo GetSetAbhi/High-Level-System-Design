@@ -1,3 +1,4 @@
+```
 Real-time collaborative document editing
 │
 ├── Initial solution:
@@ -77,8 +78,7 @@ Real-time collaborative document editing
         ├── Metadata DB (Postgres) for document info and ACLs
         └── Blob store for compacted snapshots, DB for op tails
 		
-
-```		
+	
 CREATE TABLE documents (
   document_id UUID PRIMARY KEY,
   active_document_version_id UUID NOT NULL,

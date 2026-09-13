@@ -1,3 +1,4 @@
+```
 Prevent double booking
 │
 ├── Initial solution:
@@ -110,3 +111,4 @@ Show users available seats
     ├── Seat map remains manageable
     ├── Reservation endpoint performs the real check
     └── Database transaction guarantees final consistency
+```
