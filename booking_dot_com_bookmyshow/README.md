@@ -1,5 +1,9 @@
 # Hotel reservation of event reservation system
 
+## Mental Map
+
+[Bookmyshow](bookmyshow.md)
+
 For a hotel reservation system with 100M daily active users, assuming 20% of users make a reservation and each makes one booking per day, the system handles approximately 20M bookings per day, or about 200 bookings per second on average.
 
 Accounting for a 10× peak load factor during traffic spikes, the system must be designed to handle ~2K booking requests per second.

@@ -4,6 +4,10 @@
   <img src="google_docs.svg" width="600" alt="Collaborative Document Editing"/>
 </p>
 
+## Mental Map
+
+[Collaborative Editing Mental Map](google_docs_mental_map.md)
+
 ## Capacity Estimation
 
 10M Daily Active Users (DAU)
